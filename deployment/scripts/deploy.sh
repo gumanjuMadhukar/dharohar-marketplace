@@ -33,11 +33,21 @@ if [ ! -f "$ROOT_DIR/backend/.env" ]; then
     fi
 fi
 
-# Fix internal Docker hostnames in backend/.env if still set to local 127.0.0.1
+# Fix line endings and internal Docker configuration in backend/.env
 if [ -f "$ROOT_DIR/backend/.env" ]; then
+    # Strip Windows CRLF line endings
+    sed -i 's/\r$//' "$ROOT_DIR/backend/.env" 2>/dev/null || true
+
+    # Fix internal Docker service hosts
     sed -i 's/DB_HOST=127.0.0.1/DB_HOST=postgres/g' "$ROOT_DIR/backend/.env" 2>/dev/null || true
     sed -i 's/REDIS_HOST=127.0.0.1/REDIS_HOST=redis/g' "$ROOT_DIR/backend/.env" 2>/dev/null || true
     sed -i 's/DB_PASSWORD=$/DB_PASSWORD=secret/g' "$ROOT_DIR/backend/.env" 2>/dev/null || true
+
+    # Ensure APP_URL has valid format (prevents Symfony Request malformed host exceptions)
+    if ! grep -q "^APP_URL=http" "$ROOT_DIR/backend/.env" 2>/dev/null; then
+        echo "🔧 Normalizing APP_URL in backend/.env to http://localhost..."
+        sed -i 's|^APP_URL=.*|APP_URL=http://localhost|g' "$ROOT_DIR/backend/.env" 2>/dev/null || true
+    fi
 fi
 
 # Detect Docker Compose command (v2 'docker compose' vs v1 'docker-compose')
@@ -64,7 +74,7 @@ for i in {1..30}; do
 done
 
 echo "📦 Installing backend Composer dependencies..."
-$COMPOSE exec -T backend composer install --no-interaction --prefer-dist --optimize-autoloader
+$COMPOSE exec -T backend composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
 # Ensure application key is generated
 if ! grep -q "^APP_KEY=base64:" "$ROOT_DIR/backend/.env" 2>/dev/null; then

@@ -32,6 +32,7 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-production}
       APP_DEBUG: ${APP_DEBUG:-false}
+      APP_URL: ${APP_URL:-http://localhost}
       DB_CONNECTION: pgsql
       DB_HOST: postgres
       DB_PORT: 5432
