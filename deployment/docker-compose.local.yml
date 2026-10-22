@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: dharohar-nginx-local
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ../backend:/var/www/backend
+      - ./nginx/default.local.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - dharohar-local-network
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../deployment/docker/frontend/Dockerfile.local
+    container_name: dharohar-frontend-local
+    restart: unless-stopped
+    ports:
+      - "3005:3000"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: /api/v1
+      INTERNAL_API_URL: http://nginx/api/v1
+    networks:
+      - dharohar-local-network
+
+  backend:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: dharohar-backend-local
+    restart: unless-stopped
+    working_dir: /var/www/backend
+    volumes:
+      - ../backend:/var/www/backend
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    environment:
+      APP_ENV: local
+      APP_DEBUG: 'true'
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: dharohar
+      DB_USERNAME: postgres
+      DB_PASSWORD: password123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - dharohar-local-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: dharohar-postgres-local
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: dharohar
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-local-data:/var/lib/postgresql/data
+    networks:
+      - dharohar-local-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: dharohar-redis-local
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - dharohar-local-network
+
+volumes:
+  postgres-local-data:
+
+networks:
+  dharohar-local-network:
+    driver: bridge
+

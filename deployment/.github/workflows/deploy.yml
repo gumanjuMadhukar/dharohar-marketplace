@@ -1,0 +1,51 @@
+name: Deploy Dharohar Marketplace
+
+on:
+  push:
+    branches: [ main, production ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, pdo, pdo_pgsql, bcmath, redis
+
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: './frontend/package.json'
+
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to Server via SSH
+        if: env.SSH_HOST != ''
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd /var/www/dharohar/deployment
+            docker-compose -f docker-compose.yml pull
+            docker-compose -f docker-compose.yml up -d --build
+            docker-compose exec -T backend php artisan migrate --force
+            docker-compose exec -T backend php artisan config:cache
+            docker-compose exec -T backend php artisan route:cache
+

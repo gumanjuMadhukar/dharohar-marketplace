@@ -1,0 +1,149 @@
+# ==============================================================================
+# Dharohar (धरोहर) Root .gitignore
+# Full-Stack Platform: Laravel 13 API + Next.js 15 SSR + Docker Infrastructure
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Environment & Sensitive Credentials (NEVER COMMIT)
+# ------------------------------------------------------------------------------
+*.env
+*.env.*
+!.env.example
+!.env.production.example
+backend/.env
+backend/.env.backup
+backend/.env.production
+deployment/.env.deployment
+deployment/.env.local
+deployment/.env.production
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+auth.json
+
+# ------------------------------------------------------------------------------
+# 2. Frontend (Next.js 15, React 19, TypeScript, Node.js)
+# ------------------------------------------------------------------------------
+node_modules/
+**/node_modules/
+frontend/node_modules/
+.next/
+**/.next/
+frontend/.next/
+out/
+frontend/out/
+build/
+frontend/build/
+dist/
+frontend/dist/
+.vercel/
+frontend/.vercel/
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
+
+# NPM / Yarn / PNPM / Bun debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+bun.lockb.log
+
+# ------------------------------------------------------------------------------
+# 3. Backend (Laravel 13, PHP 8.4+, Composer)
+# ------------------------------------------------------------------------------
+vendor/
+**/vendor/
+backend/vendor/
+backend/public/storage
+backend/public/hot
+backend/public/build
+backend/public/fonts-manifest.dev.json
+
+# Laravel Storage & Cache
+backend/storage/*.key
+backend/storage/pail/
+backend/storage/logs/*.log
+backend/storage/framework/cache/data/*
+backend/storage/framework/cache/locks/*
+backend/storage/framework/sessions/*
+backend/storage/framework/testing/*
+backend/storage/framework/views/*
+backend/storage/app/public/*
+!backend/storage/app/public/.gitignore
+backend/storage/app/private/*
+!backend/storage/app/private/.gitignore
+
+# PHPUnit & Testing artifacts
+.phpunit.result.cache
+.phpunit.cache
+backend/.phpunit.result.cache
+backend/.phpunit.cache
+
+# IDE Helpers & Tools
+_ide_helper.php
+_ide_helper_models.php
+.phpactor.json
+Homestead.json
+Homestead.yaml
+
+# ------------------------------------------------------------------------------
+# 4. Deployment, Docker & Database Volumes
+# ------------------------------------------------------------------------------
+deployment/postgres-data/
+deployment/redis-data/
+postgres-data/
+redis-data/
+*.sql
+*.sql.gz
+*.sqlite
+*.sqlite-journal
+
+# Temporary local deployment logs / debug files
+deployment/adminlog.txt
+deployment/migrun2.txt
+deployment/routes_staff.txt
+
+# SSL Certificates & Private Keys
+deployment/nginx/ssl/*.crt
+deployment/nginx/ssl/*.key
+deployment/nginx/ssl/*.pem
+deployment/nginx/ssl/*.csr
+*.pem
+*.key
+*.crt
+
+# ------------------------------------------------------------------------------
+# 5. OS & Editor Specific Files
+# ------------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editors & IDEs
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.settings/
+.cursor/
+.zed/
+.codex/
+.nova/
+
+# General logs & archives
+*.log
+*.zip
+*.tar.gz
+*.rar
+*.7z
+

@@ -1,0 +1,9 @@
+{
+    "Auth": true,
+    "Product": true,
+    "Store": true,
+    "Auction": true,
+    "Order": true,
+    "Payment": true,
+    "Admin": true
+}

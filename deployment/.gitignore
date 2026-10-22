@@ -1,0 +1,7 @@
+.env.deployment
+.env.local
+.env.production
+postgres-data/
+redis-data/
+*.log
+
