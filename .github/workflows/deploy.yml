@@ -72,6 +72,9 @@ jobs:
           script: |
             set -e
 
+            # Ensure PATH includes standard binary locations in non-interactive SSH
+            export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:$HOME/.local/bin:$PATH"
+
             # Expand ~ to actual home directory
             APP_DIR="${{ secrets.EC2_APP_PATH || '~/dharohar-marketplace' }}"
             APP_DIR="${APP_DIR/#\~/$HOME}"
@@ -84,9 +87,15 @@ jobs:
             cd "$APP_DIR"
 
             DEPLOY_BRANCH="${{ github.event.inputs.target_branch || github.ref_name }}"
-            echo "🌿 Deploying branch: $DEPLOY_BRANCH"
+            echo "🌿 Updating repository code from branch: $DEPLOY_BRANCH"
 
-            # Execute the deployment script
+            # Pull latest commits so the server has the updated deploy.sh
+            git fetch origin "$DEPLOY_BRANCH"
+            git stash || true
+            git checkout "$DEPLOY_BRANCH"
+            git pull origin "$DEPLOY_BRANCH"
+
+            # Execute the updated deployment script
             chmod +x deployment/scripts/deploy.sh
             ./deployment/scripts/deploy.sh "$DEPLOY_BRANCH"
 
