@@ -1,18 +1,97 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Deploying Dharohar Platform..."
+echo "=========================================================="
+echo "🚀 Starting Dharohar Marketplace Automated Deployment"
+echo "=========================================================="
 
-cd "$(dirname "$0")/.."
+DEPLOY_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ROOT_DIR="$(cd "$DEPLOY_DIR/.." && pwd)"
 
-# Pull latest code or rebuild
-docker-compose -f docker-compose.yml up -d --build
+# Ensure directories exist for Docker mounts
+mkdir -p "$ROOT_DIR/frontend/public"
+mkdir -p "$DEPLOY_DIR/nginx/ssl"
 
-# Run database migrations
-docker-compose exec -T backend php artisan migrate --force
+# Handle git updates if this is a git checkout
+if [ -d "$ROOT_DIR/.git" ]; then
+    cd "$ROOT_DIR"
+    TARGET_BRANCH="${1:-$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "develop")}"
+    echo "📦 Synchronizing git branch: ${TARGET_BRANCH}..."
+    git fetch origin "${TARGET_BRANCH}" || true
+    git stash || true
+    git checkout "${TARGET_BRANCH}" || true
+    git pull origin "${TARGET_BRANCH}" || echo "⚠️ Git pull notice: continuing with current workspace files..."
+fi
 
-# Optimize Laravel cache
-docker-compose exec -T backend php artisan optimize
+cd "$DEPLOY_DIR"
 
-echo "✅ Dharohar Deployment Complete!"
+# Ensure backend .env exists and has required container hostnames
+if [ ! -f "$ROOT_DIR/backend/.env" ]; then
+    echo "⚙️ Creating backend/.env from .env.example..."
+    if [ -f "$ROOT_DIR/backend/.env.example" ]; then
+        cp "$ROOT_DIR/backend/.env.example" "$ROOT_DIR/backend/.env"
+    fi
+fi
 
+# Fix internal Docker hostnames in backend/.env if still set to local 127.0.0.1
+if [ -f "$ROOT_DIR/backend/.env" ]; then
+    sed -i 's/DB_HOST=127.0.0.1/DB_HOST=postgres/g' "$ROOT_DIR/backend/.env" 2>/dev/null || true
+    sed -i 's/REDIS_HOST=127.0.0.1/REDIS_HOST=redis/g' "$ROOT_DIR/backend/.env" 2>/dev/null || true
+    sed -i 's/DB_PASSWORD=$/DB_PASSWORD=secret/g' "$ROOT_DIR/backend/.env" 2>/dev/null || true
+fi
+
+# Detect Docker Compose command (v2 'docker compose' vs v1 'docker-compose')
+if docker compose version >/dev/null 2>&1; then
+    COMPOSE="docker compose"
+elif command -v docker-compose >/dev/null 2>&1; then
+    COMPOSE="docker-compose"
+else
+    echo "❌ Error: Neither 'docker compose' nor 'docker-compose' found on system."
+    exit 1
+fi
+
+echo "🐳 Building and starting containers with $COMPOSE..."
+$COMPOSE -f docker-compose.yml up -d --build
+
+echo "⏳ Waiting for PostgreSQL container to accept connections..."
+for i in {1..30}; do
+    if $COMPOSE exec -T postgres pg_isready -U "${DB_USERNAME:-postgres}" >/dev/null 2>&1; then
+        echo "✅ PostgreSQL is ready!"
+        break
+    fi
+    echo "   PostgreSQL warming up ($i/30)..."
+    sleep 1
+done
+
+echo "📦 Installing backend Composer dependencies..."
+$COMPOSE exec -T backend composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# Ensure application key is generated
+if ! grep -q "^APP_KEY=base64:" "$ROOT_DIR/backend/.env" 2>/dev/null; then
+    echo "🔑 Generating Laravel Application Key..."
+    $COMPOSE exec -T backend php artisan key:generate --force
+fi
+
+echo "🔄 Running database migrations..."
+$COMPOSE exec -T backend php artisan migrate --force
+
+echo "🔗 Ensuring storage symlink..."
+$COMPOSE exec -T backend php artisan storage:link || true
+
+echo "🔐 Fixing backend directory permissions..."
+$COMPOSE exec -T backend chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true
+$COMPOSE exec -T backend chmod -R 775 storage bootstrap/cache 2>/dev/null || true
+
+echo "⚡ Optimizing Laravel application caches..."
+$COMPOSE exec -T backend php artisan optimize:clear
+$COMPOSE exec -T backend php artisan optimize
+
+echo "🔄 Restarting queue worker..."
+$COMPOSE restart queue-worker
+
+echo "🧹 Pruning unused Docker builder cache and dangling images..."
+docker image prune -f || true
+
+echo "=========================================================="
+echo "✅ Dharohar Marketplace Deployment Finished Successfully!"
+echo "=========================================================="

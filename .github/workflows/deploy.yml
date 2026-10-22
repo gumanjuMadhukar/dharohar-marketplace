@@ -1,0 +1,95 @@
+name: CI/CD - Deploy Dharohar Marketplace to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+    inputs:
+      target_branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'develop'
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+          cache-dependency-path: './frontend/package.json'
+
+      - name: Verify Frontend Build
+        working-directory: ./frontend
+        run: |
+          mkdir -p public
+          npm ci
+          npm run build
+
+  deploy:
+    name: Deploy to VPC EC2 Instance
+    needs: validate
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Deployment Secrets
+        run: |
+          MISSING_SECRETS=0
+          if [ -z "${{ secrets.EC2_HOST || secrets.SSH_HOST }}" ]; then
+            echo "❌ Missing Secret: EC2_HOST (or SSH_HOST). Add your EC2 Public IP (e.g. 3.26.226.138)."
+            MISSING_SECRETS=1
+          fi
+          if [ -z "${{ secrets.EC2_SSH_KEY || secrets.SSH_KEY }}" ]; then
+            echo "❌ Missing Secret: EC2_SSH_KEY (or SSH_KEY). Add your EC2 private key (.pem)."
+            MISSING_SECRETS=1
+          fi
+          if [ $MISSING_SECRETS -eq 1 ]; then
+            echo "👉 In GitHub: Go to Settings -> Secrets and variables -> Actions to add these secrets."
+            exit 1
+          fi
+          echo "✅ Required SSH secrets are present."
+
+      - name: Execute Remote Deployment via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST || secrets.SSH_HOST }}
+          username: ${{ secrets.EC2_USER || secrets.SSH_USERNAME || 'ubuntu' }}
+          key: ${{ secrets.EC2_SSH_KEY || secrets.SSH_KEY }}
+          port: ${{ secrets.EC2_SSH_PORT || secrets.SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            set -e
+
+            # Expand ~ to actual home directory
+            APP_DIR="${{ secrets.EC2_APP_PATH || '~/dharohar-marketplace' }}"
+            APP_DIR="${APP_DIR/#\~/$HOME}"
+            
+            echo "📁 Target directory: $APP_DIR"
+            if [ ! -d "$APP_DIR" ]; then
+              echo "❌ Error: Project directory $APP_DIR not found on EC2 server."
+              exit 1
+            fi
+            cd "$APP_DIR"
+
+            DEPLOY_BRANCH="${{ github.event.inputs.target_branch || github.ref_name }}"
+            echo "🌿 Deploying branch: $DEPLOY_BRANCH"
+
+            # Execute the deployment script
+            chmod +x deployment/scripts/deploy.sh
+            ./deployment/scripts/deploy.sh "$DEPLOY_BRANCH"
+
+            echo "📊 Current Container Status:"
+            cd deployment
+            docker compose ps
