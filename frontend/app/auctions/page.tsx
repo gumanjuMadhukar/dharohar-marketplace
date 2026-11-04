@@ -32,21 +32,21 @@ export default function AuctionHallPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* ── Banner ───────────────────────────────────────────── */}
-      <div className="rounded-3xl bg-gradient-to-r from-nepal-earth via-[#362525] to-nepal-crimson text-white p-8 sm:p-12 shadow-2xl relative overflow-hidden">
+      <div className="rounded-3xl bg-gradient-to-r from-nepal-earth via-[#362525] to-nepal-crimson text-white p-6 sm:p-12 shadow-2xl relative overflow-hidden">
         <div className="max-w-2xl relative z-10 space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold tracking-wide">
             <Gavel className="w-4 h-4 text-nepal-gold" />
             <span>DHAROHAR LIVE AUCTION HALL</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-nepal-gold tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-black text-nepal-gold tracking-tight">
             Bid on Rare Master Crafts & Exclusive Youth Innovations
           </h1>
-          <p className="text-sm text-gray-200 leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-200 leading-relaxed">
             Experience real-time competitive bidding powered by WebSockets. Every piece features verified
             provenance, anti-sniping countdown protections, and automated winner conversion.
           </p>
 
-          <div className="pt-2 flex flex-wrap gap-4 text-xs text-gray-300">
+          <div className="pt-2 flex flex-wrap gap-3 sm:gap-4 text-xs text-gray-300">
             <span className="flex items-center gap-1.5 font-medium">
               <ShieldCheck className="w-4 h-4 text-green-400" />
               Transparent Ledger
@@ -64,13 +64,13 @@ export default function AuctionHallPage() {
       </div>
 
       {/* ── Tabs ─────────────────────────────────────────────── */}
-      <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 pb-4 gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {(["active", "upcoming", "ended"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setStatus(tab)}
-              className={`px-5 py-2.5 rounded-full text-xs font-bold capitalize transition flex items-center gap-2 ${
+              className={`px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs font-bold capitalize transition flex items-center gap-1.5 sm:gap-2 ${
                 status === tab
                   ? "bg-nepal-crimson text-white shadow-md"
                   : "bg-white text-nepal-earth hover:bg-gray-100 border border-gray-200"

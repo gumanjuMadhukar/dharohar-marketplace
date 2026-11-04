@@ -44,14 +44,32 @@ export default function CustomerAccountPage() {
         api.get("/wishlist"),
       ]);
 
-      if (ordRes.status === "fulfilled" && ordRes.value.data?.orders) {
-        setOrders(ordRes.value.data.orders.data || ordRes.value.data.orders);
+      if (ordRes.status === "fulfilled") {
+        const resData = ordRes.value.data;
+        const orderList =
+          resData?.orders?.data ||
+          resData?.data?.data ||
+          (Array.isArray(resData?.orders) ? resData.orders : null) ||
+          (Array.isArray(resData?.data) ? resData.data : []);
+        setOrders(orderList || []);
       }
-      if (bidRes.status === "fulfilled" && bidRes.value.data?.data) {
-        setBids(bidRes.value.data.data.data || bidRes.value.data.data);
+      if (bidRes.status === "fulfilled") {
+        const resData = bidRes.value.data;
+        const bidList =
+          resData?.bids?.data ||
+          resData?.data?.data ||
+          (Array.isArray(resData?.bids) ? resData.bids : null) ||
+          (Array.isArray(resData?.data) ? resData.data : []);
+        setBids(bidList || []);
       }
-      if (wishRes.status === "fulfilled" && wishRes.value.data?.data) {
-        setWishlist(wishRes.value.data.data.data || wishRes.value.data.data);
+      if (wishRes.status === "fulfilled") {
+        const resData = wishRes.value.data;
+        const wishList =
+          resData?.wishlist?.data ||
+          resData?.data?.data ||
+          (Array.isArray(resData?.wishlist) ? resData.wishlist : null) ||
+          (Array.isArray(resData?.data) ? resData.data : []);
+        setWishlist(wishList || []);
       }
     } finally {
       setLoading(false);
@@ -185,12 +203,12 @@ export default function CustomerAccountPage() {
                         </span>
                         <span
                           className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                            order.shipping_status === "delivered"
+                            (order.status || "").toLowerCase() === "delivered"
                               ? "bg-emerald-100 text-emerald-800"
                               : "bg-blue-100 text-blue-800"
                           }`}
                         >
-                          {order.shipping_status}
+                          {order.status || "Processing"}
                         </span>
                       </div>
                     </div>
@@ -202,6 +220,7 @@ export default function CustomerAccountPage() {
                           <div className="flex items-center gap-3">
                             <img
                               src={
+                                item.product?.primary_image?.url ||
                                 item.product?.primary_image?.image_url ||
                                 "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=200"
                               }

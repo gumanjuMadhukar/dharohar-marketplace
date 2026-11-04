@@ -28,6 +28,17 @@ export default function CheckoutPage() {
   const [orderResult, setOrderResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        shipping_name: user.name || prev.shipping_name,
+        shipping_email: user.email || prev.shipping_email,
+        shipping_phone: user.phone || prev.shipping_phone,
+      }));
+    }
+  }, [user]);
+
   const shippingCost = items.length > 0 ? 150 : 0;
   const grandTotal = subtotal + shippingCost;
 

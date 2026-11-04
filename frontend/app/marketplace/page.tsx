@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Product, Category } from "@/lib/types";
 import { api } from "@/lib/api";
 import { ProductCard } from "@/components/ProductCard";
-import { Filter, SlidersHorizontal, Search, RefreshCw } from "lucide-react";
+import { SlidersHorizontal, Search, RefreshCw, X } from "lucide-react";
 
 function MarketplaceContent() {
   const searchParams = useSearchParams();
@@ -13,6 +13,7 @@ function MarketplaceContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   // Filters
   const [search, setSearch] = useState(searchParams.get("search") || "");
@@ -24,6 +25,16 @@ function MarketplaceContent() {
   const [sort, setSort] = useState("newest");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
+
+  const activeFilterCount = [
+    Boolean(search),
+    Boolean(selectedCategory),
+    Boolean(type),
+    studentMade,
+    handmade,
+    ecoFriendly,
+    Boolean(minPrice || maxPrice),
+  ].filter(Boolean).length;
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -78,58 +89,94 @@ function MarketplaceContent() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-nepal-gold/20">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 sm:mb-8 pb-6 border-b border-nepal-gold/20">
         <div>
-          <h1 className="text-3xl font-black text-nepal-earth">Marketplace</h1>
-          <p className="text-sm text-gray-600 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-black text-nepal-earth">Marketplace</h1>
+          <p className="text-xs sm:text-sm text-gray-600 mt-1">
             Browse authentic artisanal handicrafts, Thangka mandalas, and student innovations from Nepal.
           </p>
         </div>
 
-        {/* Sort & Search */}
-        <div className="flex flex-wrap items-center gap-3">
-          <form onSubmit={handleSearchSubmit} className="relative">
+        {/* Sort & Search & Filter Trigger */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+          <form onSubmit={handleSearchSubmit} className="relative flex-1 sm:w-64">
             <input
               type="text"
               placeholder="Filter items..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-white pl-9 pr-4 py-2 rounded-xl border border-gray-300 text-xs focus:outline-none focus:ring-2 focus:ring-nepal-crimson"
+              className="w-full bg-white pl-9 pr-4 py-2 rounded-xl border border-gray-300 text-xs focus:outline-none focus:ring-2 focus:ring-nepal-crimson"
             />
-            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-3" />
+            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-2.5" />
           </form>
 
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value)}
-            className="bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs font-semibold text-nepal-earth focus:outline-none focus:ring-2 focus:ring-nepal-crimson"
-          >
-            <option value="newest">Newest Arrivals</option>
-            <option value="price_asc">Price: Low to High</option>
-            <option value="price_desc">Price: High to Low</option>
-            <option value="rating">Top Rated</option>
-            <option value="popular">Most Popular</option>
-          </select>
+          <div className="flex items-center gap-2">
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="flex-1 sm:flex-none bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs font-semibold text-nepal-earth focus:outline-none focus:ring-2 focus:ring-nepal-crimson"
+            >
+              <option value="newest">Newest Arrivals</option>
+              <option value="price_asc">Price: Low to High</option>
+              <option value="price_desc">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+              <option value="popular">Most Popular</option>
+            </select>
+
+            {/* Mobile Filters Toggle Button */}
+            <button
+              type="button"
+              onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+              className="lg:hidden flex items-center justify-center gap-1.5 px-3 py-2 bg-white border border-nepal-gold/40 rounded-xl text-xs font-bold text-nepal-earth hover:bg-nepal-parchment transition flex-shrink-0"
+              aria-label="Toggle Filters"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5 text-nepal-crimson" />
+              <span>Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="w-4 h-4 bg-nepal-crimson text-white rounded-full text-[10px] flex items-center justify-center font-bold">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* ── Filter Sidebar ───────────────────────────────────── */}
-        <aside className="lg:col-span-1 space-y-6 bg-white p-6 rounded-2xl border border-nepal-gold/20 shadow-sm h-fit">
+        <aside
+          className={`${
+            mobileFiltersOpen ? "block" : "hidden"
+          } lg:block lg:col-span-1 space-y-6 bg-white p-5 sm:p-6 rounded-2xl border border-nepal-gold/20 shadow-sm h-fit`}
+        >
           <div className="flex items-center justify-between pb-3 border-b border-gray-100">
             <div className="flex items-center gap-2 font-bold text-sm text-nepal-earth">
               <SlidersHorizontal className="w-4 h-4 text-nepal-crimson" />
               <span>Filters</span>
+              {activeFilterCount > 0 && (
+                <span className="text-[11px] bg-red-100 text-nepal-crimson px-1.5 py-0.2 rounded-full font-bold">
+                  {activeFilterCount} active
+                </span>
+              )}
             </div>
-            <button
-              onClick={clearFilters}
-              className="text-xs text-nepal-crimson hover:underline font-semibold flex items-center gap-1"
-            >
-              <RefreshCw className="w-3 h-3" />
-              <span>Reset</span>
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={clearFilters}
+                className="text-xs text-nepal-crimson hover:underline font-semibold flex items-center gap-1"
+              >
+                <RefreshCw className="w-3 h-3" />
+                <span>Reset</span>
+              </button>
+              <button
+                onClick={() => setMobileFiltersOpen(false)}
+                className="lg:hidden p-1 text-gray-400 hover:text-gray-700"
+                aria-label="Close filters"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           {/* Badges / Special Creators */}
@@ -137,38 +184,38 @@ function MarketplaceContent() {
             <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500">
               Creator Badges
             </h4>
-            <label className="flex items-center gap-2.5 text-xs font-semibold text-nepal-earth cursor-pointer">
+            <label className="flex items-center gap-2 text-xs font-semibold text-nepal-earth cursor-pointer flex-wrap">
               <input
                 type="checkbox"
                 checked={studentMade}
                 onChange={(e) => setStudentMade(e.target.checked)}
-                className="rounded text-nepal-crimson focus:ring-nepal-crimson"
+                className="rounded text-nepal-crimson focus:ring-nepal-crimson flex-shrink-0"
               />
-              <span className="text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+              <span className="text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 text-[11px] sm:text-xs">
                 🎓 Student & Child Creator
               </span>
             </label>
 
-            <label className="flex items-center gap-2.5 text-xs font-semibold text-nepal-earth cursor-pointer">
+            <label className="flex items-center gap-2 text-xs font-semibold text-nepal-earth cursor-pointer flex-wrap">
               <input
                 type="checkbox"
                 checked={handmade}
                 onChange={(e) => setHandmade(e.target.checked)}
-                className="rounded text-nepal-crimson focus:ring-nepal-crimson"
+                className="rounded text-nepal-crimson focus:ring-nepal-crimson flex-shrink-0"
               />
-              <span className="text-red-800 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">
+              <span className="text-red-800 bg-red-50 px-2 py-0.5 rounded-full border border-red-200 text-[11px] sm:text-xs">
                 🔨 Authentic Handmade
               </span>
             </label>
 
-            <label className="flex items-center gap-2.5 text-xs font-semibold text-nepal-earth cursor-pointer">
+            <label className="flex items-center gap-2 text-xs font-semibold text-nepal-earth cursor-pointer flex-wrap">
               <input
                 type="checkbox"
                 checked={ecoFriendly}
                 onChange={(e) => setEcoFriendly(e.target.checked)}
-                className="rounded text-nepal-crimson focus:ring-nepal-crimson"
+                className="rounded text-nepal-crimson focus:ring-nepal-crimson flex-shrink-0"
               />
-              <span className="text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+              <span className="text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 text-[11px] sm:text-xs">
                 🌿 Eco-Friendly
               </span>
             </label>
@@ -199,8 +246,8 @@ function MarketplaceContent() {
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                <span>{c.name}</span>
-                <span className="text-[10px] opacity-75">{c.products_count}</span>
+                <span className="truncate pr-2">{c.name}</span>
+                <span className="text-[10px] opacity-75 flex-shrink-0">{c.products_count}</span>
               </div>
             ))}
           </div>
@@ -225,7 +272,7 @@ function MarketplaceContent() {
                   name="product_type"
                   checked={type === fmt.id}
                   onChange={() => setType(fmt.id)}
-                  className="text-nepal-crimson focus:ring-nepal-crimson"
+                  className="text-nepal-crimson focus:ring-nepal-crimson flex-shrink-0"
                 />
                 <span>{fmt.label}</span>
               </label>
@@ -243,15 +290,15 @@ function MarketplaceContent() {
                 placeholder="Min"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
-                className="w-1/2 p-2 border border-gray-200 rounded-lg text-xs"
+                className="w-full min-w-0 p-2 border border-gray-200 rounded-lg text-xs"
               />
-              <span className="text-gray-400">-</span>
+              <span className="text-gray-400 flex-shrink-0">-</span>
               <input
                 type="number"
                 placeholder="Max"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-1/2 p-2 border border-gray-200 rounded-lg text-xs"
+                className="w-full min-w-0 p-2 border border-gray-200 rounded-lg text-xs"
               />
             </div>
             <button
@@ -279,7 +326,7 @@ function MarketplaceContent() {
               ))}
             </div>
           ) : products.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-12 text-center">
+            <div className="bg-white rounded-2xl border border-dashed border-gray-300 p-8 sm:p-12 text-center">
               <div className="text-4xl mb-3">🏔️</div>
               <h3 className="text-base font-bold text-nepal-earth">No artifacts found</h3>
               <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
@@ -287,13 +334,13 @@ function MarketplaceContent() {
               </p>
               <button
                 onClick={clearFilters}
-                className="mt-4 px-4 py-2 bg-nepal-crimson text-white rounded-full text-xs font-bold"
+                className="mt-4 px-4 py-2 bg-nepal-crimson text-white rounded-full text-xs font-bold shadow hover:bg-nepal-crimsonDark transition"
               >
                 Reset All Filters
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {products.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
@@ -307,9 +354,8 @@ function MarketplaceContent() {
 
 export default function MarketplacePage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-sm">Loading Marketplace...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-sm font-semibold text-gray-500">Loading Marketplace...</div>}>
       <MarketplaceContent />
     </Suspense>
   );
 }
-

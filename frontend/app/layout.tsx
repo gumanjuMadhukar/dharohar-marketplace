@@ -1,8 +1,14 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
 import { LayoutShell } from "@/components/LayoutShell";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   title: "Dharohar (धरोहर) | Nepal’s Heritage & Youth Creators Marketplace",
@@ -16,8 +22,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col bg-[#F8F9FA] text-slate-800 antialiased">
+    <html lang="en" className="overflow-x-hidden">
+      <body className="min-h-screen flex flex-col bg-[#F8F9FA] text-slate-800 antialiased overflow-x-hidden w-full">
         <AuthProvider>
           <CartProvider>
             <LayoutShell>{children}</LayoutShell>

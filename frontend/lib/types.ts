@@ -8,6 +8,7 @@ export interface User {
   bio?: string;
   is_verified?: boolean;
   guardian_name?: string;
+  guardian_email?: string;
   guardian_consent?: boolean;
 }
 
@@ -57,6 +58,7 @@ export interface Product {
   views_count: number;
   primary_image?: ProductImage;
   images?: ProductImage[];
+  auctions?: any[];
   wholesale_prices?: WholesalePrice[];
   category?: Category;
   store?: Store;

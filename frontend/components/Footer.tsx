@@ -111,13 +111,13 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 gap-4">
-          <div className="flex items-center gap-1.5">
+        <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 gap-4 text-center sm:text-left">
+          <div className="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
             <span>© 2026 Dharohar (धरोहर) Marketplace. Handcrafted with</span>
-            <Heart className="w-3.5 h-3.5 text-nepal-crimson fill-nepal-crimson" />
+            <Heart className="w-3.5 h-3.5 text-nepal-crimson fill-nepal-crimson inline" />
             <span>in Nepal.</span>
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
             <span>Privacy Policy</span>
             <span>•</span>
             <span>Child Safety & Consent</span>

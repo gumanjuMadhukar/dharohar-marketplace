@@ -152,14 +152,14 @@ export default function AuctionDetailPage({ params }: { params: Promise<{ id: st
             </div>
 
             {/* Price Box */}
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-nepal-parchment to-amber-50 border border-nepal-gold/30 flex items-center justify-between">
+            <div className="p-4 rounded-2xl bg-gradient-to-br from-nepal-parchment to-amber-50 border border-nepal-gold/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <span className="text-xs text-gray-500 font-medium">Leading Highest Bid</span>
                 <div className="text-2xl sm:text-3xl font-black text-nepal-crimson">
                   NPR {Number(auction.current_price).toLocaleString()}
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-left sm:text-right">
                 <span className="text-xs text-gray-500 font-medium">Min. Next Bid</span>
                 <div className="text-base font-bold text-nepal-earth">
                   NPR {Number(minNextBid).toLocaleString()}

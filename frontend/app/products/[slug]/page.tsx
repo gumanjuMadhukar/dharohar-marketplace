@@ -235,7 +235,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
             return (
               <>
                 {/* Price */}
-                <div className="p-4 rounded-2xl bg-white border border-nepal-gold/30 shadow-sm flex items-center justify-between">
+                <div className="p-4 rounded-2xl bg-white border border-nepal-gold/30 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div>
                     <div className="text-xs text-gray-400 font-medium">Unit Price</div>
                     <div className="flex items-baseline gap-2">
