@@ -13,6 +13,8 @@ use App\Http\Controllers\Api\v1\KycController;
 use App\Http\Controllers\Api\v1\ReviewController;
 use App\Http\Controllers\Api\v1\SellerDashboardController;
 use App\Http\Controllers\Api\v1\WishlistController;
+use App\Http\Controllers\Api\v1\LiveRoomController;
+use App\Http\Controllers\Api\v1\AuditLogController;
 use App\Models\Banner;
 use App\Models\BlogPost;
 use App\Services\PaymentService;
@@ -42,9 +44,13 @@ Route::prefix('v1')->group(function () {
     Route::get('/stores', [StoreController::class, 'index']);
     Route::get('/stores/{slug}', [StoreController::class, 'show']);
 
-    // Live Auction Hall
+    // Live Auction Hall & Real-Time Rooms
     Route::get('/auctions', [AuctionController::class, 'index']);
     Route::get('/auctions/{id}', [AuctionController::class, 'show']);
+    Route::get('/live/rooms', [LiveRoomController::class, 'index']);
+    Route::get('/live/rooms/{id}', [LiveRoomController::class, 'show']);
+    Route::post('/live/rooms/{id}/like', [LiveRoomController::class, 'toggleLike']);
+    Route::post('/live/rooms/{id}/share', [LiveRoomController::class, 'toggleShare']);
 
     // Public Order Tracking
     Route::post('/orders/track', [OrderController::class, 'track']);
@@ -105,8 +111,17 @@ Route::prefix('v1')->group(function () {
         Route::get('/orders/{orderNumber}', [OrderController::class, 'show']);
         Route::post('/checkout', [OrderController::class, 'store']);
 
-        // Live Bidding
+        // Live Bidding & Real-Time Rooms
         Route::post('/auctions/{id}/bid', [AuctionController::class, 'bid']);
+        Route::post('/live/rooms/{id}/bid', [LiveRoomController::class, 'bid']);
+        Route::post('/live/rooms/{id}/message', [LiveRoomController::class, 'sendMessage']);
+        Route::post('/live/rooms', [LiveRoomController::class, 'store']);
+        Route::put('/live/rooms/{id}/status', [LiveRoomController::class, 'updateStatus']);
+        Route::post('/live/rooms/{id}/lots', [LiveRoomController::class, 'addLot']);
+        Route::put('/live/rooms/{id}/lots/{lotId}/activate', [LiveRoomController::class, 'activateLot']);
+        Route::post('/live/rooms/{id}/lots/{lotId}/hammer', [LiveRoomController::class, 'hammerLot']);
+        Route::post('/live/rooms/{id}/lots/{lotId}/pass', [LiveRoomController::class, 'passLot']);
+        Route::post('/live/rooms/{id}/moderate/message/{messageId}', [LiveRoomController::class, 'moderateMessage']);
 
         // Seller & Creator Operations
         Route::post('/stores', [StoreController::class, 'store']);
@@ -193,6 +208,17 @@ Route::prefix('v1')->group(function () {
             // Disputes Management
             Route::get('/disputes', [AdminController::class, 'indexDisputes']);
             Route::post('/disputes/{id}/resolve', [AdminController::class, 'resolveDispute']);
+
+            // Audit Logs
+            Route::get('/logs', [AuditLogController::class, 'index']);
+        });
+
+        // Staff Desk Endpoints
+        Route::prefix('staff')->group(function () {
+            Route::get('/logs', [AuditLogController::class, 'index']);
+            Route::get('/disputes', [AdminController::class, 'indexDisputes']);
+            Route::get('/kyc', [AdminController::class, 'kycList']);
+            Route::get('/live/rooms', [LiveRoomController::class, 'index']);
         });
     });
 });

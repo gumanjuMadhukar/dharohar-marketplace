@@ -114,17 +114,17 @@ docker-compose -f docker-compose.yml up -d --build
 
 ---
 
-## 🔑 Pre-Seeded Demo Accounts
+## 🔑 Pre-Seeded Demo Accounts (7-Tier Enterprise RBAC)
 
-| Role | Email | Password | Details |
+| Role | Email | Password | Dedicated Portal & Details |
 |---|---|---|---|
-| **Super Admin** | `admin@dharohar.com` | `password123` | Platform governance, KYC approvals, disputes |
-| **Master Artisan** | `artisan.shrestha@dharohar.com` | `password123` | Bhaktapur Woodcraft & Heritage Store |
-| **Pashmina Weaver** | `pashmina.gurung@dharohar.com` | `password123` | Himalayan Chyangra Cashmere Store |
-| **Student Creator** | `aarav.student@dharohar.com` | `password123` | 17yo Lokta paper artist (Parent consent verified) |
-| **Student Innovator** | `sneha.student@dharohar.com` | `password123` | High school eco-irrigation prototype creator |
-| **B2B Manufacturer** | `himalayan.crafts@dharohar.com` | `password123` | Wholesale 7-metal singing bowls & tier pricing |
-| **Customer / Buyer** | `buyer@dharohar.com` | `password123` | Active bidder & marketplace buyer |
+| **Super Admin** | `admin@dharohar.com` | `password123` | `/admin` — Platform governance, KYC approvals, disputes, live stream supervisor, audit logs |
+| **Staff & Operations** | `staff.moderator@dharohar.com` | `password123` | `/staff` — Live stream supervisor, chat moderation desk, KYC review, dispute arbitration |
+| **Enterprise Owner** | `owner.gallery@dharohar.com` | `password123` | `/owner` — Multi-store branch management, staff delegation, VAT/PAN financial reports |
+| **Master Artisan / Seller** | `artisan.shrestha@dharohar.com` | `password123` | `/seller` — Bhaktapur Woodcraft catalog, inventory, order fulfillment, live selling studio |
+| **Heritage Creator** | `creator.shakya@dharohar.com` | `password123` | `/creator` — Lost-wax bronze casting studio, heritage portfolio, bespoke commissions |
+| **Student Creator** | `aarav.student@dharohar.com` | `password123` | `/student` — 17yo Lokta paper artist, 3% subsidized fee, guardian co-sign verified |
+| **Collector / Customer** | `buyer@dharohar.com` | `password123` | `/account` & `/live` — Active live paddle bidder, order tracking, real-time reactions |
 
 ---
 

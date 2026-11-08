@@ -21,6 +21,7 @@ import {
   Receipt,
   Tag,
   Star,
+  Radio,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -64,7 +65,8 @@ export default function SellerLayout({ children }: { children: React.ReactNode }
         { id: "create_product", label: "Publish Artifact", icon: Plus, href: "/seller/products/create" },
         { id: "inventory", label: "Inventory & Stocks", icon: Boxes, href: "/seller/inventory" },
         { id: "orders", label: "Order Fulfillment", icon: Truck, href: "/seller/orders", badge: ordersCount },
-        { id: "auctions", label: "Live Auctions", icon: Gavel, href: "/seller/auctions" },
+        { id: "live_studio", label: "Live Broadcast Studio", icon: Radio, href: "/seller/live-studio", badge: "LIVE" },
+        { id: "auctions", label: "Timed Auctions", icon: Gavel, href: "/seller/auctions" },
       ],
     },
     {

@@ -19,6 +19,8 @@ import {
   Shield,
   Loader2,
   Sparkles,
+  Radio,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -57,6 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { id: "stores", label: "Stores & Artisans", icon: Store, href: "/admin/stores", badge: stats?.total_stores },
         { id: "products", label: "Catalog Moderation", icon: Package, href: "/admin/products" },
         { id: "auctions", label: "Live Auctions", icon: Gavel, href: "/admin/auctions", badge: stats?.active_auctions, badgeColor: "bg-red-100 text-red-800" },
+        { id: "live-streams", label: "Live Streams & Events", icon: Radio, href: "/admin/live-streams" },
         { id: "orders", label: "Global Orders", icon: Truck, href: "/admin/orders", badge: stats?.total_orders },
       ],
     },
@@ -65,6 +68,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       items: [
         { id: "kyc", label: "KYC Verification", icon: CheckCircle, href: "/admin/kyc", badge: stats?.pending_kyc, badgeColor: "bg-amber-100 text-amber-800" },
         { id: "disputes", label: "Dispute Center", icon: AlertTriangle, href: "/admin/disputes", badge: stats?.open_disputes, badgeColor: "bg-red-100 text-red-800" },
+        { id: "logs", label: "Audit & Security Logs", icon: FileText, href: "/admin/logs" },
         { id: "settings", label: "Platform Settings", icon: Settings, href: "/admin/settings" },
         { id: "profile", label: "Admin Profile", icon: UserIcon, href: "/admin/profile" },
       ],

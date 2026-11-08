@@ -15,13 +15,19 @@ import {
   Shield,
   Menu,
   X,
+  Radio,
+  Briefcase,
+  Palette,
+  Layers,
+  ChevronDown,
 } from "lucide-react";
 
 export const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, loginAsDemo } = useAuth();
   const { totalItems } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [roleSwitcherOpen, setRoleSwitcherOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +88,7 @@ export const Navbar = () => {
           </form>
 
           {/* Nav Links (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-6 text-sm font-semibold text-nepal-earth">
+          <nav className="hidden lg:flex items-center gap-5 text-sm font-semibold text-nepal-earth">
             <Link
               href="/marketplace"
               className="hover:text-nepal-crimson transition flex items-center gap-1"
@@ -91,10 +97,17 @@ export const Navbar = () => {
             </Link>
             <Link
               href="/auctions"
-              className="hover:text-nepal-crimson transition flex items-center gap-1.5 text-nepal-crimson"
+              className="hover:text-nepal-crimson transition flex items-center gap-1 text-gray-700"
             >
-              <Gavel className="w-4 h-4" />
+              <Gavel className="w-4 h-4 text-nepal-gold" />
               <span>Auction Hall</span>
+            </Link>
+            <Link
+              href="/live"
+              className="hover:text-nepal-crimson transition flex items-center gap-1.5 text-red-600 font-bold bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-full border border-red-200/60"
+            >
+              <Radio className="w-4 h-4 text-red-600 animate-pulse" />
+              <span>Live Bidding</span>
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
@@ -157,6 +170,39 @@ export const Navbar = () => {
                   </Link>
                 )}
 
+                {user.account_type === "staff" && (
+                  <Link
+                    href="/staff"
+                    className="hidden sm:inline-flex px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-900 rounded-xl text-xs font-bold items-center gap-1 transition"
+                    title="Staff Desk & Moderation"
+                  >
+                    <Shield className="w-3.5 h-3.5 text-indigo-600" />
+                    <span className="hidden md:inline">Staff Desk</span>
+                  </Link>
+                )}
+
+                {user.account_type === "owner" && (
+                  <Link
+                    href="/owner"
+                    className="hidden sm:inline-flex px-3 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-900 rounded-xl text-xs font-bold items-center gap-1 transition"
+                    title="Enterprise Gallery Owner Suite"
+                  >
+                    <Briefcase className="w-3.5 h-3.5 text-emerald-700" />
+                    <span className="hidden md:inline">Owner Suite</span>
+                  </Link>
+                )}
+
+                {user.account_type === "creator" && (
+                  <Link
+                    href="/creator"
+                    className="hidden sm:inline-flex px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl text-xs font-bold items-center gap-1 transition"
+                    title="Creator Atelier & Studio"
+                  >
+                    <Palette className="w-3.5 h-3.5 text-amber-700" />
+                    <span className="hidden md:inline">Creator Atelier</span>
+                  </Link>
+                )}
+
                 {user.account_type === "student" && (
                   <Link
                     href="/student/dashboard"
@@ -171,7 +217,7 @@ export const Navbar = () => {
                 {(user.account_type === "seller" || user.account_type === "manufacturer") && (
                   <Link
                     href="/seller/dashboard"
-                    className="hidden sm:inline-flex px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-xl text-xs font-bold items-center gap-1 transition"
+                    className="hidden sm:inline-flex px-3 py-1.5 bg-orange-100 hover:bg-orange-200 text-orange-900 rounded-xl text-xs font-bold items-center gap-1 transition"
                     title="Store & Product Manager"
                   >
                     <Store className="w-3.5 h-3.5" />
@@ -189,6 +235,49 @@ export const Navbar = () => {
                     <span className="hidden md:inline">My Orders</span>
                   </Link>
                 )}
+
+                {/* Quick Role Switcher Pill */}
+                <div className="relative">
+                  <button
+                    onClick={() => setRoleSwitcherOpen(!roleSwitcherOpen)}
+                    className="hidden xl:inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-semibold bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg border border-gray-300 transition"
+                    title="Quick Role Switcher"
+                  >
+                    <Layers className="w-3 h-3 text-nepal-crimson" />
+                    <span>Role: <strong className="capitalize">{user.account_type}</strong></span>
+                    <ChevronDown className="w-3 h-3 text-gray-400" />
+                  </button>
+
+                  {roleSwitcherOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-50 animate-in fade-in slide-in-from-top-2">
+                      <div className="px-3 py-1 text-[10px] uppercase tracking-wider font-extrabold text-gray-400">
+                        Switch Active Role (RBAC)
+                      </div>
+                      {[
+                        { role: "admin", label: "Super Admin", portal: "/admin", color: "text-purple-700" },
+                        { role: "staff", label: "Staff Operations", portal: "/staff", color: "text-indigo-700" },
+                        { role: "owner", label: "Gallery Owner", portal: "/owner", color: "text-emerald-700" },
+                        { role: "artisan", label: "Master Artisan / Seller", portal: "/seller/dashboard", color: "text-orange-700" },
+                        { role: "creator", label: "Heritage Creator", portal: "/creator", color: "text-amber-700" },
+                        { role: "student", label: "Student Innovator (3%)", portal: "/student/dashboard", color: "text-pink-700" },
+                        { role: "buyer", label: "Customer / Collector", portal: "/account", color: "text-blue-700" },
+                      ].map((item) => (
+                        <button
+                          key={item.role}
+                          onClick={async () => {
+                            setRoleSwitcherOpen(false);
+                            await loginAsDemo(item.role as any);
+                            window.location.href = item.portal;
+                          }}
+                          className="w-full text-left px-3 py-1.5 text-xs hover:bg-gray-50 flex items-center justify-between transition"
+                        >
+                          <span className={`font-semibold ${item.color}`}>{item.label}</span>
+                          <span className="text-[10px] text-gray-400">Go →</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
                 <button
                   onClick={logout}
@@ -261,6 +350,19 @@ export const Navbar = () => {
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+            </span>
+          </Link>
+          <Link
+            href="/live"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center justify-between py-2 text-sm font-bold text-red-600 bg-red-50 px-2.5 rounded-lg border border-red-200/50"
+          >
+            <span className="flex items-center gap-1.5">
+              <Radio className="w-4 h-4 animate-pulse text-red-600" />
+              <span>Live Bidding Rooms</span>
+            </span>
+            <span className="bg-red-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-extrabold uppercase">
+              Live
             </span>
           </Link>
           <Link

@@ -11,6 +11,10 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
+use App\Models\AuditLog;
+use App\Models\LiveLot;
+use App\Models\LiveMessage;
+use App\Models\LiveRoom;
 use App\Models\PlatformSetting;
 use App\Models\Product;
 use App\Models\ProductImage;
@@ -30,7 +34,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ── 1. Roles & Permissions ──────────────────────────────
-        $roles = ['admin', 'seller', 'manufacturer', 'student', 'customer', 'store_manager'];
+        $roles = ['admin', 'staff', 'owner', 'seller', 'creator', 'student', 'customer', 'manufacturer', 'store_manager'];
         foreach ($roles as $roleName) {
             Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
         }
@@ -48,6 +52,57 @@ class DatabaseSeeder extends Seeder
             ]
         );
         $admin->assignRole('admin');
+
+        // Staff / Operations / Stream Moderator
+        $staff = User::firstOrCreate(
+            ['email' => 'staff.moderator@dharohar.com'],
+            [
+                'name' => 'Sunita Sharma',
+                'phone' => '9841002233',
+                'password' => Hash::make('password123'),
+                'account_type' => 'staff',
+                'bio' => 'Senior Operations & Live Stream Quality Supervisor at Dharohar.',
+                'avatar' => 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=200',
+                'is_active' => true,
+                'is_verified' => true,
+                'locale' => 'en',
+            ]
+        );
+        $staff->assignRole('staff');
+
+        // Organization / Gallery Owner
+        $owner = User::firstOrCreate(
+            ['email' => 'owner.gallery@dharohar.com'],
+            [
+                'name' => 'Rajendra Manandhar',
+                'phone' => '9851004455',
+                'password' => Hash::make('password123'),
+                'account_type' => 'owner',
+                'bio' => 'Director of Bhaktapur Traditional Arts Collective and Heritage Gallery Network.',
+                'avatar' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200',
+                'is_active' => true,
+                'is_verified' => true,
+                'locale' => 'en',
+            ]
+        );
+        $owner->assignRole('owner');
+
+        // Master Heritage Creator
+        $creator = User::firstOrCreate(
+            ['email' => 'creator.shakya@dharohar.com'],
+            [
+                'name' => 'Umesh Shakya',
+                'phone' => '9861006677',
+                'password' => Hash::make('password123'),
+                'account_type' => 'creator',
+                'bio' => '7th Generation Master Sculptor of Newar Lost-Wax Bronze Deities and Sacred Iconography.',
+                'avatar' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200',
+                'is_active' => true,
+                'is_verified' => true,
+                'locale' => 'en',
+            ]
+        );
+        $creator->assignRole('creator');
 
         // Artisans / Sellers
         $seller1 = User::firstOrCreate(
@@ -568,5 +623,163 @@ class DatabaseSeeder extends Seeder
         PlatformSetting::set('esewa_enabled', 'true');
         PlatformSetting::set('khalti_enabled', 'true');
         PlatformSetting::set('stripe_enabled', 'true');
+
+        // ── 11. Live Streaming & Real-Time Bidding Rooms ─────────
+        $sellerStore = Store::first();
+
+        // Room 1: Live right now
+        $liveRoom1 = LiveRoom::firstOrCreate(
+            ['slug' => 'sacred-bronze-thangka-live-auction'],
+            [
+                'host_id' => $creator->id,
+                'store_id' => $sellerStore?->id,
+                'title' => '🔴 Sacred Newar Lost-Wax Bronze & Thangka Live Auction',
+                'description' => 'Exclusive live casting exhibition and live paddle auction of hand-chased sacred Vajrayana deities and gold-illuminated mandalas.',
+                'category' => 'Sacred Deities & Art',
+                'cover_image' => 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=1200',
+                'stream_url' => 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                'stream_key' => 'live_bronze_master_key_99',
+                'status' => 'live',
+                'viewer_count' => 1420,
+                'likes_count' => 3890,
+                'shares_count' => 245,
+                'chat_enabled' => true,
+                'slow_mode_seconds' => 3,
+                'scheduled_at' => now()->subHours(1),
+                'started_at' => now()->subMinutes(45),
+            ]
+        );
+
+        // Lots for Room 1
+        $lot1 = LiveLot::firstOrCreate(
+            ['live_room_id' => $liveRoom1->id, 'lot_number' => 1],
+            [
+                'title' => '18th-Century Style Shakyamuni Buddha Bronze (24K Gold Gilded)',
+                'description' => 'Hand-chased in Patan using generational lost-wax casting. Certified with official Department of Archaeology heritage provenance.',
+                'image_url' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800',
+                'starting_price' => 75000.00,
+                'reserve_price' => 120000.00,
+                'current_price' => 145000.00,
+                'bid_increment' => 5000.00,
+                'highest_bidder_id' => $customer->id,
+                'status' => 'active',
+                'ends_at' => now()->addMinutes(4),
+            ]
+        );
+
+        $lot2 = LiveLot::firstOrCreate(
+            ['live_room_id' => $liveRoom1->id, 'lot_number' => 2],
+            [
+                'title' => 'Mineral Pigment Chenrezig Mandalas on Cotton Canvas',
+                'description' => 'Genuine gold leaf and ground turquoise pigments painted by master Thangka artists over 6 months.',
+                'image_url' => 'https://images.unsplash.com/photo-1582560475093-ba66accbc424?w=800',
+                'starting_price' => 45000.00,
+                'reserve_price' => 60000.00,
+                'current_price' => 45000.00,
+                'bid_increment' => 2500.00,
+                'status' => 'pending',
+            ]
+        );
+
+        $liveRoom1->update(['current_lot_id' => $lot1->id]);
+
+        // Chat messages for Room 1
+        LiveMessage::firstOrCreate(
+            ['live_room_id' => $liveRoom1->id, 'message' => 'Welcome collectors and patrons of Newar heritage art to tonight’s live auction!'],
+            [
+                'user_id' => $creator->id,
+                'user_name' => 'Umesh Shakya',
+                'user_role' => 'creator',
+                'badge' => 'Master Artisan & Host',
+                'is_pinned' => true,
+            ]
+        );
+
+        LiveMessage::firstOrCreate(
+            ['live_room_id' => $liveRoom1->id, 'message' => 'Please keep all bids in NPR. Minimum increment is currently Rs. 5,000.'],
+            [
+                'user_id' => $staff->id,
+                'user_name' => 'Sunita Sharma',
+                'user_role' => 'staff',
+                'badge' => 'Moderator',
+                'is_pinned' => false,
+            ]
+        );
+
+        LiveMessage::firstOrCreate(
+            ['live_room_id' => $liveRoom1->id, 'message' => 'The patina on the Buddha lot is absolutely remarkable.'],
+            [
+                'user_id' => $customer->id,
+                'user_name' => 'Pradeep Thapa',
+                'user_role' => 'customer',
+                'badge' => 'High Bidder',
+                'is_pinned' => false,
+            ]
+        );
+
+        // Room 2: Bhaktapur Woodcraft Atelier
+        $liveRoom2 = LiveRoom::firstOrCreate(
+            ['slug' => 'bhaktapur-woodcarvers-live-atelier'],
+            [
+                'host_id' => $seller1->id,
+                'store_id' => $sellerStore?->id,
+                'title' => '🔴 Bhaktapur Master Woodcarver’s Live Atelier & Bidding',
+                'description' => 'Watch Master Bikash carve intricate peacock windows in real-time, with exclusive bidding on finished heritage artifacts.',
+                'category' => 'Woodcraft & Architecture',
+                'cover_image' => 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1200',
+                'stream_url' => 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                'stream_key' => 'live_wood_key_88',
+                'status' => 'live',
+                'viewer_count' => 840,
+                'likes_count' => 1920,
+                'shares_count' => 112,
+                'chat_enabled' => true,
+                'slow_mode_seconds' => 3,
+                'scheduled_at' => now()->subMinutes(30),
+                'started_at' => now()->subMinutes(20),
+            ]
+        );
+
+        $lot2_1 = LiveLot::firstOrCreate(
+            ['live_room_id' => $liveRoom2->id, 'lot_number' => 1],
+            [
+                'title' => 'Hand-Carved Sal Wood Mayur Jhyal (Peacock Window)',
+                'description' => 'Traditional Newari architectural masterpiece hand-chiseled from single seasoned Sal log.',
+                'image_url' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800',
+                'starting_price' => 35000.00,
+                'reserve_price' => 50000.00,
+                'current_price' => 42000.00,
+                'bid_increment' => 2000.00,
+                'highest_bidder_id' => $customer->id,
+                'status' => 'active',
+                'ends_at' => now()->addMinutes(8),
+            ]
+        );
+        $liveRoom2->update(['current_lot_id' => $lot2_1->id]);
+
+        // Room 3: Scheduled Youth Pitch
+        LiveRoom::firstOrCreate(
+            ['slug' => 'youth-student-crafts-innovation-pitch'],
+            [
+                'host_id' => $student1->id,
+                'title' => 'Youth & Student Crafts Innovation Pitch & Auction',
+                'description' => 'High-school and university innovators pitch contemporary Lokta crafts, eco-friendly prototypes, and digital cultural arts.',
+                'category' => 'Youth Innovation',
+                'cover_image' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200',
+                'status' => 'scheduled',
+                'viewer_count' => 0,
+                'likes_count' => 320,
+                'shares_count' => 45,
+                'scheduled_at' => now()->addDays(2),
+            ]
+        );
+
+        // ── 12. Audit Logs & System Activity ─────────────────────
+        AuditLog::logEvent('AUTH_ELEVATION', $admin, 'User', $staff->id, null, ['role' => 'staff'], 'Granted staff moderator permissions.');
+        AuditLog::logEvent('KYC_APPROVED', $staff, 'KycDocument', 1, ['status' => 'pending'], ['status' => 'approved'], 'Artisan citizenship card verified successfully.');
+        AuditLog::logEvent('STREAM_STARTED', $creator, 'LiveRoom', $liveRoom1->id, null, ['status' => 'live'], 'Live broadcast started for Patan Sacred Bronze Auction.');
+        AuditLog::logEvent('LOT_ACTIVATED', $creator, 'LiveLot', $lot1->id, null, ['status' => 'active'], 'Lot #1 Shakyamuni Buddha placed on the bidding floor.');
+        AuditLog::logEvent('LIVE_BID_ACCEPTED', $customer, 'LiveLot', $lot1->id, null, ['bid' => 145000.00], 'Highest bid accepted.');
+
     }
 }
