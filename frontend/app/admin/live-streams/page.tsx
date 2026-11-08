@@ -17,6 +17,7 @@ import {
   ExternalLink,
   AlertTriangle,
   CheckCircle,
+  Sliders,
 } from "lucide-react";
 
 export default function AdminLiveStreamsPage() {
@@ -239,13 +240,24 @@ export default function AdminLiveStreamsPage() {
               </div>
 
               <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between gap-2">
-                <Link
-                  href={`/live/${room.id}`}
-                  className="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition flex items-center gap-1"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Enter Room</span>
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    href={`/live/${room.id}`}
+                    className="px-3 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold transition flex items-center gap-1"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Enter Room</span>
+                  </Link>
+
+                  <Link
+                    href="/creator/live-studio"
+                    className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-bold transition flex items-center gap-1"
+                    title="Open OBS Studio Console"
+                  >
+                    <Sliders className="w-3.5 h-3.5" />
+                    <span>OBS Studio</span>
+                  </Link>
+                </div>
 
                 <div className="flex items-center gap-1.5">
                   {isLive ? (

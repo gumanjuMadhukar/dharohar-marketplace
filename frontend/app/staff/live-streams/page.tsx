@@ -12,6 +12,7 @@ import {
   VolumeX,
   UserX,
   CheckCircle,
+  Sliders,
 } from "lucide-react";
 
 export default function StaffLiveStreamsPage() {
@@ -117,6 +118,13 @@ export default function StaffLiveStreamsPage() {
                 <UserX className="w-3.5 h-3.5 text-red-600" />
                 <span>Purge Troll Messages</span>
               </button>
+              <Link
+                href="/creator/live-studio"
+                className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-1.5"
+              >
+                <Sliders className="w-3.5 h-3.5 text-amber-400" />
+                <span>OBS Studio</span>
+              </Link>
               <Link
                 href={`/live/${stream.id}`}
                 className="ml-auto px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-1.5"

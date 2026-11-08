@@ -60,6 +60,12 @@ export default function LiveRoomPage({ params }: { params: Promise<{ id: string 
   // Timer countdown for active lot
   const [secondsRemaining, setSecondsRemaining] = useState<number>(240);
 
+  // Cross-Tab Broadcast Synchronization from Studio Editor
+  const [studioLive, setStudioLive] = useState(false);
+  const [studioSceneName, setStudioSceneName] = useState<string | null>(null);
+  const [studioSoldNotice, setStudioSoldNotice] = useState<string | null>(null);
+  const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
+
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const chatBottomRef = useRef<HTMLDivElement | null>(null);
 
@@ -203,6 +209,53 @@ export default function LiveRoomPage({ params }: { params: Promise<{ id: string 
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Synchronize with In-Browser OBS Studio Editor
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("dharohar_active_broadcast_state");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed.is_live) {
+          setStudioLive(true);
+          if (parsed.scene_name) setStudioSceneName(parsed.scene_name);
+        }
+      }
+    } catch {}
+
+    if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+      try {
+        const bc = new BroadcastChannel("dharohar_live_broadcast");
+        broadcastChannelRef.current = bc;
+        bc.onmessage = (event) => {
+          if (event.data?.type === "BROADCAST_STATE_UPDATE") {
+            const payload = event.data.payload;
+            if (payload.is_live !== undefined) setStudioLive(payload.is_live);
+            if (payload.scene_name) setStudioSceneName(payload.scene_name);
+            if (payload.active_lot) {
+              setActiveLot((prev) => ({
+                ...prev,
+                ...payload.active_lot,
+              }));
+            }
+            if (payload.seconds_remaining !== undefined) {
+              setSecondsRemaining(payload.seconds_remaining);
+            }
+            if (payload.event === "LOT_HAMMER_DOWN") {
+              const soldLot = payload.sold_lot;
+              const soldPrice = payload.sold_price;
+              setStudioSoldNotice(`SOLD! Lot #${soldLot?.lot_number || 1} knocked down for NPR ${(soldPrice || 0).toLocaleString()}!`);
+              setTimeout(() => setStudioSoldNotice(null), 7000);
+            }
+          }
+        };
+      } catch {}
+    }
+
+    return () => {
+      broadcastChannelRef.current?.close();
+    };
+  }, []);
+
   const fetchRoomDetails = async () => {
     setLoading(true);
     try {
@@ -323,6 +376,15 @@ export default function LiveRoomPage({ params }: { params: Promise<{ id: string 
         setSecondsRemaining(180);
       }
     }
+
+    // Broadcast user bid to OBS Studio Console in real time
+    try {
+      broadcastChannelRef.current?.postMessage({
+        type: "USER_BID",
+        amount,
+        bidderName: user.name || "Guest Collector",
+      });
+    } catch {}
 
     // Trigger celebration reaction
     triggerFloatingReaction("🏆");
@@ -449,6 +511,18 @@ export default function LiveRoomPage({ params }: { params: Promise<{ id: string 
             <Share2 className="w-4 h-4" />
           </button>
 
+          {/* Open OBS Studio Editor Button (Hosts, Staff, Admins, Creators, Sellers) */}
+          {user && ["creator", "seller", "admin", "staff"].includes(user.account_type) && (
+            <Link
+              href={user.account_type === "seller" ? "/seller/live-studio" : "/creator/live-studio"}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-amber-400 font-extrabold text-xs border border-stone-700 transition"
+              title="Launch In-Browser OBS Broadcasting Studio"
+            >
+              <Radio className="w-3.5 h-3.5 text-red-500 animate-pulse" />
+              <span className="hidden sm:inline">Launch OBS Studio</span>
+            </Link>
+          )}
+
           {/* Auctioneer Gavel Console Toggle (Admins, Staff, Host) */}
           {canModerate && (
             <button
@@ -503,6 +577,27 @@ export default function LiveRoomPage({ params }: { params: Promise<{ id: string 
                 ))}
               </div>
             </div>
+
+            {/* In-Browser Studio Broadcast Live Indicator */}
+            {studioLive && (
+              <div className="absolute top-14 left-4 z-20 flex items-center gap-1.5 bg-red-950/90 backdrop-blur-md px-3 py-1 rounded-xl border border-red-700/80 shadow-lg text-[11px] font-bold text-red-200 animate-pulse">
+                <Radio className="w-3.5 h-3.5 text-red-500" />
+                <span>STUDIO BROADCAST: {studioSceneName || "WebRTC Atelier Feed"}</span>
+              </div>
+            )}
+
+            {/* In-Video Hammer Down Sold Overlay */}
+            {studioSoldNotice && (
+              <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/75 backdrop-blur-md p-6">
+                <div className="bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-amber-500 rounded-3xl p-6 text-center max-w-md shadow-2xl space-y-3">
+                  <div className="inline-flex p-3 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                    <Gavel className="w-8 h-8 text-amber-400 animate-bounce" />
+                  </div>
+                  <h3 className="text-xl font-black text-amber-400 tracking-tight">HAMMER DOWN — LOT SOLD!</h3>
+                  <p className="text-xs text-stone-200 font-bold">{studioSoldNotice}</p>
+                </div>
+              </div>
+            )}
 
             {/* Audio & Video Controls Overlay */}
             <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
