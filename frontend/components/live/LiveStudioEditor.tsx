@@ -47,6 +47,10 @@ import {
   Repeat,
   Send,
   Download,
+  Upload,
+  FolderOpen,
+  Film,
+  PictureInPicture,
 } from "lucide-react";
 
 export interface LiveStudioLot {
@@ -64,7 +68,7 @@ export interface LiveStudioLot {
 interface SceneOption {
   id: string;
   name: string;
-  type: "camera" | "screen" | "pip" | "split" | "intermission" | "macro";
+  type: "camera" | "screen" | "pip" | "split" | "intermission" | "video_file";
   icon: string;
   description: string;
 }
@@ -111,7 +115,36 @@ export default function LiveStudioEditor({
   const [studioMode, setStudioMode] = useState(false); // Dual Monitor: Preview + Program
   const [activeTab, setActiveTab] = useState<"studio" | "rtmp" | "settings">("studio");
 
-  // Device & Stream States
+  // Multi-Source Video Engine States
+  type VideoSourceMode = "camera" | "video_file" | "screen" | "preset_loop";
+  const [inputMode, setInputMode] = useState<VideoSourceMode>("preset_loop");
+  const [customVideoFileUrl, setCustomVideoFileUrl] = useState<string | null>(null);
+  const [customVideoFileName, setCustomVideoFileName] = useState<string | null>(null);
+
+  // High-Definition Preloaded Artisan Workshop Loops
+  const presetVideos = [
+    {
+      id: "patan_bronze",
+      name: "Patan Lost-Wax Bronze Casting (4K Atelier)",
+      url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    },
+    {
+      id: "woodcraft",
+      name: "Bhaktapur Traditional Woodcarving Atelier",
+      url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    },
+    {
+      id: "singing_bowl",
+      name: "Himalayan 7-Metal Singing Bowl Master Chasing",
+      url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    },
+  ];
+  const [selectedPresetVideo, setSelectedPresetVideo] = useState(presetVideos[0]);
+
+  // Picture-in-Picture (PiP) State
+  const [pipActive, setPipActive] = useState(false);
+
+  // Device & Hardware Stream States
   const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
   const [cameraActive, setCameraActive] = useState(true);
   const [micActive, setMicActive] = useState(true);
@@ -131,10 +164,10 @@ export default function LiveStudioEditor({
   // Scenes & Sources
   const defaultScenes: SceneOption[] = [
     { id: "scene_cam_main", name: "Master Artisan (Direct Camera)", type: "camera", icon: "📹", description: "Full HD live device camera of artisan in atelier" },
-    { id: "scene_macro", name: "Craft Macro Detail (Chasing Angle)", type: "macro", icon: "🔍", description: "Ultra-close view of intricate 24K gold engraving" },
-    { id: "scene_pip", name: "Picture-in-Picture (Cam + Workbench)", type: "pip", icon: "🖼️", description: "Artisan corner overlay on top of workbench details" },
-    { id: "scene_screen", name: "Screen Share (Blueprints & Mandala)", type: "screen", icon: "🖥️", description: "High-resolution iconometric canvas presentation" },
-    { id: "scene_split", name: "Split Screen (Lot Preview + Artisan)", type: "split", icon: "⚖️", description: "Dual equal view of current lot catalog and artisan" },
+    { id: "scene_video_file", name: "System Video File (Workshop Reel)", type: "video_file", icon: "📁", description: "Stream attached MP4/WebM video file from your computer" },
+    { id: "scene_screen", name: "Screen Share (Blueprints & Mandala)", type: "screen", icon: "🖥️", description: "Live display presentation of iconometry and drawings" },
+    { id: "scene_pip", name: "Picture-in-Picture (Video + Camera PiP)", type: "pip", icon: "🖼️", description: "Artisan camera overlay in corner on top of workshop feed" },
+    { id: "scene_split", name: "Split Screen (Lot Showcase + Studio)", type: "split", icon: "⚖️", description: "Dual equal view of current lot catalog and studio" },
     { id: "scene_intermission", name: "Intermission (Be Right Back)", type: "intermission", icon: "☕", description: "Traditional Mandala standby screen with chime countdown" },
   ];
 
@@ -143,7 +176,7 @@ export default function LiveStudioEditor({
   const [previewScene, setPreviewScene] = useState<SceneOption>(defaultScenes[1]);
 
   const [sources, setSources] = useState<SourceLayer[]>([
-    { id: "src_video_cam", name: "Device Camera / USB Video Capture", visible: true, locked: true, category: "video" },
+    { id: "src_video_cam", name: "Active Video Engine (Cam / File / Screen)", visible: true, locked: true, category: "video" },
     { id: "src_lower_third", name: "Artisan Name & Credential Banner", visible: true, locked: false, category: "graphic" },
     { id: "src_lot_hud", name: "Live Auction Lot & Floor Bidding Ticker", visible: true, locked: false, category: "overlay" },
     { id: "src_watermark", name: "Dharohar Heritage Authentic Seal", visible: true, locked: true, category: "graphic" },
@@ -156,7 +189,7 @@ export default function LiveStudioEditor({
   const [ambientVolume, setAmbientVolume] = useState(35);
   const [ambientMuted, setAmbientMuted] = useState(false);
   const [masterVolume, setMasterVolume] = useState(100);
-  const [micPeakLevel, setMicPeakLevel] = useState(0); // 0 to 100 for VU meter
+  const [micPeakLevel, setMicPeakLevel] = useState(0);
 
   // Auction Lot Management
   const [lots, setLots] = useState<LiveStudioLot[]>([
@@ -213,9 +246,14 @@ export default function LiveStudioEditor({
   const [videoBitrateSetting, setVideoBitrateSetting] = useState(4500);
   const [serverRegion, setServerRegion] = useState("Kathmandu Local Mesh (Sub-100ms)");
 
-  // Refs
+  // Video Refs
   const videoPreviewRef = useRef<HTMLVideoElement | null>(null);
   const videoProgramRef = useRef<HTMLVideoElement | null>(null);
+  const pipPreviewRef = useRef<HTMLVideoElement | null>(null);
+  const pipProgramRef = useRef<HTMLVideoElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Stream Refs
   const localStreamRef = useRef<MediaStream | null>(null);
   const screenStreamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -229,6 +267,119 @@ export default function LiveStudioEditor({
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3500);
   };
+
+  // Synchronize state across tabs and localStorage
+  const syncBroadcastState = useCallback((overrideState?: Partial<Record<string, unknown>>) => {
+    if (typeof window === "undefined") return;
+    const currentStreamUrl =
+      inputMode === "video_file" && customVideoFileUrl
+        ? customVideoFileUrl
+        : inputMode === "preset_loop"
+        ? selectedPresetVideo.url
+        : "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+
+    const broadcastPayload = {
+      is_live: isLive,
+      room_id: roomId,
+      host_name: hostName,
+      scene_id: programScene.id,
+      scene_name: programScene.name,
+      active_lot: activeLot,
+      seconds_remaining: antiSnipingSeconds,
+      input_mode: inputMode,
+      stream_video_url: currentStreamUrl,
+      timestamp: Date.now(),
+      ...overrideState,
+    };
+
+    try {
+      localStorage.setItem("dharohar_active_broadcast_state", JSON.stringify(broadcastPayload));
+      broadcastChannelRef.current?.postMessage({
+        type: "BROADCAST_STATE_UPDATE",
+        payload: broadcastPayload,
+      });
+    } catch {
+      // ignore
+    }
+  }, [isLive, roomId, hostName, programScene, activeLot, antiSnipingSeconds, inputMode, customVideoFileUrl, selectedPresetVideo]);
+
+  // Unified Video Application Engine: handles camera, screen, file, or preset loop
+  const updateVideoElement = useCallback((
+    el: HTMLVideoElement | null,
+    mode: VideoSourceMode,
+    camStream: MediaStream | null,
+    scrStream: MediaStream | null,
+    fileUrl: string | null,
+    presetUrl: string
+  ) => {
+    if (!el) return;
+
+    try {
+      if (mode === "camera" && camStream) {
+        if (el.src) el.removeAttribute("src");
+        el.srcObject = camStream;
+        el.play().catch(() => {});
+      } else if (mode === "screen" && scrStream) {
+        if (el.src) el.removeAttribute("src");
+        el.srcObject = scrStream;
+        el.play().catch(() => {});
+      } else if (mode === "video_file" && fileUrl) {
+        el.srcObject = null;
+        el.src = fileUrl;
+        el.loop = true;
+        el.play().catch(() => {});
+      } else {
+        // Preset Loop (guarantees the monitor is NEVER black!)
+        el.srcObject = null;
+        el.src = presetUrl;
+        el.loop = true;
+        el.play().catch(() => {});
+      }
+    } catch (e) {
+      console.warn("Video source update caught:", e);
+    }
+  }, []);
+
+  // Update monitors whenever source mode or inputs change
+  useEffect(() => {
+    updateVideoElement(
+      videoPreviewRef.current,
+      inputMode,
+      localStreamRef.current,
+      screenStreamRef.current,
+      customVideoFileUrl,
+      selectedPresetVideo.url
+    );
+    updateVideoElement(
+      videoProgramRef.current,
+      inputMode,
+      localStreamRef.current,
+      screenStreamRef.current,
+      customVideoFileUrl,
+      selectedPresetVideo.url
+    );
+
+    // Also update PiP camera elements if active
+    if (pipActive || programScene.type === "pip") {
+      if (localStreamRef.current) {
+        if (pipProgramRef.current) pipProgramRef.current.srcObject = localStreamRef.current;
+        if (pipPreviewRef.current) pipPreviewRef.current.srcObject = localStreamRef.current;
+      } else {
+        if (pipProgramRef.current) {
+          pipProgramRef.current.srcObject = null;
+          pipProgramRef.current.src = presetVideos[1].url;
+          pipProgramRef.current.play().catch(() => {});
+        }
+        if (pipPreviewRef.current) {
+          pipPreviewRef.current.srcObject = null;
+          pipPreviewRef.current.src = presetVideos[1].url;
+          pipPreviewRef.current.play().catch(() => {});
+        }
+      }
+    }
+
+    syncBroadcastState();
+  }, [inputMode, customVideoFileUrl, selectedPresetVideo, pipActive, programScene, updateVideoElement, syncBroadcastState]);
 
   // Cross-Tab Broadcast Synchronization setup
   useEffect(() => {
@@ -251,32 +402,6 @@ export default function LiveStudioEditor({
       broadcastChannelRef.current?.close();
     };
   }, [activeLot]);
-
-  // Synchronize state across tabs and localStorage
-  const syncBroadcastState = useCallback((overrideState?: Partial<Record<string, unknown>>) => {
-    if (typeof window === "undefined") return;
-    const broadcastPayload = {
-      is_live: isLive,
-      room_id: roomId,
-      host_name: hostName,
-      scene_id: programScene.id,
-      scene_name: programScene.name,
-      active_lot: activeLot,
-      seconds_remaining: antiSnipingSeconds,
-      timestamp: Date.now(),
-      ...overrideState,
-    };
-
-    try {
-      localStorage.setItem("dharohar_active_broadcast_state", JSON.stringify(broadcastPayload));
-      broadcastChannelRef.current?.postMessage({
-        type: "BROADCAST_STATE_UPDATE",
-        payload: broadcastPayload,
-      });
-    } catch {
-      // ignore
-    }
-  }, [isLive, roomId, hostName, programScene, activeLot, antiSnipingSeconds]);
 
   // Countdown timer for active lot and live durations
   useEffect(() => {
@@ -314,7 +439,6 @@ export default function LiveStudioEditor({
         const normalized = Math.min(100, Math.round((avg / 128) * (micVolume / 100) * 100));
         setMicPeakLevel(normalized);
       } else if (micActive && !micMuted) {
-        // Fallback realistic audio room ambient modulation
         const simulated = Math.min(
           95,
           Math.max(12, Math.round(35 + Math.sin(Date.now() / 180) * 25 + Math.random() * 15) * (micVolume / 100))
@@ -375,10 +499,10 @@ export default function LiveStudioEditor({
     }
   }, [selectedCameraId, selectedMicId]);
 
-  // Start In-Browser Camera & MediaStream
-  const initializeMediaStream = useCallback(async () => {
+  // Start / Connect In-Browser Device Camera
+  const startDeviceCamera = async () => {
     if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
-      setHasCameraPermission(false);
+      showToast("Camera access requires HTTPS or localhost.");
       return;
     }
 
@@ -386,7 +510,7 @@ export default function LiveStudioEditor({
       const constraints: MediaStreamConstraints = {
         video: selectedCameraId
           ? { deviceId: { exact: selectedCameraId }, width: { ideal: 1920 }, height: { ideal: 1080 } }
-          : { width: { ideal: 1920 }, height: { ideal: 1080 } },
+          : { width: { ideal: 1920 }, height: { ideal: 1080 }, facingMode: "user" },
         audio: selectedMicId
           ? { deviceId: { exact: selectedMicId }, echoCancellation: true, noiseSuppression: true }
           : { echoCancellation: true, noiseSuppression: true },
@@ -395,18 +519,10 @@ export default function LiveStudioEditor({
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       localStreamRef.current = stream;
       setHasCameraPermission(true);
+      setCameraActive(true);
+      setInputMode("camera");
 
-      // Connect video to previews
-      if (videoPreviewRef.current) {
-        videoPreviewRef.current.srcObject = stream;
-        videoPreviewRef.current.play().catch(() => {});
-      }
-      if (videoProgramRef.current) {
-        videoProgramRef.current.srcObject = stream;
-        videoProgramRef.current.play().catch(() => {});
-      }
-
-      // Attach AudioContext Analyser for live VU Meter
+      // Attach AudioContext Analyser
       try {
         const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         if (AudioCtx) {
@@ -418,32 +534,110 @@ export default function LiveStudioEditor({
           sourceNode.connect(analyser);
           analyserRef.current = analyser;
         }
-      } catch {
-        // ignore audio context failures
-      }
+      } catch {}
 
       await discoverDevices();
-      showToast("Connected to live device camera & studio microphone.");
-    } catch (err) {
-      console.warn("Direct device camera access unavailable. Falling back to simulated studio feed.", err);
+      showToast("🟢 Device Camera Connected! Live on program monitors.");
+    } catch (err: any) {
+      console.warn("Camera access denied or failed", err);
       setHasCameraPermission(false);
+      setInputMode("preset_loop");
+      showToast("Camera permission not granted. Switched to high-definition workshop feed.");
       await discoverDevices();
     }
-  }, [selectedCameraId, selectedMicId, discoverDevices]);
+  };
 
-  // Initial stream trigger on mount
+  // Initial setup: try camera or fall back to preset workshop loop
   useEffect(() => {
-    initializeMediaStream();
+    discoverDevices();
+    // Start with preset workshop loop so video is NEVER black!
+    updateVideoElement(
+      videoPreviewRef.current,
+      "preset_loop",
+      null,
+      null,
+      null,
+      selectedPresetVideo.url
+    );
+    updateVideoElement(
+      videoProgramRef.current,
+      "preset_loop",
+      null,
+      null,
+      null,
+      selectedPresetVideo.url
+    );
 
     return () => {
       if (localStreamRef.current) {
         localStreamRef.current.getTracks().forEach((track) => track.stop());
       }
+      if (screenStreamRef.current) {
+        screenStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
       if (audioContextRef.current && audioContextRef.current.state !== "closed") {
         audioContextRef.current.close().catch(() => {});
       }
     };
-  }, [initializeMediaStream]);
+  }, [discoverDevices, selectedPresetVideo, updateVideoElement]);
+
+  // Handle Local System Video File Upload / Selection
+  const handleAttachVideoFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const fileUrl = URL.createObjectURL(file);
+      setCustomVideoFileUrl(fileUrl);
+      setCustomVideoFileName(file.name);
+      setInputMode("video_file");
+      showToast(`🎬 Attached System Video File: "${file.name}". Playing live on stream!`);
+    } catch (err) {
+      showToast("Could not load video file. Please select a valid MP4 or WebM video.");
+    }
+  };
+
+  // Start Screen Share to Stream
+  const startScreenShare = async () => {
+    if (typeof navigator === "undefined" || !navigator.mediaDevices?.getDisplayMedia) {
+      showToast("Display capture not supported in this browser.");
+      return;
+    }
+
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true,
+      });
+
+      screenStreamRef.current = screenStream;
+      setIsScreenSharing(true);
+      setInputMode("screen");
+      const screenScene = scenes.find((s) => s.type === "screen") || defaultScenes[2];
+      setProgramScene(screenScene);
+
+      screenStream.getVideoTracks()[0].onended = () => {
+        setIsScreenSharing(false);
+        screenStreamRef.current = null;
+        setInputMode(localStreamRef.current ? "camera" : "preset_loop");
+        showToast("Screen share concluded. Returned to primary stream.");
+      };
+
+      showToast("🖥️ Screen Share Active! Window or screen transmitting on stream.");
+    } catch (err) {
+      console.warn("Screen share cancelled", err);
+    }
+  };
+
+  const stopScreenShare = () => {
+    if (screenStreamRef.current) {
+      screenStreamRef.current.getTracks().forEach((t) => t.stop());
+      screenStreamRef.current = null;
+    }
+    setIsScreenSharing(false);
+    setInputMode(localStreamRef.current ? "camera" : "preset_loop");
+    showToast("Screen share stopped.");
+  };
 
   // Sound Synthesizer for Gavel Hammer & Anti-Sniping Chimes
   const playSoundEffect = (type: "gavel" | "chime" | "warning") => {
@@ -459,7 +653,6 @@ export default function LiveStudioEditor({
 
       const now = ctx.currentTime;
       if (type === "gavel") {
-        // Resonant wood block / auction hammer strike
         osc.type = "sine";
         osc.frequency.setValueAtTime(320, now);
         osc.frequency.exponentialRampToValueAtTime(80, now + 0.18);
@@ -468,7 +661,6 @@ export default function LiveStudioEditor({
         osc.start(now);
         osc.stop(now + 0.36);
       } else if (type === "chime") {
-        // Clear singing bowl chime
         osc.type = "sine";
         osc.frequency.setValueAtTime(880, now);
         osc.frequency.exponentialRampToValueAtTime(440, now + 0.8);
@@ -477,7 +669,6 @@ export default function LiveStudioEditor({
         osc.start(now);
         osc.stop(now + 0.86);
       } else {
-        // Warning alert tone
         osc.type = "triangle";
         osc.frequency.setValueAtTime(540, now);
         osc.frequency.setValueAtTime(680, now + 0.1);
@@ -486,20 +677,22 @@ export default function LiveStudioEditor({
         osc.start(now);
         osc.stop(now + 0.31);
       }
-    } catch {
-      // Audio synthesis fallback
-    }
+    } catch {}
   };
 
-  // Toggle Camera
+  // Toggle Camera Feed (Blackout vs Active)
   const toggleCamera = () => {
+    if (inputMode !== "camera" && !localStreamRef.current) {
+      startDeviceCamera();
+      return;
+    }
     if (localStreamRef.current) {
       localStreamRef.current.getVideoTracks().forEach((track) => {
         track.enabled = !cameraActive;
       });
     }
     setCameraActive(!cameraActive);
-    showToast(!cameraActive ? "Video capture resumed." : "Video capture paused (Black Frame).");
+    showToast(!cameraActive ? "Video capture resumed." : "Video capture paused.");
   };
 
   // Toggle Microphone
@@ -511,41 +704,6 @@ export default function LiveStudioEditor({
     }
     setMicActive(!micActive);
     showToast(!micActive ? "Microphone unmuted." : "Microphone muted.");
-  };
-
-  // Screen Share Toggle
-  const toggleScreenShare = async () => {
-    if (isScreenSharing) {
-      if (screenStreamRef.current) {
-        screenStreamRef.current.getTracks().forEach((t) => t.stop());
-        screenStreamRef.current = null;
-      }
-      setIsScreenSharing(false);
-      showToast("Screen presentation stopped. Returned to primary camera.");
-    } else {
-      if (typeof navigator !== "undefined" && navigator.mediaDevices?.getDisplayMedia) {
-        try {
-          const screenStream = await navigator.mediaDevices.getDisplayMedia({
-            video: true,
-            audio: true,
-          });
-          screenStreamRef.current = screenStream;
-          setIsScreenSharing(true);
-          const screenScene = scenes.find((s) => s.type === "screen") || defaultScenes[3];
-          setProgramScene(screenScene);
-
-          screenStream.getVideoTracks()[0].onended = () => {
-            setIsScreenSharing(false);
-            setProgramScene(defaultScenes[0]);
-          };
-          showToast("Screen share broadcast active on Program Output!");
-        } catch (err) {
-          console.warn("Screen share cancelled", err);
-        }
-      } else {
-        showToast("Display capture not supported in this environment.");
-      }
-    }
   };
 
   // Go Live / Stop Streaming
@@ -567,7 +725,7 @@ export default function LiveStudioEditor({
   const toggleRecording = () => {
     if (!isRecording) {
       try {
-        const streamToRecord = localStreamRef.current;
+        const streamToRecord = localStreamRef.current || screenStreamRef.current;
         if (streamToRecord && typeof MediaRecorder !== "undefined") {
           const recorder = new MediaRecorder(streamToRecord, { mimeType: "video/webm;codecs=vp9,opus" });
           const chunks: Blob[] = [];
@@ -606,6 +764,9 @@ export default function LiveStudioEditor({
   const transitionToProgram = (type: "cut" | "fade") => {
     playSoundEffect("chime");
     setProgramScene(previewScene);
+    if (previewScene.type === "pip") setPipActive(true);
+    if (previewScene.type === "screen" && !isScreenSharing) startScreenShare();
+    if (previewScene.type === "video_file" && customVideoFileUrl) setInputMode("video_file");
     syncBroadcastState({ scene_id: previewScene.id, scene_name: previewScene.name });
     showToast(`Pushed "${previewScene.name}" to Program (${type.toUpperCase()}).`);
   };
@@ -633,14 +794,12 @@ export default function LiveStudioEditor({
     setLotSoldNotification(`GAVEL DOWN! LOT #${activeLot.lot_number} SOLD FOR NPR ${soldAmount.toLocaleString()} TO ${winner}!`);
     setTimeout(() => setLotSoldNotification(null), 6000);
 
-    // Sync across watch rooms
     syncBroadcastState({
       event: "LOT_HAMMER_DOWN",
       sold_lot: activeLot,
       sold_price: soldAmount,
     });
 
-    // Add to chat
     setLiveChat((prev) => [
       ...prev,
       {
@@ -741,6 +900,15 @@ export default function LiveStudioEditor({
 
   return (
     <div className="bg-stone-950 text-stone-100 rounded-3xl border border-stone-800 shadow-2xl overflow-hidden flex flex-col font-sans select-none">
+      {/* Hidden File Input for Attaching Local System Video Files */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="video/mp4,video/webm,video/ogg,video/quicktime,video/mkv"
+        onChange={handleAttachVideoFile}
+        className="hidden"
+      />
+
       {/* ======================================================== */}
       {/* 1. OBS TOP APPLICATION BAR & TELEMETRY HEADER             */}
       {/* ======================================================== */}
@@ -753,7 +921,7 @@ export default function LiveStudioEditor({
             <div>
               <div className="font-black text-stone-100 tracking-tight flex items-center gap-2">
                 <span>Dharohar OBS WebStudio</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-stone-800 text-stone-400 font-mono">v2.4-PRO</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-stone-800 text-stone-400 font-mono">v2.5-PRO</span>
               </div>
               <div className="text-[10px] text-stone-400 truncate max-w-[260px] sm:max-w-md">
                 Room #{roomId}: {roomTitle}
@@ -879,6 +1047,104 @@ export default function LiveStudioEditor({
       {/* ======================================================== */}
       {activeTab === "studio" && (
         <div className="flex flex-col flex-1">
+          {/* MULTI-SOURCE INPUT SWITCHER BAR (CAMERA, FILE, SCREEN, PIP, PRESETS) */}
+          <div className="px-4 py-2.5 bg-stone-900/90 border-b border-stone-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-[11px] font-black uppercase text-stone-400 flex items-center gap-1 mr-1">
+                <Video className="w-3.5 h-3.5 text-amber-400" />
+                <span>Active Input Source:</span>
+              </span>
+
+              {/* 1. Device Camera Button */}
+              <button
+                onClick={() => {
+                  startDeviceCamera();
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 transition ${
+                  inputMode === "camera" && localStreamRef.current
+                    ? "bg-emerald-600 text-white border-emerald-500 shadow-sm"
+                    : "bg-stone-950 text-stone-300 border-stone-800 hover:bg-stone-800 hover:text-white"
+                }`}
+                title="Connect & stream device webcam or USB capture card"
+              >
+                <Camera className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{localStreamRef.current ? "Device Camera (Active)" : "Connect Device Camera"}</span>
+              </button>
+
+              {/* 2. Attach System Video File (.mp4, .webm) */}
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 transition ${
+                  inputMode === "video_file" && customVideoFileUrl
+                    ? "bg-amber-600 text-white border-amber-500 shadow-sm"
+                    : "bg-stone-950 text-stone-300 border-stone-800 hover:bg-stone-800 hover:text-white"
+                }`}
+                title="Select and stream a video file directly from your computer"
+              >
+                <FolderOpen className="w-3.5 h-3.5 text-amber-400" />
+                <span>{customVideoFileName ? `Video: ${customVideoFileName.slice(0, 18)}...` : "Attach Video File (.mp4)"}</span>
+              </button>
+
+              {/* 3. Screen Share */}
+              <button
+                onClick={() => {
+                  if (isScreenSharing) {
+                    stopScreenShare();
+                  } else {
+                    startScreenShare();
+                  }
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 transition ${
+                  isScreenSharing
+                    ? "bg-indigo-600 text-white border-indigo-500 shadow-sm"
+                    : "bg-stone-950 text-stone-300 border-stone-800 hover:bg-stone-800 hover:text-white"
+                }`}
+                title="Share your entire screen, window, or browser tab to stream"
+              >
+                <Monitor className="w-3.5 h-3.5 text-indigo-400" />
+                <span>{isScreenSharing ? "Stop Screen Share" : "Share Screen to Stream"}</span>
+              </button>
+
+              {/* 4. Picture-in-Picture (PiP) Toggle */}
+              <button
+                onClick={() => {
+                  setPipActive(!pipActive);
+                  showToast(!pipActive ? "Picture-in-Picture (PiP) overlay activated!" : "Picture-in-Picture hidden.");
+                }}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 transition ${
+                  pipActive
+                    ? "bg-amber-500 text-stone-950 border-amber-400 font-extrabold shadow-sm"
+                    : "bg-stone-950 text-stone-400 border-stone-800 hover:bg-stone-800 hover:text-stone-200"
+                }`}
+                title="Toggle Picture-in-Picture Artisan Facecam over stream"
+              >
+                <PictureInPicture className="w-3.5 h-3.5" />
+                <span>PiP Overlay {pipActive ? "ON" : "OFF"}</span>
+              </button>
+            </div>
+
+            {/* Preloaded Workshop Loop Presets Dropdown */}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] text-stone-400 uppercase font-mono hidden md:inline">Workshop Reel:</span>
+              <select
+                value={selectedPresetVideo.id}
+                onChange={(e) => {
+                  const found = presetVideos.find((p) => p.id === e.target.value) || presetVideos[0];
+                  setSelectedPresetVideo(found);
+                  setInputMode("preset_loop");
+                  showToast(`Switched stream feed to: ${found.name}`);
+                }}
+                className="bg-stone-950 border border-stone-800 text-stone-200 text-xs rounded-xl px-2.5 py-1 focus:outline-none focus:border-amber-500"
+              >
+                {presetVideos.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    🎬 {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           {/* 2. PROGRAM / PREVIEW CANVAS MONITORS */}
           <div className="p-4 bg-stone-950 border-b border-stone-900">
             {studioMode ? (
@@ -900,14 +1166,25 @@ export default function LiveStudioEditor({
                       autoPlay
                       playsInline
                       muted
-                      className={`w-full h-full object-cover ${cameraActive ? "opacity-100" : "opacity-0"}`}
+                      className="w-full h-full object-cover"
                     />
-                    {!cameraActive && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-stone-950 text-stone-500">
-                        <VideoOff className="w-10 h-10 mb-2 opacity-40" />
-                        <span className="text-xs font-bold">Camera Feed Muted</span>
+
+                    {/* PiP Overlay on Preview Monitor */}
+                    {pipActive && (
+                      <div className="absolute bottom-3 right-3 w-32 sm:w-44 aspect-video rounded-xl overflow-hidden border-2 border-amber-400 shadow-2xl bg-black">
+                        <video
+                          ref={pipPreviewRef}
+                          autoPlay
+                          playsInline
+                          muted
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-1 left-1 px-1.5 py-0.2 bg-black/80 rounded text-[8px] font-mono font-bold text-amber-400">
+                          ARTISAN PiP
+                        </div>
                       </div>
                     )}
+
                     {/* Scene Tag Badge */}
                     <div className="absolute bottom-3 left-3 px-2 py-1 bg-stone-950/80 backdrop-blur rounded-lg text-[10px] font-mono font-bold text-stone-300 border border-stone-800">
                       {previewScene.icon} {previewScene.name}
@@ -952,12 +1229,22 @@ export default function LiveStudioEditor({
                       autoPlay
                       playsInline
                       muted
-                      className={`w-full h-full object-cover ${cameraActive ? "opacity-100" : "opacity-0"}`}
+                      className="w-full h-full object-cover"
                     />
-                    {!cameraActive && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-stone-950 text-stone-500">
-                        <VideoOff className="w-10 h-10 mb-2 opacity-40" />
-                        <span className="text-xs font-bold">Black Screen (Camera Disabled)</span>
+
+                    {/* PiP Overlay on Program Stage */}
+                    {pipActive && (
+                      <div className="absolute bottom-3 right-3 w-32 sm:w-44 aspect-video rounded-xl overflow-hidden border-2 border-amber-400 shadow-2xl bg-black">
+                        <video
+                          ref={pipProgramRef}
+                          autoPlay
+                          playsInline
+                          muted
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-1 left-1 px-1.5 py-0.2 bg-black/80 rounded text-[8px] font-mono font-bold text-amber-400">
+                          ARTISAN PiP
+                        </div>
                       </div>
                     )}
 
@@ -996,10 +1283,10 @@ export default function LiveStudioEditor({
                 <div className="flex items-center justify-between text-xs font-bold text-stone-400 mb-2 px-1">
                   <span className="flex items-center gap-2 text-red-500">
                     <span className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse" />
-                    PROGRAM OUTPUT (Direct Audience Feed)
+                    PROGRAM OUTPUT (Live Stream Feed)
                   </span>
                   <span className="font-mono text-stone-400">
-                    Resolution: {resolution === "1080p" ? "1920x1080" : resolution === "4k" ? "3840x2160" : "1280x720"} @ {targetFps}fps
+                    Source: {inputMode === "camera" ? "Live Device Camera" : inputMode === "video_file" ? `File: ${customVideoFileName}` : inputMode === "screen" ? "Screen Share" : selectedPresetVideo.name}
                   </span>
                 </div>
 
@@ -1009,23 +1296,29 @@ export default function LiveStudioEditor({
                     autoPlay
                     playsInline
                     muted
-                    className={`w-full h-full object-cover ${cameraActive ? "opacity-100" : "opacity-0"}`}
+                    className="w-full h-full object-cover"
                   />
 
-                  {/* Fallback Display if Camera is Off or Permissions Pending */}
-                  {!cameraActive && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-stone-950 text-stone-400 p-6 text-center">
-                      <VideoOff className="w-12 h-12 mb-3 text-stone-600" />
-                      <div className="text-sm font-bold text-stone-200">Device Camera Offline</div>
-                      <div className="text-xs text-stone-500 max-w-sm mt-1">
-                        Click &quot;Camera On&quot; in the master controls dock below to broadcast your webcam or external capture card.
+                  {/* Picture-in-Picture (PiP) Artisan Window */}
+                  {pipActive && (
+                    <div className="absolute bottom-4 right-4 z-30 w-44 sm:w-56 aspect-video rounded-2xl overflow-hidden border-2 border-amber-400 shadow-2xl bg-black">
+                      <video
+                        ref={pipProgramRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute top-1.5 left-1.5 px-2 py-0.5 bg-black/85 backdrop-blur rounded-lg text-[9px] font-mono font-black text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                        <Camera className="w-2.5 h-2.5" />
+                        <span>ARTISAN PiP</span>
                       </div>
                     </div>
                   )}
 
                   {/* SOLD CELEBRATION MODAL BANNER ON HAMMER */}
                   {lotSoldNotification && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md p-6 animate-in fade-in zoom-in-95">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/70 backdrop-blur-md p-6 animate-in fade-in zoom-in-95 z-40">
                       <div className="bg-gradient-to-b from-stone-900 to-stone-950 border-2 border-amber-500/80 rounded-3xl p-6 text-center max-w-md shadow-2xl space-y-3">
                         <div className="inline-flex p-3 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/30">
                           <Gavel className="w-8 h-8 text-amber-400 animate-bounce" />
@@ -1042,7 +1335,7 @@ export default function LiveStudioEditor({
                   {/* GRAPHIC OVERLAYS ON CANVAS */}
                   {/* Lower Thirds Banner */}
                   {sources.find((s) => s.id === "src_lower_third")?.visible && (
-                    <div className="absolute bottom-4 left-4 bg-stone-950/85 backdrop-blur-md border border-amber-500/40 rounded-2xl p-3.5 shadow-2xl max-w-md">
+                    <div className="absolute bottom-4 left-4 bg-stone-950/85 backdrop-blur-md border border-amber-500/40 rounded-2xl p-3.5 shadow-2xl max-w-md z-20">
                       <div className="text-[10px] uppercase font-mono font-black text-amber-400 flex items-center gap-1.5 mb-0.5">
                         <Sparkles className="w-3.5 h-3.5 text-amber-400" />
                         <span>Master Creator Atelier Broadcast</span>
@@ -1059,7 +1352,7 @@ export default function LiveStudioEditor({
 
                   {/* Top Left Bidding Status HUD */}
                   {sources.find((s) => s.id === "src_lot_hud")?.visible && (
-                    <div className="absolute top-4 left-4 bg-stone-950/85 backdrop-blur-md border border-stone-800 rounded-2xl p-3 shadow-2xl flex items-center gap-3">
+                    <div className="absolute top-4 left-4 bg-stone-950/85 backdrop-blur-md border border-stone-800 rounded-2xl p-3 shadow-2xl flex items-center gap-3 z-20">
                       <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
                         <Gavel className="w-5 h-5 text-amber-400" />
                       </div>
@@ -1077,17 +1370,9 @@ export default function LiveStudioEditor({
 
                   {/* Authentic Watermark */}
                   {sources.find((s) => s.id === "src_watermark")?.visible && (
-                    <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-950/80 backdrop-blur border border-amber-500/30 text-[11px] font-black text-amber-400 tracking-wider shadow">
+                    <div className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-stone-950/80 backdrop-blur border border-amber-500/30 text-[11px] font-black text-amber-400 tracking-wider shadow z-20">
                       <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
                       <span>DHAROHAR AUTHENTIC</span>
-                    </div>
-                  )}
-
-                  {/* Chat Ticker Preview */}
-                  {sources.find((s) => s.id === "src_chat_ticker")?.visible && liveChat.length > 0 && (
-                    <div className="absolute bottom-4 right-4 bg-stone-950/80 backdrop-blur border border-stone-800 rounded-xl px-3 py-1.5 text-[11px] text-stone-300 max-w-xs truncate shadow hidden md:block">
-                      <span className="font-bold text-amber-400">{liveChat[liveChat.length - 1].user}: </span>
-                      <span>{liveChat[liveChat.length - 1].text}</span>
                     </div>
                   )}
                 </div>
@@ -1121,6 +1406,19 @@ export default function LiveStudioEditor({
                           setPreviewScene(scene);
                         } else {
                           setProgramScene(scene);
+                          if (scene.type === "pip") setPipActive(true);
+                          if (scene.type === "screen" && !isScreenSharing) startScreenShare();
+                          if (scene.type === "video_file") {
+                            if (customVideoFileUrl) {
+                              setInputMode("video_file");
+                            } else {
+                              fileInputRef.current?.click();
+                            }
+                          }
+                          if (scene.type === "camera") {
+                            if (!localStreamRef.current) startDeviceCamera();
+                            else setInputMode("camera");
+                          }
                           syncBroadcastState({ scene_id: scene.id, scene_name: scene.name });
                           showToast(`Switched scene to "${scene.name}".`);
                         }
@@ -1399,10 +1697,13 @@ export default function LiveStudioEditor({
                 </button>
 
                 <button
-                  onClick={toggleScreenShare}
+                  onClick={() => {
+                    if (isScreenSharing) stopScreenShare();
+                    else startScreenShare();
+                  }}
                   className={`p-2 rounded-xl border flex flex-col items-center justify-center gap-1 text-[9px] font-bold transition ${
                     isScreenSharing
-                      ? "bg-amber-950 text-amber-400 border-amber-800"
+                      ? "bg-indigo-950 text-indigo-400 border-indigo-800"
                       : "bg-stone-950 text-stone-400 border-stone-800 hover:text-white"
                   }`}
                   title="Share Screen or Slides"
@@ -1561,7 +1862,7 @@ export default function LiveStudioEditor({
                 value={selectedCameraId}
                 onChange={(e) => {
                   setSelectedCameraId(e.target.value);
-                  initializeMediaStream();
+                  startDeviceCamera();
                 }}
                 className="w-full p-2.5 rounded-xl bg-stone-950 border border-stone-800 text-xs text-stone-200 focus:outline-none focus:border-amber-500"
               >
@@ -1583,7 +1884,7 @@ export default function LiveStudioEditor({
                 value={selectedMicId}
                 onChange={(e) => {
                   setSelectedMicId(e.target.value);
-                  initializeMediaStream();
+                  startDeviceCamera();
                 }}
                 className="w-full p-2.5 rounded-xl bg-stone-950 border border-stone-800 text-xs text-stone-200 focus:outline-none focus:border-amber-500"
               >

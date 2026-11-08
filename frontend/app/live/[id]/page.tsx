@@ -240,6 +240,10 @@ export default function LiveRoomPage({ params }: { params: Promise<{ id: string 
             if (payload.seconds_remaining !== undefined) {
               setSecondsRemaining(payload.seconds_remaining);
             }
+            if (payload.stream_video_url && videoRef.current && videoRef.current.src !== payload.stream_video_url) {
+              videoRef.current.src = payload.stream_video_url;
+              videoRef.current.play().catch(() => {});
+            }
             if (payload.event === "LOT_HAMMER_DOWN") {
               const soldLot = payload.sold_lot;
               const soldPrice = payload.sold_price;
