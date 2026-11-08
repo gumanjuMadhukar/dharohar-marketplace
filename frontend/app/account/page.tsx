@@ -16,8 +16,14 @@ import {
   ShoppingBag,
   ArrowRight,
   User as UserIcon,
+  Printer,
+  FileText,
+  MapPin,
+  ShieldCheck,
+  Radio,
 } from "lucide-react";
 import Link from "next/link";
+import { PurchaseEmailModal } from "@/components/PurchaseEmailModal";
 
 export default function CustomerAccountPage() {
   const { user } = useAuth();
@@ -28,6 +34,160 @@ export default function CustomerAccountPage() {
   const [bids, setBids] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedInvoiceOrder, setSelectedInvoiceOrder] = useState<any | null>(null);
+
+  const fallbackOrders = [
+    {
+      id: 83809,
+      order_number: "DH-83809",
+      created_at: new Date(Date.now() - 15 * 60000).toISOString(),
+      payment_status: "paid",
+      payment_method: "eSewa (ID: 9841000000)",
+      status: "Processing",
+      total_amount: 8650,
+      subtotal: 7500,
+      delivery_charge: 150,
+      tax_amount: 1000,
+      shipping_address: "Thamel Ward 29, Kathmandu, Bagmati Province",
+      tracking_number: "NP-88231-KTM",
+      courier: "Nepal Post EMS Speed Logistics",
+      items: [
+        {
+          id: 1,
+          quantity: 1,
+          price: 7500,
+          total: 7500,
+          product: {
+            id: 101,
+            name: "Hand-Carved Newar Peacock Window Panel (Aromatic Sal Wood)",
+            store: { name: "Bhaktapur Traditional Woodcraft Stall" },
+            primary_image: {
+              url: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=300",
+            },
+          },
+        },
+      ],
+    },
+    {
+      id: 75000,
+      order_number: "DH-75000",
+      created_at: new Date(Date.now() - 120 * 60000).toISOString(),
+      payment_status: "paid",
+      payment_method: "eSewa",
+      status: "Shipped",
+      total_amount: 75000,
+      subtotal: 66371,
+      delivery_charge: 0,
+      tax_amount: 8629,
+      shipping_address: "Patan Durbar Square Ward 12, Lalitpur",
+      tracking_number: "EMS-99412-NP",
+      courier: "Dharohar White-Glove Heritage Courier",
+      items: [
+        {
+          id: 2,
+          quantity: 1,
+          price: 75000,
+          total: 75000,
+          product: {
+            id: 102,
+            name: "18th-Century Style Shakyamuni Buddha Bronze (24K Gold Gilded)",
+            store: { name: "Patan Sacred Bronze Casting Guild" },
+            primary_image: {
+              url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300",
+            },
+          },
+        },
+      ],
+    },
+    {
+      id: 64210,
+      order_number: "DH-64210",
+      created_at: new Date(Date.now() - 48 * 3600000).toISOString(),
+      payment_status: "paid",
+      payment_method: "Khalti",
+      status: "Delivered",
+      total_amount: 28000,
+      subtotal: 24778,
+      delivery_charge: 0,
+      tax_amount: 3222,
+      shipping_address: "Dattatreya Square, Bhaktapur",
+      tracking_number: "POST-77310-BKT",
+      courier: "Nepal Post Registered Parcel",
+      items: [
+        {
+          id: 3,
+          quantity: 1,
+          price: 28000,
+          total: 28000,
+          product: {
+            id: 103,
+            name: "Hand-Forged 7-Metal Full Moon Singing Bowl with Striker",
+            store: { name: "Himalayan Chyangra Atelier" },
+            primary_image: {
+              url: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=300",
+            },
+          },
+        },
+      ],
+    },
+  ];
+
+  const fallbackBids = [
+    {
+      id: 501,
+      auction_id: 1,
+      room_id: 1,
+      lot_title: "18th-Century Style Shakyamuni Buddha Bronze (24K Gold Gilded)",
+      amount: 145000,
+      status: "leading",
+      created_at: "35 mins ago",
+      image_url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300",
+      host: "Umesh Shakya (Master Sculptor)",
+    },
+    {
+      id: 502,
+      auction_id: 2,
+      room_id: 1,
+      lot_title: "Mineral Pigment Chenrezig Mandalas on Organic Cotton Canvas",
+      amount: 45000,
+      status: "outbid",
+      created_at: "1 hour ago",
+      image_url: "https://images.unsplash.com/photo-1582560475093-ba66accbc424?w=300",
+      host: "Umesh Shakya",
+    },
+    {
+      id: 503,
+      auction_id: 3,
+      room_id: 2,
+      lot_title: "Bhaktapur Master Woodcarver's Peacock Window",
+      amount: 42000,
+      status: "won",
+      created_at: "Yesterday",
+      image_url: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=300",
+      host: "Bikash Shrestha",
+    },
+  ];
+
+  const fallbackWishlist = [
+    {
+      id: 1,
+      name: "Pure Himalayan Chyangra Cashmere Shawl (Grade-A Diamond Weave)",
+      price: 18500,
+      image_url: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300",
+      origin: "Mustang / Kathmandu",
+      in_stock: true,
+      store: { name: "Himalayan Chyangra Atelier" },
+    },
+    {
+      id: 2,
+      name: "Newar Filigree Silver Butter Lamp Set (Fine 925 Hallmarked)",
+      price: 32000,
+      image_url: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=300",
+      origin: "Patan Golden Temple Guild",
+      in_stock: true,
+      store: { name: "Patan Sacred Bronze Casting Guild" },
+    },
+  ];
 
   useEffect(() => {
     if (user) {
@@ -44,32 +204,59 @@ export default function CustomerAccountPage() {
         api.get("/wishlist"),
       ]);
 
+      let apiOrders: any[] = [];
+      let apiBids: any[] = [];
+      let apiWishlist: any[] = [];
+
       if (ordRes.status === "fulfilled") {
         const resData = ordRes.value.data;
-        const orderList =
+        apiOrders =
           resData?.orders?.data ||
           resData?.data?.data ||
           (Array.isArray(resData?.orders) ? resData.orders : null) ||
-          (Array.isArray(resData?.data) ? resData.data : []);
-        setOrders(orderList || []);
+          (Array.isArray(resData?.data) ? resData.data : []) || [];
       }
       if (bidRes.status === "fulfilled") {
         const resData = bidRes.value.data;
-        const bidList =
+        apiBids =
           resData?.bids?.data ||
           resData?.data?.data ||
           (Array.isArray(resData?.bids) ? resData.bids : null) ||
-          (Array.isArray(resData?.data) ? resData.data : []);
-        setBids(bidList || []);
+          (Array.isArray(resData?.data) ? resData.data : []) || [];
       }
       if (wishRes.status === "fulfilled") {
         const resData = wishRes.value.data;
-        const wishList =
+        apiWishlist =
           resData?.wishlist?.data ||
           resData?.data?.data ||
           (Array.isArray(resData?.wishlist) ? resData.wishlist : null) ||
-          (Array.isArray(resData?.data) ? resData.data : []);
-        setWishlist(wishList || []);
+          (Array.isArray(resData?.data) ? resData.data : []) || [];
+      }
+
+      // Check localStorage for checkout-completed demo orders
+      let mergedOrders = [...apiOrders];
+      try {
+        const localDemo = JSON.parse(localStorage.getItem("dharohar_demo_orders") || "[]");
+        if (Array.isArray(localDemo) && localDemo.length > 0) {
+          mergedOrders = [...localDemo, ...mergedOrders];
+        }
+      } catch {}
+
+      if (mergedOrders.length === 0) {
+        mergedOrders = fallbackOrders;
+      }
+      setOrders(mergedOrders);
+
+      if (apiBids.length === 0) {
+        setBids(fallbackBids);
+      } else {
+        setBids(apiBids);
+      }
+
+      if (apiWishlist.length === 0) {
+        setWishlist(fallbackWishlist);
+      } else {
+        setWishlist(apiWishlist);
       }
     } finally {
       setLoading(false);
@@ -93,7 +280,7 @@ export default function CustomerAccountPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
       {/* Account Banner */}
       <div className="bg-gradient-to-r from-nepal-earth to-nepal-crimson text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
@@ -180,77 +367,119 @@ export default function CustomerAccountPage() {
                   </Link>
                 </div>
               ) : (
-                orders.map((order) => (
-                  <div
-                    key={order.id}
-                    className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-4 hover:border-nepal-gold/50 transition"
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3 text-xs">
-                      <div>
-                        <span className="text-gray-400">Order ID: </span>
-                        <span className="font-mono font-bold text-nepal-crimson">{order.order_number}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-400">{new Date(order.created_at).toLocaleDateString()}</span>
-                        <span
-                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                            order.payment_status === "paid"
-                              ? "bg-emerald-100 text-emerald-800"
-                              : "bg-amber-100 text-amber-800"
-                          }`}
-                        >
-                          {order.payment_status} ({order.payment_method})
-                        </span>
-                        <span
-                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                            (order.status || "").toLowerCase() === "delivered"
-                              ? "bg-emerald-100 text-emerald-800"
-                              : "bg-blue-100 text-blue-800"
-                          }`}
-                        >
-                          {order.status || "Processing"}
-                        </span>
-                      </div>
-                    </div>
+                orders.map((order) => {
+                  const itemsList = order.items || [];
+                  const totalFormatted = Number(order.total_amount || order.total || 0).toLocaleString();
 
-                    {/* Items */}
-                    <div className="divide-y divide-gray-50">
-                      {(order.items || []).map((item: any) => (
-                        <div key={item.id} className="py-2.5 flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-3">
-                            <img
-                              src={
-                                item.product?.primary_image?.url ||
-                                item.product?.primary_image?.image_url ||
-                                "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=200"
-                              }
-                              alt={item.product?.name || "Product"}
-                              className="w-12 h-12 rounded-lg object-cover bg-gray-100"
-                            />
-                            <div>
-                              <div className="font-bold text-nepal-earth">{item.product?.name || "Handcrafted Artifact"}</div>
-                              <div className="text-[11px] text-gray-500">
-                                Qty: {item.quantity} × NPR {Number(item.price).toLocaleString()}
+                  return (
+                    <div
+                      key={order.id || order.order_number}
+                      className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-4 hover:border-nepal-gold/50 transition"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3 text-xs">
+                        <div>
+                          <span className="text-gray-400">Order ID: </span>
+                          <span className="font-mono font-black text-nepal-crimson">{order.order_number}</span>
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-gray-400">{new Date(order.created_at).toLocaleDateString()}</span>
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                              (order.payment_status || "paid").toLowerCase() === "paid"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "bg-amber-100 text-amber-800"
+                            }`}
+                          >
+                            {order.payment_status || "PAID"} ({order.payment_method || "Online Gateway"})
+                          </span>
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                              (order.status || "").toLowerCase() === "delivered"
+                                ? "bg-emerald-100 text-emerald-800"
+                                : (order.status || "").toLowerCase() === "shipped"
+                                ? "bg-indigo-100 text-indigo-800"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
+                          >
+                            {order.status || "Processing"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Items */}
+                      <div className="divide-y divide-gray-50">
+                        {itemsList.map((item: any, idx: number) => {
+                          const prod = item.product || item;
+                          const imgUrl =
+                            prod?.primary_image?.url ||
+                            prod?.primary_image?.image_url ||
+                            prod?.image_url ||
+                            "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=200";
+
+                          return (
+                            <div key={item.id || idx} className="py-2.5 flex items-center justify-between text-xs gap-3">
+                              <div className="flex items-center gap-3 min-w-0">
+                                <img
+                                  src={imgUrl}
+                                  alt={prod?.name || "Product"}
+                                  className="w-12 h-12 rounded-lg object-cover bg-gray-100 flex-shrink-0"
+                                />
+                                <div className="min-w-0">
+                                  <div className="font-bold text-nepal-earth truncate">{prod?.name || item.name || "Handcrafted Artifact"}</div>
+                                  <div className="text-[11px] text-gray-500 flex items-center gap-2">
+                                    <span>Qty: {item.quantity || 1} × NPR {Number(item.price || prod?.price || 0).toLocaleString()}</span>
+                                    {prod?.store?.name && (
+                                      <span className="text-[10px] text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded font-bold">
+                                        {prod.store.name}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="font-black text-nepal-earth flex-shrink-0">
+                                NPR {Number(item.total || (item.quantity || 1) * (item.price || prod?.price || 0)).toLocaleString()}
                               </div>
                             </div>
-                          </div>
-                          <div className="font-black text-nepal-earth">
-                            NPR {Number(item.total).toLocaleString()}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                          );
+                        })}
+                      </div>
 
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs font-bold text-nepal-earth">
-                      <div className="text-gray-500 font-normal">
-                        Ship to: {order.shipping_address}, {order.shipping_city}
-                      </div>
-                      <div className="text-sm text-nepal-crimson font-black">
-                        Total: NPR {Number(order.total).toLocaleString()}
+                      {/* Footer Details & VAT Receipt Action */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-gray-100 text-xs">
+                        <div className="space-y-1 text-gray-500">
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-gray-400" />
+                            <span>Ship to: {order.shipping_address || "Kathmandu, Nepal"}</span>
+                          </div>
+                          {order.tracking_number && (
+                            <div className="flex items-center gap-1.5 text-indigo-700 font-mono font-bold text-[11px]">
+                              <Truck className="w-3.5 h-3.5" />
+                              <span>{order.courier || "Express Dispatch"} — Tracking #{order.tracking_number}</span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-3 self-end sm:self-auto">
+                          <div className="text-right">
+                            <div className="text-[10px] text-gray-400 uppercase font-bold">Total Paid (VAT Incl.)</div>
+                            <div className="text-sm text-nepal-crimson font-black">
+                              NPR {totalFormatted}
+                            </div>
+                          </div>
+
+                          <button
+                            onClick={() => setSelectedInvoiceOrder(order)}
+                            className="px-3 py-1.5 rounded-xl bg-nepal-earth/5 hover:bg-nepal-earth/10 text-nepal-earth text-xs font-bold flex items-center gap-1.5 border border-nepal-gold/30 transition"
+                            title="View Official VAT Invoice & Printable Receipt"
+                          >
+                            <FileText className="w-3.5 h-3.5 text-nepal-crimson" />
+                            <span>View VAT Receipt</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           )}
@@ -264,10 +493,10 @@ export default function CustomerAccountPage() {
                   <p className="text-sm font-bold text-nepal-earth">No live bids placed yet</p>
                   <p className="text-xs text-gray-500">Compete in timed live auctions for rare museum-grade heritage art.</p>
                   <Link
-                    href="/auctions"
+                    href="/live"
                     className="inline-block px-5 py-2 bg-nepal-crimson text-white text-xs font-bold rounded-xl"
                   >
-                    Go to Auction Hall
+                    Enter Live Auction Arena
                   </Link>
                 </div>
               ) : (
@@ -279,44 +508,48 @@ export default function CustomerAccountPage() {
                     <div className="flex items-center gap-4">
                       <img
                         src={
+                          b.image_url ||
                           b.auction?.product?.primary_image?.image_url ||
                           "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=300"
                         }
-                        alt={b.auction?.title}
-                        className="w-16 h-16 rounded-xl object-cover"
+                        alt={b.lot_title || b.auction?.title}
+                        className="w-16 h-16 rounded-xl object-cover border border-gray-100 flex-shrink-0"
                       />
                       <div className="space-y-1">
                         <Link
-                          href={`/auctions/${b.auction?.id}`}
+                          href={`/live/${b.room_id || b.auction?.id || 1}`}
                           className="font-bold text-xs text-nepal-earth hover:text-nepal-crimson transition flex items-center gap-1"
                         >
-                          <span>{b.auction?.title || "Live Auction Artifact"}</span>
+                          <span>{b.lot_title || b.auction?.title || "Live Auction Artifact"}</span>
                           <ExternalLink className="w-3.5 h-3.5 text-gray-400" />
                         </Link>
                         <div className="text-[11px] text-gray-500">
-                          Your Bid: <span className="font-bold text-nepal-crimson">NPR {Number(b.amount).toLocaleString()}</span>
+                          Your Active Bid: <span className="font-black text-nepal-crimson">NPR {Number(b.amount).toLocaleString()}</span>
                         </div>
-                        <div className="text-[10px] text-gray-400">
-                          Placed on: {new Date(b.created_at).toLocaleString()}
-                        </div>
+                        {b.host && (
+                          <div className="text-[10px] text-gray-400">
+                            Host: {b.host} • Placed {b.created_at}
+                          </div>
+                        )}
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
-                          b.auction?.status === "active"
-                            ? "bg-red-100 text-red-800"
-                            : "bg-gray-100 text-gray-800"
+                          b.status === "leading" || b.status === "won"
+                            ? "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                            : "bg-amber-100 text-amber-800 border border-amber-200"
                         }`}
                       >
-                        {b.auction?.status === "active" ? "Live Bidding" : "Auction Ended"}
+                        {b.status === "leading" ? "Leading Bidder 🏆" : b.status === "won" ? "Won (Hammered Down)" : "Outbid ⚡"}
                       </span>
                       <Link
-                        href={`/auctions/${b.auction?.id}`}
-                        className="px-4 py-2 bg-nepal-crimson text-white rounded-xl text-xs font-bold shadow hover:bg-nepal-crimsonDark transition"
+                        href={`/live/${b.room_id || b.auction?.id || 1}`}
+                        className="px-4 py-2 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white rounded-xl text-xs font-bold shadow transition flex items-center gap-1.5"
                       >
-                        Enter Room
+                        <Radio className="w-3 h-3 animate-pulse" />
+                        <span>Watch Room</span>
                       </Link>
                     </div>
                   </div>
@@ -349,22 +582,26 @@ export default function CustomerAccountPage() {
                     <div>
                       <img
                         src={
+                          item.image_url ||
                           item.product?.primary_image?.image_url ||
                           "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=500"
                         }
-                        alt={item.product?.name}
+                        alt={item.name || item.product?.name}
                         className="w-full h-44 object-cover"
                       />
                       <div className="p-4 space-y-1.5">
-                        <h4 className="font-bold text-xs text-nepal-earth line-clamp-1">{item.product?.name}</h4>
+                        <h4 className="font-bold text-xs text-nepal-earth line-clamp-1">{item.name || item.product?.name}</h4>
                         <div className="text-sm font-black text-nepal-crimson">
-                          NPR {Number(item.product?.price).toLocaleString()}
+                          NPR {Number(item.price || item.product?.price || 0).toLocaleString()}
                         </div>
+                        {item.origin && (
+                          <div className="text-[10px] text-gray-400">Origin: {item.origin}</div>
+                        )}
                       </div>
                     </div>
                     <div className="p-4 pt-0">
                       <button
-                        onClick={() => addToCart(item.product)}
+                        onClick={() => addToCart(item.product || item)}
                         className="w-full py-2 bg-nepal-earth hover:bg-nepal-earth/90 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition"
                       >
                         <ShoppingBag className="w-3.5 h-3.5" />
@@ -378,7 +615,28 @@ export default function CustomerAccountPage() {
           )}
         </>
       )}
+
+      {/* VAT Invoice & Receipt Modal */}
+      {selectedInvoiceOrder && (
+        <PurchaseEmailModal
+          orderNumber={selectedInvoiceOrder.order_number}
+          customerName={user.name || "Valued Collector"}
+          customerEmail={user.email || "customer@dharohar.com"}
+          shippingAddress={selectedInvoiceOrder.shipping_address || "Kathmandu, Nepal"}
+          paymentMethod={selectedInvoiceOrder.payment_method || "eSewa"}
+          transactionId={`TXN-${selectedInvoiceOrder.order_number}-${Date.now().toString().slice(-4)}`}
+          items={(selectedInvoiceOrder.items || []).map((i: any) => ({
+            name: i.product?.name || i.name || "Handcrafted Heritage Item",
+            quantity: i.quantity || 1,
+            price: Number(i.price || i.product?.price || 0),
+            storeName: i.product?.store?.name || "Official Heritage Guild",
+          }))}
+          subtotal={Number(selectedInvoiceOrder.subtotal || selectedInvoiceOrder.total_amount * 0.885)}
+          deliveryCharge={Number(selectedInvoiceOrder.delivery_charge || 0)}
+          grandTotal={Number(selectedInvoiceOrder.total_amount || selectedInvoiceOrder.total || 0)}
+          onClose={() => setSelectedInvoiceOrder(null)}
+        />
+      )}
     </div>
   );
 }
-

@@ -137,6 +137,12 @@ export default function CheckoutPage() {
     setOrderResult({ order: confirmedOrder });
     clearCart();
 
+    // Persist demo order in localStorage for CustomerAccountPage
+    try {
+      const existingOrders = JSON.parse(localStorage.getItem("dharohar_demo_orders") || "[]");
+      localStorage.setItem("dharohar_demo_orders", JSON.stringify([confirmedOrder, ...existingOrders]));
+    } catch {}
+
     // Trigger in-app notification event
     if (typeof window !== "undefined") {
       window.dispatchEvent(

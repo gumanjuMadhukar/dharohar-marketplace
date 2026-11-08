@@ -132,80 +132,91 @@ export function NotificationCenter() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-nepal-gold/30 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
-          {/* Header */}
-          <div className="px-4 py-3 bg-gradient-to-r from-nepal-crimson to-nepal-crimsonDark text-white flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Bell className="w-4 h-4 text-nepal-gold" />
-              <span className="text-xs font-black uppercase tracking-wider">
-                Notifications ({unreadCount} New)
-              </span>
-            </div>
-            <button
-              onClick={() => setOpen(false)}
-              className="text-white/80 hover:text-white text-xs"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
+        <>
+          {/* Backdrop to dismiss when clicking/tapping outside */}
+          <div
+            className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[2px] sm:bg-transparent"
+            onClick={() => setOpen(false)}
+          />
 
-          {/* Controls */}
-          {notifications.length > 0 && (
-            <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
-              <button
-                onClick={markAllAsRead}
-                className="hover:text-nepal-crimson transition"
-              >
-                Mark all as read
-              </button>
-              <button
-                onClick={clearAll}
-                className="hover:text-red-600 transition flex items-center gap-1"
-              >
-                <Trash2 className="w-3 h-3" />
-                <span>Clear</span>
-              </button>
-            </div>
-          )}
-
-          {/* List */}
-          <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
-            {notifications.length === 0 ? (
-              <div className="p-8 text-center text-slate-400 text-xs">
-                No notifications right now.
+          {/* Popover Card - Mobile-responsive & perfectly aligned */}
+          <div className="fixed inset-x-3 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-96 max-w-sm sm:max-w-none mx-auto sm:mx-0 bg-white rounded-3xl shadow-2xl border border-nepal-gold/30 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
+            {/* Header */}
+            <div className="px-4 py-3 bg-gradient-to-r from-nepal-crimson to-nepal-crimsonDark text-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Bell className="w-4 h-4 text-nepal-gold" />
+                <span className="text-xs font-black uppercase tracking-wider">
+                  Notifications ({unreadCount} New)
+                </span>
               </div>
-            ) : (
-              notifications.map((n) => (
-                <div
-                  key={n.id}
-                  onClick={() => {
-                    if (n.link) window.location.href = n.link;
-                  }}
-                  className={`p-3.5 transition cursor-pointer flex items-start gap-3 ${
-                    n.read ? "bg-white hover:bg-slate-50/80" : "bg-nepal-gold/5 hover:bg-nepal-gold/10"
-                  }`}
+              <button
+                onClick={() => setOpen(false)}
+                className="text-white/80 hover:text-white p-1 rounded-lg transition"
+                aria-label="Close notifications"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Controls */}
+            {notifications.length > 0 && (
+              <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+                <button
+                  onClick={markAllAsRead}
+                  className="hover:text-nepal-crimson transition"
                 >
-                  <div className="p-2 rounded-xl bg-slate-100 flex-shrink-0 mt-0.5">
-                    {getIcon(n.type)}
-                  </div>
-                  <div className="min-w-0 flex-1 space-y-0.5">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-xs font-bold text-slate-900 truncate">
-                        {n.title}
-                      </span>
-                      <span className="text-[10px] text-slate-400 whitespace-nowrap">
-                        {n.timestamp}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
-                      {n.message}
-                    </p>
-                  </div>
-                </div>
-              ))
+                  Mark all as read
+                </button>
+                <button
+                  onClick={clearAll}
+                  className="hover:text-red-600 transition flex items-center gap-1"
+                >
+                  <Trash2 className="w-3 h-3" />
+                  <span>Clear</span>
+                </button>
+              </div>
             )}
+
+            {/* List */}
+            <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
+              {notifications.length === 0 ? (
+                <div className="p-8 text-center text-slate-400 text-xs">
+                  No notifications right now.
+                </div>
+              ) : (
+                notifications.map((n) => (
+                  <div
+                    key={n.id}
+                    onClick={() => {
+                      setOpen(false);
+                      if (n.link) window.location.href = n.link;
+                    }}
+                    className={`p-3.5 transition cursor-pointer flex items-start gap-3 ${
+                      n.read ? "bg-white hover:bg-slate-50/80" : "bg-nepal-gold/5 hover:bg-nepal-gold/10"
+                    }`}
+                  >
+                    <div className="p-2 rounded-xl bg-slate-100 flex-shrink-0 mt-0.5">
+                      {getIcon(n.type)}
+                    </div>
+                    <div className="min-w-0 flex-1 space-y-0.5">
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-xs font-bold text-slate-900 truncate">
+                          {n.title}
+                        </span>
+                        <span className="text-[10px] text-slate-400 whitespace-nowrap">
+                          {n.timestamp}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
+                        {n.message}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
