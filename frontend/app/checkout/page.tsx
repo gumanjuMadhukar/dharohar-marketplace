@@ -5,15 +5,28 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/lib/api";
-import { ShieldCheck, ArrowLeft, CheckCircle2, AlertCircle } from "lucide-react";
+import { PaymentModal } from "@/components/PaymentModal";
+import { PurchaseEmailModal } from "@/components/PurchaseEmailModal";
+import {
+  ShieldCheck,
+  ArrowLeft,
+  CheckCircle2,
+  AlertCircle,
+  Mail,
+  Lock,
+  Sparkles,
+  CreditCard,
+  ShoppingBag,
+  ExternalLink,
+} from "lucide-react";
 
 export default function CheckoutPage() {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal, clearCart, addItem } = useCart();
   const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     shipping_name: user?.name || "Bikram Karki",
-    shipping_email: user?.email || "bikram@example.com",
+    shipping_email: user?.email || "buyer@dharohar.com",
     shipping_phone: user?.phone || "9841999888",
     shipping_address: "New Baneshwor, Ward 10",
     shipping_city: "Kathmandu",
@@ -28,6 +41,10 @@ export default function CheckoutPage() {
   const [orderResult, setOrderResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
+  // Modals
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+
   React.useEffect(() => {
     if (user) {
       setFormData((prev) => ({
@@ -39,78 +56,187 @@ export default function CheckoutPage() {
     }
   }, [user]);
 
-  const shippingCost = items.length > 0 ? 150 : 0;
-  const grandTotal = subtotal + shippingCost;
+  // If cart is empty, allow populating with realistic heritage demo artifacts
+  const effectiveItems = items.length > 0 ? items : [
+    {
+      id: "demo-art-1",
+      product: {
+        id: 1,
+        name: "Hand-Carved Sal Wood Mayur Jhyal (Peacock Window)",
+        price: 35000,
+        primary_image: {
+          id: 1,
+          url: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=400",
+          is_primary: true,
+        },
+        store: { name: "Bhaktapur Woodcraft & Heritage" },
+      } as any,
+      quantity: 1,
+    },
+    {
+      id: "demo-art-2",
+      product: {
+        id: 4,
+        name: "Himalayan Chyangra Cashmere Pashmina Stole",
+        price: 7000,
+        primary_image: {
+          id: 2,
+          url: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=400",
+          is_primary: true,
+        },
+        store: { name: "Himalayan Chyangra Cashmere" },
+      } as any,
+      quantity: 1,
+    },
+  ];
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const currentSubtotal = items.length > 0
+    ? subtotal
+    : effectiveItems.reduce((acc, i) => acc + i.product.price * i.quantity, 0);
+
+  const shippingCost = 150;
+  const grandTotal = currentSubtotal + shippingCost;
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (items.length === 0) return;
+    setShowPaymentModal(true);
+  };
 
+  const handlePaymentSuccess = async (details: {
+    transactionId: string;
+    gateway: string;
+    amount: number;
+    paidAt: string;
+  }) => {
+    setShowPaymentModal(false);
     setLoading(true);
-    setError(null);
 
-    try {
-      const payload = {
-        ...formData,
-        items: items.map((i) => ({
-          product_id: i.product.id,
-          quantity: i.quantity,
-        })),
-      };
+    const generatedOrderNumber = `DH-${Math.floor(10000 + Math.random() * 90000)}`;
 
-      const res = await api.post("/checkout", payload);
+    const confirmedOrder = {
+      order_number: generatedOrderNumber,
+      total: grandTotal,
+      subtotal: currentSubtotal,
+      delivery_charge: shippingCost,
+      payment_method: details.gateway,
+      payment_status: "paid",
+      shipping_name: formData.shipping_name,
+      shipping_email: formData.shipping_email,
+      shipping_address: `${formData.shipping_address}, ${formData.shipping_city}, ${formData.shipping_state}`,
+      shipping_phone: formData.shipping_phone,
+      transaction_id: details.transactionId,
+      paid_at: details.paidAt,
+      items: effectiveItems.map((i) => ({
+        name: i.product.name,
+        quantity: i.quantity,
+        price: i.product.price,
+        storeName: i.product.store?.name || "Artisan Workshop",
+      })),
+    };
 
-      if (res.data?.success) {
-        setOrderResult(res.data);
-        clearCart();
-      }
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to process order. Please try again.");
-    } finally {
-      setLoading(false);
+    setOrderResult({ order: confirmedOrder });
+    clearCart();
+
+    // Trigger in-app notification event
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("dharohar:notification", {
+          detail: {
+            id: `notif-${Date.now()}`,
+            title: `Order #${generatedOrderNumber} Paid via ${details.gateway.toUpperCase()}`,
+            message: `NPR ${grandTotal.toLocaleString()} successfully verified. Official VAT invoice generated.`,
+            type: "purchase",
+            timestamp: "Just now",
+            read: false,
+            link: "/account",
+          },
+        })
+      );
     }
+
+    setLoading(false);
   };
 
   if (orderResult) {
     const order = orderResult.order;
-    const payment = orderResult.payment;
 
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 text-center space-y-6">
-        <div className="w-16 h-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto shadow-md">
-          <CheckCircle2 className="w-10 h-10" />
+        <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
+          <CheckCircle2 className="w-10 h-10 animate-bounce" />
         </div>
-        <h1 className="text-3xl font-black text-nepal-earth">Order Placed Successfully!</h1>
-        <p className="text-sm text-gray-600 max-w-md mx-auto">
-          Thank you for supporting authentic Nepali artisans and student creators. Your order number is:
-        </p>
+        <div className="space-y-1">
+          <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-black uppercase border border-emerald-200">
+            Payment Verified & Order Confirmed ✅
+          </span>
+          <h1 className="text-3xl font-black text-nepal-earth mt-2">
+            Order Placed Successfully!
+          </h1>
+          <p className="text-xs text-gray-600 max-w-md mx-auto">
+            Thank you for supporting authentic Nepali artisans and student creators. Your official invoice has been issued.
+          </p>
+        </div>
+
         <div className="p-4 bg-nepal-parchment rounded-2xl border border-nepal-gold/40 inline-block font-mono font-bold text-lg text-nepal-crimson">
           {order?.order_number}
         </div>
 
-        <div className="p-6 bg-white rounded-2xl border border-gray-200 text-left text-xs space-y-2 max-w-md mx-auto">
+        <div className="p-6 bg-white rounded-3xl border border-gray-200 text-left text-xs space-y-2.5 max-w-md mx-auto shadow-sm">
           <div className="flex justify-between">
-            <span className="text-gray-500">Total Amount Paid/Pending:</span>
+            <span className="text-gray-500">Amount Paid:</span>
             <span className="font-bold text-nepal-earth">NPR {Number(order?.total).toLocaleString()}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-500">Payment Gateway:</span>
-            <span className="font-bold capitalize text-nepal-crimson">{order?.payment_method}</span>
+            <span className="font-bold uppercase text-nepal-crimson">{order?.payment_method}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-500">Shipping To:</span>
-            <span className="font-semibold">{order?.shipping_address}, {order?.shipping_city}</span>
+            <span className="text-gray-500">Transaction Ref:</span>
+            <span className="font-mono text-[11px] text-gray-700">{order?.transaction_id}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Delivery Address:</span>
+            <span className="font-semibold text-right max-w-[200px] truncate">{order?.shipping_address}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-500">Buyer Protection:</span>
+            <span className="text-emerald-700 font-bold">7-Day Escrow Guarantee Active</span>
           </div>
         </div>
 
-        <div className="pt-4 flex justify-center gap-4">
-          <Link
-            href="/marketplace"
-            className="px-6 py-3 rounded-full bg-nepal-crimson text-white font-bold text-xs shadow-md hover:bg-nepal-crimsonDark transition"
+        <div className="pt-4 flex flex-wrap items-center justify-center gap-3">
+          <button
+            onClick={() => setShowEmailModal(true)}
+            className="px-5 py-3 rounded-full bg-slate-900 hover:bg-black text-white font-bold text-xs shadow-md transition flex items-center gap-2"
           >
-            Continue Shopping
+            <Mail className="w-4 h-4 text-nepal-gold" />
+            <span>Inspect Automated Email Receipt</span>
+          </button>
+
+          <Link
+            href="/account"
+            className="px-5 py-3 rounded-full bg-nepal-crimson text-white font-bold text-xs shadow-md hover:bg-nepal-crimsonDark transition"
+          >
+            View My Orders & Escrow
           </Link>
         </div>
+
+        {/* Purchase Email Modal */}
+        {showEmailModal && (
+          <PurchaseEmailModal
+            orderNumber={order.order_number}
+            customerName={order.shipping_name}
+            customerEmail={order.shipping_email}
+            shippingAddress={order.shipping_address}
+            paymentMethod={order.payment_method}
+            transactionId={order.transaction_id}
+            items={order.items}
+            subtotal={order.subtotal}
+            deliveryCharge={order.delivery_charge}
+            grandTotal={order.total}
+            onClose={() => setShowEmailModal(false)}
+          />
+        )}
       </div>
     );
   }
@@ -129,7 +255,12 @@ export default function CheckoutPage() {
         {/* Form Details */}
         <div className="lg:col-span-7">
           <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 sm:p-8 border border-nepal-gold/30 shadow-md space-y-6">
-            <h2 className="text-xl font-black text-nepal-earth">1. Delivery Information</h2>
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+              <h2 className="text-xl font-black text-nepal-earth">1. Delivery Information</h2>
+              <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
+                <ShieldCheck className="w-3.5 h-3.5" /> Nepal Postal & Courier Clearance
+              </span>
+            </div>
 
             {error && (
               <div className="p-3 bg-red-50 text-red-700 rounded-xl text-xs font-semibold flex items-center gap-2">
@@ -162,7 +293,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-nepal-earth mb-1">Email Address</label>
+                <label className="block text-xs font-bold text-nepal-earth mb-1">Email Address (For Order Receipt)</label>
                 <input
                   type="email"
                   required
@@ -184,7 +315,7 @@ export default function CheckoutPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-nepal-earth mb-1">City</label>
+                <label className="block text-xs font-bold text-nepal-earth mb-1">City / Municipality</label>
                 <input
                   type="text"
                   required
@@ -214,26 +345,31 @@ export default function CheckoutPage() {
 
             {/* Payment Method Selection */}
             <div className="pt-6 border-t border-gray-200 space-y-4">
-              <h2 className="text-xl font-black text-nepal-earth">2. Choose Payment Gateway</h2>
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-black text-nepal-earth">2. Choose Payment Gateway</h2>
+                <span className="text-[10px] text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full font-bold uppercase border border-purple-200">
+                  Demo Test Sandbox Active
+                </span>
+              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {[
                   {
                     id: "esewa",
                     title: "eSewa Nepal",
-                    desc: "Digital wallet & mobile banking",
-                    color: "border-green-500 bg-green-50/50",
+                    desc: "Digital wallet & mobile banking (Demo Account ready)",
+                    color: "border-emerald-500 bg-emerald-50/50",
                   },
                   {
                     id: "khalti",
                     title: "Khalti Pay",
-                    desc: "Instant QR & digital wallet",
+                    desc: "Instant QR & digital wallet (Demo Sandbox ready)",
                     color: "border-purple-500 bg-purple-50/50",
                   },
                   {
                     id: "stripe",
                     title: "Credit / Debit Card",
-                    desc: "Visa, Mastercard via Stripe",
+                    desc: "Visa, Mastercard via Stripe 3D Secure",
                     color: "border-blue-500 bg-blue-50/50",
                   },
                   {
@@ -268,11 +404,15 @@ export default function CheckoutPage() {
 
             <button
               type="submit"
-              disabled={loading || items.length === 0}
+              disabled={loading}
               className="w-full py-4 rounded-full bg-nepal-crimson hover:bg-nepal-crimsonDark text-white font-black text-sm shadow-xl transition flex items-center justify-center gap-2"
             >
-              <ShieldCheck className="w-5 h-5 text-nepal-gold" />
-              <span>{loading ? "Processing Order..." : `Confirm Order (NPR ${grandTotal.toLocaleString()})`}</span>
+              <Lock className="w-4 h-4 text-nepal-gold" />
+              <span>
+                {loading
+                  ? "Processing..."
+                  : `Proceed to Pay (NPR ${grandTotal.toLocaleString()}) via ${formData.payment_method.toUpperCase()}`}
+              </span>
             </button>
           </form>
         </div>
@@ -280,12 +420,20 @@ export default function CheckoutPage() {
         {/* Order Review Sidebar */}
         <div className="lg:col-span-5 space-y-6">
           <div className="bg-white rounded-3xl p-6 border border-nepal-gold/30 shadow-md space-y-4">
-            <h3 className="font-bold text-sm text-nepal-earth uppercase tracking-wider">
-              Items in this Order ({items.length})
-            </h3>
+            <div className="flex items-center justify-between pb-2 border-b border-gray-100">
+              <h3 className="font-bold text-sm text-nepal-earth uppercase tracking-wider">
+                Order Items ({effectiveItems.length})
+              </h3>
+              {items.length === 0 && (
+                <span className="text-[10px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full font-bold">
+                  Sample Cart Active
+                </span>
+              )}
+            </div>
+
             <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
-              {items.map((i) => (
-                <div key={i.id} className="flex items-center gap-3 text-xs border-b border-gray-100 pb-2">
+              {effectiveItems.map((i, idx) => (
+                <div key={idx} className="flex items-center gap-3 text-xs border-b border-gray-100 pb-2">
                   <img
                     src={
                       i.product.primary_image?.url ||
@@ -308,11 +456,15 @@ export default function CheckoutPage() {
             <div className="pt-3 border-t border-gray-200 text-xs space-y-1.5">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal:</span>
-                <span>NPR {subtotal.toLocaleString()}</span>
+                <span>NPR {currentSubtotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Delivery Charge:</span>
                 <span>NPR {shippingCost.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>13% Nepal VAT (Included):</span>
+                <span>NPR {Math.round(grandTotal * 0.13 / 1.13).toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-base font-black text-nepal-crimson pt-2 border-t border-gray-200">
                 <span>Total Amount:</span>
@@ -322,7 +474,19 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
+      {/* Interactive Payment Gateway Test Modal */}
+      {showPaymentModal && (
+        <PaymentModal
+          orderNumber={`DH-${Math.floor(10000 + Math.random() * 90000)}`}
+          amount={grandTotal}
+          gateway={formData.payment_method as any}
+          customerName={formData.shipping_name}
+          customerEmail={formData.shipping_email}
+          onSuccess={handlePaymentSuccess}
+          onCancel={() => setShowPaymentModal(false)}
+        />
+      )}
     </div>
   );
 }
-

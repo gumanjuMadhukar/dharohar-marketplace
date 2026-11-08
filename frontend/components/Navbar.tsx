@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { NotificationCenter } from "@/components/NotificationCenter";
 import {
   ShoppingBag,
   Gavel,
@@ -122,7 +123,10 @@ export const Navbar = () => {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0">
+            {/* Real-Time Notification Center */}
+            <NotificationCenter />
+
             {/* Cart Icon */}
             <Link
               href="/cart"
