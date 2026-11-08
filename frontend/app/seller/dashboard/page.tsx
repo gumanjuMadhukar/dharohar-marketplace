@@ -30,9 +30,9 @@ export default function SellerDashboardPage() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       {/* 4 Circular KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <CircularKpiCard
           title="Gross Store Sales"
           value={`NPR ${stats ? Number(stats.total_revenue).toLocaleString() : "0"}`}
@@ -84,43 +84,43 @@ export default function SellerDashboardPage() {
         </div>
       </div>
 
-      {/* Quick Action Tiles */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      {/* Quick Action Tiles - Dark Studio Styling */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Link
           href="/seller/products/create"
-          className="bg-white p-6 rounded-3xl border border-slate-200/80 hover:border-amber-500 shadow-xs hover:shadow-md transition space-y-2 block"
+          className="bg-slate-900 p-5 rounded-2xl border border-slate-800 hover:border-amber-500 shadow-md transition space-y-2 block"
         >
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-amber-950/80 text-amber-400 border border-amber-800/80 flex items-center justify-center">
             <Plus className="w-5 h-5" />
           </div>
-          <div className="font-black text-sm text-slate-900">Publish Artifact</div>
-          <p className="text-xs text-slate-500">
+          <div className="font-black text-sm text-white">Publish Artifact</div>
+          <p className="text-xs text-slate-400">
             Add handmade woodcarvings, thangka paintings, pashmina, or bulk wholesale tiers.
           </p>
         </Link>
 
         <Link
           href="/seller/auctions"
-          className="bg-white p-6 rounded-3xl border border-slate-200/80 hover:border-amber-500 shadow-xs hover:shadow-md transition space-y-2 block"
+          className="bg-slate-900 p-5 rounded-2xl border border-slate-800 hover:border-purple-500 shadow-md transition space-y-2 block"
         >
-          <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-purple-950/80 text-purple-400 border border-purple-800/80 flex items-center justify-center">
             <Gavel className="w-5 h-5" />
           </div>
-          <div className="font-black text-sm text-slate-900">Host Live Auction</div>
-          <p className="text-xs text-slate-500">
+          <div className="font-black text-sm text-white">Host Live Auction</div>
+          <p className="text-xs text-slate-400">
             Put rare cultural masterworks up for timed bidding with anti-sniping protection.
           </p>
         </Link>
 
         <Link
           href="/seller/payouts"
-          className="bg-white p-6 rounded-3xl border border-slate-200/80 hover:border-amber-500 shadow-xs hover:shadow-md transition space-y-2 block"
+          className="bg-slate-900 p-5 rounded-2xl border border-slate-800 hover:border-emerald-500 shadow-md transition space-y-2 block"
         >
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 flex items-center justify-center">
             <Wallet className="w-5 h-5" />
           </div>
-          <div className="font-black text-sm text-slate-900">Withdraw Funds</div>
-          <p className="text-xs text-slate-500">
+          <div className="font-black text-sm text-white">Withdraw Funds</div>
+          <p className="text-xs text-slate-400">
             Request instant settlements directly to your eSewa, Khalti, or Nepali bank account.
           </p>
         </Link>

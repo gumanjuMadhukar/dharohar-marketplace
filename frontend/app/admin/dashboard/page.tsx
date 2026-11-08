@@ -47,9 +47,9 @@ export default function AdminDashboardPage() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       {/* 4 Top KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <CircularKpiCard
           title="Platform Gross Volume"
           value={`NPR ${Number(stats?.total_gmv || 0).toLocaleString()}`}
@@ -103,10 +103,10 @@ export default function AdminDashboardPage() {
         <div className="lg:col-span-2">
           <RecentActivityFeed />
         </div>
-        <div className="lg:col-span-1 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+        <div className="lg:col-span-1 bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-md space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-black text-slate-900 tracking-tight">Compliance Action Queue</h3>
-            <Link href="/admin/kyc" className="text-xs font-bold text-purple-700 hover:underline flex items-center gap-1">
+            <h3 className="text-base font-black text-white tracking-tight">Compliance Action Queue</h3>
+            <Link href="/admin/kyc" className="text-xs font-bold text-purple-400 hover:underline flex items-center gap-1">
               <span>Review</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
@@ -114,35 +114,35 @@ export default function AdminDashboardPage() {
           <div className="space-y-3">
             <Link
               href="/admin/kyc"
-              className="p-3.5 bg-amber-50/70 hover:bg-amber-100/70 rounded-2xl border border-amber-200 flex items-center justify-between text-xs transition"
+              className="p-3.5 bg-slate-950 hover:bg-slate-900 rounded-xl border border-amber-900/40 flex items-center justify-between text-xs transition"
             >
               <div>
-                <div className="font-bold text-amber-900">Pending KYC Documents</div>
-                <div className="text-[11px] text-amber-700">Artisan & Student applications</div>
+                <div className="font-bold text-amber-400">Pending KYC Documents</div>
+                <div className="text-[11px] text-slate-400">Artisan & Student applications</div>
               </div>
-              <span className="text-xl font-black text-amber-900">{stats?.pending_kyc || 0}</span>
+              <span className="text-xl font-black text-amber-400">{stats?.pending_kyc || 0}</span>
             </Link>
 
             <Link
               href="/admin/disputes"
-              className="p-3.5 bg-red-50/70 hover:bg-red-100/70 rounded-2xl border border-red-200 flex items-center justify-between text-xs transition"
+              className="p-3.5 bg-slate-950 hover:bg-slate-900 rounded-xl border border-red-900/40 flex items-center justify-between text-xs transition"
             >
               <div>
-                <div className="font-bold text-red-900">Open Customer Disputes</div>
-                <div className="text-[11px] text-red-700">Requires mediator settlement</div>
+                <div className="font-bold text-red-400">Open Customer Disputes</div>
+                <div className="text-[11px] text-slate-400">Requires mediator settlement</div>
               </div>
-              <span className="text-xl font-black text-red-900">{stats?.open_disputes || 0}</span>
+              <span className="text-xl font-black text-red-400">{stats?.open_disputes || 0}</span>
             </Link>
 
             <Link
               href="/admin/settings"
-              className="p-3.5 bg-purple-50/70 hover:bg-purple-100/70 rounded-2xl border border-purple-200 flex items-center justify-between text-xs transition"
+              className="p-3.5 bg-slate-950 hover:bg-slate-900 rounded-xl border border-purple-900/40 flex items-center justify-between text-xs transition"
             >
               <div>
-                <div className="font-bold text-purple-900">Subsidized Student Rate</div>
-                <div className="text-[11px] text-purple-700">Youth entrepreneurship guarantee</div>
+                <div className="font-bold text-purple-400">Subsidized Student Rate</div>
+                <div className="text-[11px] text-slate-400">Youth entrepreneurship guarantee</div>
               </div>
-              <span className="text-xl font-black text-purple-900">3%</span>
+              <span className="text-xl font-black text-purple-400">3%</span>
             </Link>
           </div>
         </div>
@@ -150,4 +150,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-

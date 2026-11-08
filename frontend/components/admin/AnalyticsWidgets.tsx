@@ -28,34 +28,34 @@ export const CircularKpiCard: React.FC<{
 }> = ({ title, value, subtitle, percentage, icon: Icon, color, trend }) => {
   const colorMap = {
     purple: {
-      stroke: "#8B5CF6",
-      bgRing: "#EDE9FE",
-      badge: "bg-purple-100 text-purple-800",
-      iconBg: "bg-purple-50 text-purple-600",
+      stroke: "#A78BFA",
+      bgRing: "#33275E",
+      badge: "bg-purple-950/80 text-purple-300 border border-purple-800",
+      iconBg: "bg-purple-950/80 text-purple-400 border border-purple-800/80",
     },
     blue: {
-      stroke: "#3B82F6",
-      bgRing: "#DBEAFE",
-      badge: "bg-blue-100 text-blue-800",
-      iconBg: "bg-blue-50 text-blue-600",
+      stroke: "#60A5FA",
+      bgRing: "#1E293B",
+      badge: "bg-blue-950/80 text-blue-300 border border-blue-800",
+      iconBg: "bg-blue-950/80 text-blue-400 border border-blue-800/80",
     },
     emerald: {
-      stroke: "#10B981",
-      bgRing: "#D1FAE5",
-      badge: "bg-emerald-100 text-emerald-800",
-      iconBg: "bg-emerald-50 text-emerald-600",
+      stroke: "#34D399",
+      bgRing: "#064E3B",
+      badge: "bg-emerald-950/80 text-emerald-300 border border-emerald-800",
+      iconBg: "bg-emerald-950/80 text-emerald-400 border border-emerald-800/80",
     },
     amber: {
-      stroke: "#F59E0B",
-      bgRing: "#FEF3C7",
-      badge: "bg-amber-100 text-amber-800",
-      iconBg: "bg-amber-50 text-amber-600",
+      stroke: "#FBBF24",
+      bgRing: "#451A03",
+      badge: "bg-amber-950/80 text-amber-300 border border-amber-800",
+      iconBg: "bg-amber-950/80 text-amber-400 border border-amber-800/80",
     },
     crimson: {
-      stroke: "#C51D24",
-      bgRing: "#FEE2E2",
-      badge: "bg-red-100 text-red-800",
-      iconBg: "bg-red-50 text-nepal-crimson",
+      stroke: "#F87171",
+      bgRing: "#450A0A",
+      badge: "bg-red-950/80 text-red-300 border border-red-800",
+      iconBg: "bg-red-950/80 text-red-400 border border-red-800/80",
     },
   }[color];
 
@@ -64,19 +64,19 @@ export const CircularKpiCard: React.FC<{
   const strokeDashoffset = circumference - (Math.min(100, Math.max(0, percentage)) / 100) * circumference;
 
   return (
-    <div className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-all flex items-center justify-between">
-      <div className="space-y-1.5">
+    <div className="bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-800 shadow-md hover:border-slate-700 transition-all flex items-center justify-between">
+      <div className="space-y-1.5 min-w-0">
         <div className="flex items-center gap-2">
-          <div className={`p-2 rounded-xl ${colorMap.iconBg}`}>
+          <div className={`p-2 rounded-xl ${colorMap.iconBg} shrink-0`}>
             <Icon className="w-4 h-4" />
           </div>
-          <span className="text-xs font-bold text-slate-500">{title}</span>
+          <span className="text-xs font-bold text-slate-400 truncate">{title}</span>
         </div>
-        <div className="text-2xl font-black text-slate-900 tracking-tight">{value}</div>
+        <div className="text-xl sm:text-2xl font-black text-white tracking-tight">{value}</div>
         <div className="flex items-center gap-2 text-[11px] text-slate-400">
-          <span>{subtitle}</span>
+          <span className="truncate">{subtitle}</span>
           {trend && (
-            <span className={`px-1.5 py-0.2 rounded font-bold ${colorMap.badge} flex items-center gap-0.5`}>
+            <span className={`px-1.5 py-0.2 rounded font-bold ${colorMap.badge} flex items-center gap-0.5 shrink-0`}>
               <ArrowUpRight className="w-3 h-3" />
               {trend}
             </span>
@@ -85,8 +85,8 @@ export const CircularKpiCard: React.FC<{
       </div>
 
       {/* Circular Progress Gauge */}
-      <div className="relative flex items-center justify-center flex-shrink-0">
-        <svg className="w-18 h-18 transform -rotate-90" viewBox="0 0 70 70">
+      <div className="relative flex items-center justify-center shrink-0 ml-3">
+        <svg className="w-16 h-16 sm:w-18 sm:h-18 transform -rotate-90" viewBox="0 0 70 70">
           <circle
             cx="35"
             cy="35"
@@ -108,7 +108,7 @@ export const CircularKpiCard: React.FC<{
             className="transition-all duration-1000 ease-out"
           />
         </svg>
-        <span className="absolute text-[11px] font-black text-slate-700">{percentage}%</span>
+        <span className="absolute text-[11px] font-black text-slate-200">{percentage}%</span>
       </div>
     </div>
   );
@@ -149,19 +149,19 @@ export const RevenueAnalyticsChart: React.FC<{
   }, "");
 
   return (
-    <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-6">
+    <div className="bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-md space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-base font-black text-slate-900 tracking-tight">Revenue Analytics</h3>
+          <h3 className="text-base font-black text-white tracking-tight">Revenue Analytics</h3>
           <p className="text-xs text-slate-400">Platform GMV transaction volume & platform commission curve</p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 p-1 bg-slate-100 rounded-xl text-xs font-bold text-slate-600">
+          <div className="flex items-center gap-1 p-1 bg-slate-950 rounded-xl text-xs font-bold text-slate-400 border border-slate-800">
             <button
               onClick={() => setActiveRange("monthly")}
               className={`px-3 py-1 rounded-lg transition ${
-                activeRange === "monthly" ? "bg-white text-purple-700 shadow-xs" : "text-slate-500"
+                activeRange === "monthly" ? "bg-slate-800 text-purple-300 shadow-xs border border-purple-500/30" : "text-slate-400"
               }`}
             >
               Monthly
@@ -169,7 +169,7 @@ export const RevenueAnalyticsChart: React.FC<{
             <button
               onClick={() => setActiveRange("weekly")}
               className={`px-3 py-1 rounded-lg transition ${
-                activeRange === "weekly" ? "bg-white text-purple-700 shadow-xs" : "text-slate-500"
+                activeRange === "weekly" ? "bg-slate-800 text-purple-300 shadow-xs border border-purple-500/30" : "text-slate-400"
               }`}
             >
               Weekly
@@ -182,11 +182,11 @@ export const RevenueAnalyticsChart: React.FC<{
       <div className="relative h-60 w-full pt-4">
         {/* Horizontal grid lines */}
         <div className="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
-          <div className="border-b border-dashed border-slate-200 text-[10px] text-slate-400">100k</div>
-          <div className="border-b border-dashed border-slate-200 text-[10px] text-slate-400">75k</div>
-          <div className="border-b border-dashed border-slate-200 text-[10px] text-slate-400">50k</div>
-          <div className="border-b border-dashed border-slate-200 text-[10px] text-slate-400">25k</div>
-          <div className="border-b border-slate-200 text-[10px] text-slate-400">0</div>
+          <div className="border-b border-dashed border-slate-800 text-[10px] text-slate-500">100k</div>
+          <div className="border-b border-dashed border-slate-800 text-[10px] text-slate-500">75k</div>
+          <div className="border-b border-dashed border-slate-800 text-[10px] text-slate-500">50k</div>
+          <div className="border-b border-dashed border-slate-800 text-[10px] text-slate-500">25k</div>
+          <div className="border-b border-slate-800 text-[10px] text-slate-500">0</div>
         </div>
 
         {/* Bars Container */}
@@ -195,9 +195,9 @@ export const RevenueAnalyticsChart: React.FC<{
             <div key={idx} className="flex-1 flex flex-col items-center group relative h-full justify-end">
               <div
                 style={{ height: `${h * 0.7}%` }}
-                className="w-4 sm:w-6 bg-gradient-to-t from-purple-600 to-indigo-500 rounded-t-md opacity-85 group-hover:opacity-100 transition-all duration-300"
+                className="w-4 sm:w-6 bg-gradient-to-t from-purple-700 to-indigo-500 rounded-t-md opacity-85 group-hover:opacity-100 transition-all duration-300 shadow-sm"
               ></div>
-              <span className="text-[10px] text-slate-400 font-bold mt-2">{months[idx]}</span>
+              <span className="text-[10px] text-slate-500 font-bold mt-2">{months[idx]}</span>
             </div>
           ))}
         </div>
@@ -208,35 +208,35 @@ export const RevenueAnalyticsChart: React.FC<{
           viewBox="0 0 350 100"
           preserveAspectRatio="none"
         >
-          <path d={svgPath} fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" />
+          <path d={svgPath} fill="none" stroke="#34D399" strokeWidth="2.5" strokeLinecap="round" />
           {splinePoints.map((pt, i) => (
-            <circle key={i} cx={pt[0]} cy={pt[1]} r="3" fill="#ffffff" stroke="#10B981" strokeWidth="2" />
+            <circle key={i} cx={pt[0]} cy={pt[1]} r="3" fill="#0f172a" stroke="#34D399" strokeWidth="2" />
           ))}
         </svg>
       </div>
 
       {/* Mini Metric Footer Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-100">
-        <div className="p-3 bg-slate-50 rounded-2xl">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
+        <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
           <span className="text-[11px] font-bold text-slate-400 uppercase">Settled Today</span>
-          <div className="text-lg font-black text-slate-900 mt-0.5">NPR 18,500</div>
-          <span className="text-[10px] font-bold text-emerald-600 flex items-center gap-0.5">
+          <div className="text-lg font-black text-white mt-0.5">NPR 18,500</div>
+          <span className="text-[10px] font-bold text-emerald-400 flex items-center gap-0.5">
             <TrendingUp className="w-3 h-3" /> +14.2% vs yesterday
           </span>
         </div>
 
-        <div className="p-3 bg-purple-50/70 rounded-2xl border border-purple-100">
-          <span className="text-[11px] font-bold text-purple-700 uppercase">This Week Volume</span>
-          <div className="text-lg font-black text-purple-900 mt-0.5">NPR 128,450</div>
-          <span className="text-[10px] font-bold text-purple-700 flex items-center gap-0.5">
+        <div className="p-3 bg-slate-950 rounded-xl border border-purple-900/50">
+          <span className="text-[11px] font-bold text-purple-400 uppercase">This Week Volume</span>
+          <div className="text-lg font-black text-purple-300 mt-0.5">NPR 128,450</div>
+          <span className="text-[10px] font-bold text-purple-400 flex items-center gap-0.5">
             <TrendingUp className="w-3 h-3" /> +8.5% weekly pace
           </span>
         </div>
 
-        <div className="p-3 bg-slate-50 rounded-2xl">
+        <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
           <span className="text-[11px] font-bold text-slate-400 uppercase">Net Commission Rate</span>
-          <div className="text-lg font-black text-slate-900 mt-0.5">10% / 3%</div>
-          <span className="text-[10px] font-bold text-slate-500">Standard / Student tier</span>
+          <div className="text-lg font-black text-white mt-0.5">10% / 3%</div>
+          <span className="text-[10px] font-bold text-slate-400">Standard / Student tier</span>
         </div>
       </div>
     </div>
@@ -250,13 +250,13 @@ export const CategoryDonutChart: React.FC = () => {
     { label: "Thangka & Art", pct: 24, color: "#3B82F6", bg: "bg-blue-500" },
     { label: "Student Innovations", pct: 18, color: "#F59E0B", bg: "bg-amber-500" },
     { label: "Pashmina & Wool", pct: 14, color: "#10B981", bg: "bg-emerald-500" },
-    { label: "Organic Herbs & Tea", pct: 6, color: "#C51D24", bg: "bg-red-500" },
+    { label: "Organic Herbs & Tea", pct: 6, color: "#EF4444", bg: "bg-red-500" },
   ];
 
   return (
-    <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+    <div className="bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-md space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-black text-slate-900 tracking-tight">Sales Breakdown</h3>
+        <h3 className="text-base font-black text-white tracking-tight">Sales Breakdown</h3>
         <span className="text-xs font-bold text-slate-400">By Category</span>
       </div>
 
@@ -264,29 +264,28 @@ export const CategoryDonutChart: React.FC = () => {
       <div className="flex items-center justify-center py-2">
         <div className="relative w-36 h-36 flex items-center justify-center">
           <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-            {/* Concentric / multi-stroke ring */}
             <circle cx="50" cy="50" r="38" stroke="#8B5CF6" strokeWidth="12" strokeDasharray="90 150" fill="none" />
             <circle cx="50" cy="50" r="38" stroke="#3B82F6" strokeWidth="12" strokeDasharray="57 183" strokeDashoffset="-90" fill="none" />
             <circle cx="50" cy="50" r="38" stroke="#F59E0B" strokeWidth="12" strokeDasharray="43 197" strokeDashoffset="-147" fill="none" />
             <circle cx="50" cy="50" r="38" stroke="#10B981" strokeWidth="12" strokeDasharray="33 207" strokeDashoffset="-190" fill="none" />
-            <circle cx="50" cy="50" r="38" stroke="#C51D24" strokeWidth="12" strokeDasharray="14 226" strokeDashoffset="-223" fill="none" />
+            <circle cx="50" cy="50" r="38" stroke="#EF4444" strokeWidth="12" strokeDasharray="14 226" strokeDashoffset="-223" fill="none" />
           </svg>
           <div className="absolute text-center">
-            <span className="text-xs font-bold text-slate-400">Total</span>
-            <div className="text-base font-black text-slate-900">100%</div>
+            <span className="text-xs font-bold text-slate-500">Total</span>
+            <div className="text-base font-black text-white">100%</div>
           </div>
         </div>
       </div>
 
       {/* Legend */}
-      <div className="space-y-2 pt-2 border-t border-slate-100">
+      <div className="space-y-2 pt-2 border-t border-slate-800">
         {slices.map((s, idx) => (
           <div key={idx} className="flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
               <span className={`w-2.5 h-2.5 rounded-full ${s.bg}`}></span>
-              <span className="text-slate-600 font-medium">{s.label}</span>
+              <span className="text-slate-300 font-medium">{s.label}</span>
             </div>
-            <span className="font-bold text-slate-900">{s.pct}%</span>
+            <span className="font-bold text-white">{s.pct}%</span>
           </div>
         ))}
       </div>
@@ -302,52 +301,52 @@ export const RecentActivityFeed: React.FC = () => {
       title: "Mayur Jhyal Peacock Window",
       desc: "Artisan Bikash Shrestha placed teak window on 48h live auction.",
       tag: "Live Auction",
-      tagColor: "bg-red-50 text-red-700 border-red-200",
+      tagColor: "bg-red-950 text-red-300 border-red-800",
     },
     {
       time: "10:15",
       title: "Student Prototype Published",
       desc: "Aarav Bajracharya submitted Lokta Paper Art with 3% youth rate.",
       tag: "Student Creator",
-      tagColor: "bg-amber-50 text-amber-800 border-amber-200",
+      tagColor: "bg-amber-950 text-amber-300 border-amber-800",
     },
     {
       time: "14:37",
       title: "eSewa Payment Settled",
       desc: "Order #DHAR-20261022 verified NPR 15,050 into merchant escrow.",
       tag: "Order Paid",
-      tagColor: "bg-emerald-50 text-emerald-800 border-emerald-200",
+      tagColor: "bg-emerald-950 text-emerald-300 border-emerald-800",
     },
     {
       time: "16:50",
       title: "Artisan KYC Verified",
       desc: "Bhaktapur Woodcraft Guild credentials verified by SuperAdmin.",
       tag: "Verified",
-      tagColor: "bg-purple-50 text-purple-800 border-purple-200",
+      tagColor: "bg-purple-950 text-purple-300 border-purple-800",
     },
   ];
 
   return (
-    <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+    <div className="bg-slate-900 p-5 sm:p-6 rounded-2xl border border-slate-800 shadow-md space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-black text-slate-900 tracking-tight">Recent Activity</h3>
+        <h3 className="text-base font-black text-white tracking-tight">Recent Activity</h3>
         <span className="text-[11px] font-bold text-slate-400">Live Stream</span>
       </div>
 
-      <div className="space-y-4 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-slate-100">
+      <div className="space-y-4 relative before:absolute before:inset-0 before:left-3.5 before:w-0.5 before:bg-slate-800">
         {events.map((e, idx) => (
           <div key={idx} className="relative flex items-start gap-4 text-xs">
-            <div className="w-7 h-7 rounded-full bg-slate-50 border-2 border-white shadow-xs text-[10px] font-mono font-bold text-slate-500 flex items-center justify-center flex-shrink-0 z-10">
+            <div className="w-7 h-7 rounded-full bg-slate-950 border-2 border-slate-800 shadow-xs text-[10px] font-mono font-bold text-slate-300 flex items-center justify-center shrink-0 z-10">
               {e.time.slice(0, 2)}
             </div>
             <div className="flex-1 space-y-1">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-900">{e.title}</span>
+                <span className="font-bold text-white">{e.title}</span>
                 <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${e.tagColor}`}>
                   {e.tag}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">{e.desc}</p>
+              <p className="text-[11px] text-slate-400 leading-relaxed">{e.desc}</p>
             </div>
           </div>
         ))}
@@ -355,4 +354,3 @@ export const RecentActivityFeed: React.FC = () => {
     </div>
   );
 };
-

@@ -38,74 +38,66 @@ export default function CreatorCommissionsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2">
-            <FileCheck2 className="w-6 h-6 text-amber-700" />
+          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            <FileCheck2 className="w-6 h-6 text-amber-400" />
             <span>Bespoke Collector Commissions Desk</span>
           </h1>
-          <p className="text-xs text-stone-500 mt-1">
+          <p className="text-xs text-stone-400 mt-1">
             Manage custom commissioned bronze deities, Thangka paintings, milestone progress, and escrow release gates.
           </p>
         </div>
       </div>
 
       {toast && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-xl flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
           <span>{toast}</span>
         </div>
       )}
 
-      <div className="bg-white rounded-3xl border border-stone-200 p-6 shadow-sm space-y-4">
-        <h2 className="text-sm font-black text-stone-900 pb-2 border-b border-stone-100">
-          Active Bespoke Commissions ({commissions.length})
-        </h2>
-
-        <div className="space-y-4">
-          {commissions.map((c) => (
-            <div
-              key={c.id}
-              className="p-5 bg-stone-50 rounded-2xl border border-stone-200 space-y-3"
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
-                  <span className="font-mono text-xs font-black text-amber-800 bg-amber-100 px-2 py-0.5 rounded-lg border border-amber-200">
-                    {c.id}
-                  </span>
-                  <span className="text-sm font-black text-stone-900 ml-2">{c.deity}</span>
-                </div>
-                <div className="text-sm font-black text-emerald-800">{c.budget}</div>
+      <div className="grid grid-cols-1 gap-4">
+        {commissions.map((c) => (
+          <div
+            key={c.id}
+            className="p-5 bg-stone-900 rounded-2xl border border-stone-800 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4"
+          >
+            <div className="space-y-1.5">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-xs font-bold text-amber-400 bg-stone-950 px-2 py-0.5 rounded border border-stone-800">
+                  {c.id}
+                </span>
+                <span className="text-sm font-black text-white">{c.deity}</span>
               </div>
-
-              <div className="text-xs text-stone-600">
-                Patron: <strong className="text-stone-800">{c.patron}</strong>
+              <div className="text-xs text-stone-400">
+                Patron: <strong className="text-stone-200">{c.patron}</strong>
               </div>
-
-              <div className="p-3 bg-white rounded-xl border border-stone-200 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
-                  <div className="text-[10px] uppercase font-bold text-stone-400">Current Milestone</div>
-                  <div className="font-bold text-amber-700">{c.stage}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-[10px] uppercase font-bold text-stone-400">Escrow Security</div>
-                  <div className="font-bold text-emerald-700">{c.depositStatus}</div>
-                </div>
+              <div className="text-xs text-amber-300 font-bold flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5" />
+                <span>Current Milestone: {c.stage}</span>
               </div>
-
-              <div className="pt-2 flex items-center justify-between text-xs">
-                <span className="text-stone-400">Deadline: {c.deadline}</span>
-                <button
-                  onClick={() => handleUpdateStage(c.id)}
-                  className="px-3.5 py-1.5 rounded-xl bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs transition"
-                >
-                  Update Milestone & Photos
-                </button>
+              <div className="text-[11px] text-stone-500">
+                Deadline: {c.deadline} • Deposit: <span className="text-emerald-400 font-semibold">{c.depositStatus}</span>
               </div>
             </div>
-          ))}
-        </div>
+
+            <div className="flex items-center gap-4 self-end md:self-auto">
+              <div className="text-right">
+                <div className="text-[10px] uppercase font-bold text-stone-500">Total Budget</div>
+                <div className="text-base font-black text-white">{c.budget}</div>
+              </div>
+
+              <button
+                onClick={() => handleUpdateStage(c.id)}
+                className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow transition"
+              >
+                Advance Milestone
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

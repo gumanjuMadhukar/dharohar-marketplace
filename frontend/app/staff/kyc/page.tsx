@@ -64,30 +64,30 @@ export default function StaffKycPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div>
-        <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-          <CheckCircle className="w-6 h-6 text-emerald-600" />
+        <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+          <CheckCircle className="w-6 h-6 text-emerald-400" />
           <span>KYC Compliance & Verification Desk</span>
         </h1>
-        <p className="text-xs text-slate-500 mt-1">
+        <p className="text-xs text-slate-400 mt-1">
           Review government citizenship certificates for artisans and student IDs with guardian co-signing.
         </p>
       </div>
 
       {toast && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-xl flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
           <span>{toast}</span>
         </div>
       )}
 
-      <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <h2 className="text-sm font-black text-slate-900">
+      <div className="bg-slate-900 rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-md space-y-4">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+          <h2 className="text-sm font-black text-white">
             Pending Submissions ({submissions.length})
           </h2>
-          <span className="text-xs text-slate-400">Identity Guard v2.4</span>
+          <span className="text-xs text-slate-500 font-mono">Identity Guard v2.4</span>
         </div>
 
         {submissions.length === 0 ? (
@@ -95,47 +95,47 @@ export default function StaffKycPage() {
             🎉 All KYC documents have been reviewed and approved!
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {submissions.map((sub) => (
               <div
                 key={sub.id}
-                className="p-4 bg-slate-50 rounded-2xl border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
+                className="p-4 bg-slate-950 rounded-xl border border-slate-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-900">{sub.name}</span>
+                    <span className="text-xs font-bold text-white">{sub.name}</span>
                     <span
                       className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase ${
                         sub.role === "student"
-                          ? "bg-pink-100 text-pink-700 border border-pink-200"
-                          : "bg-amber-100 text-amber-700 border border-amber-200"
+                          ? "bg-emerald-950 text-emerald-400 border border-emerald-800"
+                          : "bg-amber-950 text-amber-400 border border-amber-800"
                       }`}
                     >
                       {sub.subType}
                     </span>
                   </div>
-                  <div className="text-xs text-slate-600">
+                  <div className="text-xs text-slate-300">
                     Document: <strong>{sub.documentType}</strong> ({sub.documentNumber})
                   </div>
                   {sub.guardianName !== "N/A" && (
-                    <div className="text-[11px] text-slate-500">
-                      Co-Signed by Guardian: <strong className="text-slate-700">{sub.guardianName}</strong> ✅
+                    <div className="text-[11px] text-slate-400">
+                      Co-Signed by Guardian: <strong className="text-slate-200">{sub.guardianName}</strong> ✅
                     </div>
                   )}
-                  <div className="text-[10px] text-slate-400">Submitted {sub.submittedAt}</div>
+                  <div className="text-[10px] text-slate-500">Submitted {sub.submittedAt}</div>
                 </div>
 
                 <div className="flex items-center gap-2 self-end md:self-center">
                   <button
                     onClick={() => handleReject(sub.id, sub.name)}
-                    className="px-3 py-2 rounded-xl border border-slate-300 hover:bg-red-50 hover:text-red-700 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
+                    className="px-3 py-2 rounded-xl border border-slate-700 bg-slate-800 hover:bg-red-950/80 hover:text-red-400 text-slate-300 text-xs font-bold transition flex items-center gap-1.5"
                   >
-                    <XCircle className="w-3.5 h-3.5 text-red-500" />
+                    <XCircle className="w-3.5 h-3.5 text-red-400" />
                     <span>Reject</span>
                   </button>
                   <button
                     onClick={() => handleApprove(sub.id, sub.name)}
-                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition flex items-center gap-1.5"
+                    className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md transition flex items-center gap-1.5"
                   >
                     <CheckCircle className="w-3.5 h-3.5" />
                     <span>Approve & Verify</span>

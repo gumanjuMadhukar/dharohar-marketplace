@@ -50,22 +50,22 @@ export default function StaffLiveStreamsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <Radio className="w-6 h-6 text-red-600 animate-pulse" />
+          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            <Radio className="w-6 h-6 text-red-500 animate-pulse" />
             <span>Live Stream Supervisory Console</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Monitor active live rooms, review flagged audience comments in real-time, and enforce anti-spam rules.
           </p>
         </div>
       </div>
 
       {toast && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-xl flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
           <span>{toast}</span>
         </div>
       )}
@@ -74,60 +74,60 @@ export default function StaffLiveStreamsPage() {
         {activeStreams.map((stream) => (
           <div
             key={stream.id}
-            className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm space-y-4"
+            className="bg-slate-900 rounded-2xl border border-slate-800 p-5 sm:p-6 shadow-md space-y-4"
           >
             <div className="flex items-center justify-between">
-              <span className="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-black uppercase flex items-center gap-1.5 border border-red-200">
-                <span className="w-2 h-2 rounded-full bg-red-600 animate-ping" />
+              <span className="px-3 py-1 rounded-full bg-red-950/80 text-red-400 text-xs font-black uppercase flex items-center gap-1.5 border border-red-800">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
                 SUPERVISION ACTIVE
               </span>
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
                 <Eye className="w-3.5 h-3.5 text-red-500" />
                 <span>{stream.viewers.toLocaleString()} Watchers</span>
               </div>
             </div>
 
             <div>
-              <h2 className="text-base font-black text-slate-900">{stream.title}</h2>
-              <div className="text-xs text-slate-500 mt-1">Host: {stream.host}</div>
+              <h2 className="text-base font-black text-white">{stream.title}</h2>
+              <div className="text-xs text-slate-400 mt-1">Host: {stream.host}</div>
             </div>
 
-            <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200/60 text-xs">
-              <div className="text-[10px] uppercase font-bold text-amber-800">Active Bidding Floor</div>
-              <div className="font-bold text-slate-900">{stream.currentLot}</div>
+            <div className="p-3 bg-slate-950 rounded-xl border border-amber-900/40 text-xs">
+              <div className="text-[10px] uppercase font-bold text-amber-400">Active Bidding Floor</div>
+              <div className="font-bold text-white">{stream.currentLot}</div>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 text-xs flex items-center justify-between">
-              <span className="text-slate-600">Audience Chat Status:</span>
-              <span className="font-bold text-slate-800">{stream.chatHealth}</span>
+            <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-xs flex items-center justify-between">
+              <span className="text-slate-400">Audience Chat Status:</span>
+              <span className="font-bold text-emerald-400">{stream.chatHealth}</span>
             </div>
 
             {/* Moderator Action Buttons */}
             <div className="pt-2 flex flex-wrap items-center gap-2">
               <button
                 onClick={() => handleMuteChat(stream.id)}
-                className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
+                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-slate-700"
               >
                 <VolumeX className="w-3.5 h-3.5" />
                 <span>Slow Chat (10s)</span>
               </button>
               <button
                 onClick={() => handleTimeoutTrolls(stream.id)}
-                className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-1.5"
+                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition flex items-center gap-1.5 border border-slate-700"
               >
-                <UserX className="w-3.5 h-3.5 text-red-600" />
+                <UserX className="w-3.5 h-3.5 text-red-400" />
                 <span>Purge Troll Messages</span>
               </button>
               <Link
                 href="/creator/live-studio"
-                className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-1.5"
+                className="px-3.5 py-2 rounded-xl bg-slate-950 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-1.5 border border-slate-700"
               >
                 <Sliders className="w-3.5 h-3.5 text-amber-400" />
                 <span>OBS Studio</span>
               </Link>
               <Link
                 href={`/live/${stream.id}`}
-                className="ml-auto px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-1.5"
+                className="ml-auto px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition flex items-center gap-1.5"
               >
                 <span>Enter Room HUD</span>
                 <ExternalLink className="w-3.5 h-3.5" />

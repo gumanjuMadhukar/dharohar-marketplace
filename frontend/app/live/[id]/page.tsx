@@ -547,10 +547,10 @@ export default function LiveRoomPage({ params }: { params: Promise<{ id: string 
         <div className="lg:col-span-8 flex flex-col space-y-4">
           {/* Video Player Container */}
           <div className="relative aspect-video bg-black rounded-none lg:rounded-3xl overflow-hidden border border-stone-800 shadow-2xl flex items-center justify-center group">
-            {/* Real Video Fallback with Simulated Artisan Feed */}
+            {/* Real Video Feed with Artisan Craft Angle Switching */}
             <video
               ref={videoRef}
-              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              src="https://assets.mixkit.co/videos/preview/mixkit-blacksmith-hammering-glowing-iron-42861-large.mp4"
               autoPlay
               loop
               muted={muted}
@@ -563,13 +563,31 @@ export default function LiveRoomPage({ params }: { params: Promise<{ id: string 
               <div className="flex items-center gap-1 bg-black/70 backdrop-blur-md p-1 rounded-xl border border-white/10">
                 <Camera className="w-3.5 h-3.5 text-amber-400 ml-1.5 mr-1" />
                 {[
-                  { id: 1, label: "Studio Wide" },
-                  { id: 2, label: "Close Chasing" },
-                  { id: 3, label: "Lot Inspection" },
+                  {
+                    id: 1,
+                    label: "Studio Wide",
+                    url: "https://assets.mixkit.co/videos/preview/mixkit-blacksmith-hammering-glowing-iron-42861-large.mp4",
+                  },
+                  {
+                    id: 2,
+                    label: "Close Chasing",
+                    url: "https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-carpenter-shaping-wood-with-a-chisel-42845-large.mp4",
+                  },
+                  {
+                    id: 3,
+                    label: "Lot Inspection",
+                    url: "https://assets.mixkit.co/videos/preview/mixkit-hands-carving-wood-with-chisel-42858-large.mp4",
+                  },
                 ].map((cam) => (
                   <button
                     key={cam.id}
-                    onClick={() => setActiveCamera(cam.id as any)}
+                    onClick={() => {
+                      setActiveCamera(cam.id as any);
+                      if (videoRef.current) {
+                        videoRef.current.src = cam.url;
+                        videoRef.current.play().catch(() => {});
+                      }
+                    }}
                     className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition ${
                       activeCamera === cam.id
                         ? "bg-red-600 text-white"

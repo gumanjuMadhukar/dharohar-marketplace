@@ -33,14 +33,14 @@ export default function CreatorShowcasePage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2">
-            <Palette className="w-6 h-6 text-amber-700" />
+          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            <Palette className="w-6 h-6 text-amber-400" />
             <span>Heritage Portfolio & Craft Storytelling</span>
           </h1>
-          <p className="text-xs text-stone-500 mt-1">
+          <p className="text-xs text-stone-400 mt-1">
             Showcase generational artistic provenance, publish sacred technique stories, and attach digital authenticity certificates.
           </p>
         </div>
@@ -50,7 +50,7 @@ export default function CreatorShowcasePage() {
             setToast("Artisan storytelling editor opened. New heritage provenance certificate drafted.");
             setTimeout(() => setToast(null), 3000);
           }}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold rounded-xl shadow transition self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-xl shadow transition self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Publish New Heritage Masterpiece</span>
@@ -58,8 +58,8 @@ export default function CreatorShowcasePage() {
       </div>
 
       {toast && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-xl flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
           <span>{toast}</span>
         </div>
       )}
@@ -68,32 +68,32 @@ export default function CreatorShowcasePage() {
         {artworks.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-sm flex flex-col justify-between"
+            className="bg-stone-900 rounded-2xl border border-stone-800 overflow-hidden shadow-md flex flex-col justify-between"
           >
-            <div className="relative aspect-video bg-stone-900">
+            <div className="relative aspect-video bg-stone-950">
               <img
                 src={item.image}
                 alt={item.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md text-amber-300 text-[10px] font-bold border border-amber-500/30 flex items-center gap-1">
+              <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/80 backdrop-blur-md text-amber-300 text-[10px] font-bold border border-amber-500/30 flex items-center gap-1">
                 <Award className="w-3 h-3" />
                 <span>Govt Certified</span>
               </div>
             </div>
 
             <div className="p-5 space-y-3">
-              <h2 className="text-sm font-black text-stone-900">{item.title}</h2>
-              <div className="text-xs text-stone-600">
-                Provenance: <strong className="text-stone-800">{item.provenance}</strong>
+              <h2 className="text-sm font-black text-white">{item.title}</h2>
+              <div className="text-xs text-stone-400">
+                Provenance: <strong className="text-stone-200">{item.provenance}</strong>
               </div>
-              <div className="text-[11px] text-stone-500">
+              <div className="text-[11px] text-stone-400">
                 Materials: {item.material}
               </div>
 
-              <div className="pt-2 border-t border-stone-100 flex items-center justify-between text-xs">
+              <div className="pt-2 border-t border-stone-800 flex items-center justify-between text-xs">
                 <span className="font-mono text-[10px] text-stone-400 font-bold">{item.certificate}</span>
-                <span className="text-amber-800 font-bold hover:underline cursor-pointer">
+                <span className="text-amber-400 font-bold hover:underline cursor-pointer">
                   Inspect Certificate & Story →
                 </span>
               </div>

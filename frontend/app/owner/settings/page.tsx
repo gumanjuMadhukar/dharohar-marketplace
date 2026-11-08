@@ -30,28 +30,28 @@ export default function OwnerSettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div>
-        <h1 className="text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2">
-          <Settings className="w-6 h-6 text-emerald-700" />
+        <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+          <Settings className="w-6 h-6 text-emerald-400" />
           <span>Organization & Legal Tax Settings</span>
         </h1>
-        <p className="text-xs text-stone-500 mt-1">
+        <p className="text-xs text-stone-400 mt-1">
           Manage your registered enterprise legal profile, Inland Revenue Department PAN/VAT registration, and banking payout routing.
         </p>
       </div>
 
       {toast && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-xl flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
           <span>{toast}</span>
         </div>
       )}
 
-      <div className="bg-white rounded-3xl border border-stone-200 p-6 shadow-sm max-w-2xl space-y-6">
+      <div className="bg-stone-900 rounded-2xl border border-stone-800 p-5 sm:p-6 shadow-md max-w-2xl space-y-6">
         <form onSubmit={handleSave} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-stone-700 mb-1">
+            <label className="block text-xs font-bold text-stone-300 mb-1">
               Registered Legal Enterprise Name
             </label>
             <input
@@ -59,12 +59,12 @@ export default function OwnerSettingsPage() {
               required
               value={orgName}
               onChange={(e) => setOrgName(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-1 focus:ring-emerald-700 focus:outline-none"
+              className="w-full px-3 py-2.5 bg-stone-950 rounded-xl border border-stone-800 text-xs text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-stone-700 mb-1">
+            <label className="block text-xs font-bold text-stone-300 mb-1">
               Nepal Government PAN / VAT Certificate Number
             </label>
             <input
@@ -72,12 +72,12 @@ export default function OwnerSettingsPage() {
               required
               value={panNumber}
               onChange={(e) => setPanNumber(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-1 focus:ring-emerald-700 focus:outline-none"
+              className="w-full px-3 py-2.5 bg-stone-950 rounded-xl border border-stone-800 text-xs text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-stone-700 mb-1">
+            <label className="block text-xs font-bold text-stone-300 mb-1">
               Corporate Payout Bank Account (Nepal Clearance)
             </label>
             <input
@@ -85,12 +85,12 @@ export default function OwnerSettingsPage() {
               required
               value={bankAccount}
               onChange={(e) => setBankAccount(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-1 focus:ring-emerald-700 focus:outline-none"
+              className="w-full px-3 py-2.5 bg-stone-950 rounded-xl border border-stone-800 text-xs text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-stone-700 mb-1">
+            <label className="block text-xs font-bold text-stone-300 mb-1">
               Executive Notice Email
             </label>
             <input
@@ -98,7 +98,7 @@ export default function OwnerSettingsPage() {
               required
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-xl border border-stone-300 text-xs focus:ring-1 focus:ring-emerald-700 focus:outline-none"
+              className="w-full px-3 py-2.5 bg-stone-950 rounded-xl border border-stone-800 text-xs text-white focus:ring-1 focus:ring-emerald-500 focus:outline-none"
             />
           </div>
 
@@ -106,7 +106,7 @@ export default function OwnerSettingsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition flex items-center gap-2"
+              className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition flex items-center gap-2"
             >
               <Save className="w-4 h-4" />
               <span>{saving ? "Saving..." : "Save Enterprise Settings"}</span>

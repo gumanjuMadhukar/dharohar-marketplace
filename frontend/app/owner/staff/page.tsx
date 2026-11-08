@@ -41,14 +41,14 @@ export default function OwnerStaffPage() {
   ]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2">
-            <Users className="w-6 h-6 text-emerald-700" />
+          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            <Users className="w-6 h-6 text-emerald-400" />
             <span>Store Managers & Artisan Delegation</span>
           </h1>
-          <p className="text-xs text-stone-500 mt-1">
+          <p className="text-xs text-stone-400 mt-1">
             Delegate operational access, assign branch management roles, and customize permissions.
           </p>
         </div>
@@ -58,7 +58,7 @@ export default function OwnerStaffPage() {
             setToast("Manager invitation link generated and copied to clipboard.");
             setTimeout(() => setToast(null), 3000);
           }}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow transition self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow transition self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>Invite Store Manager</span>
@@ -66,40 +66,40 @@ export default function OwnerStaffPage() {
       </div>
 
       {toast && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-xl flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
           <span>{toast}</span>
         </div>
       )}
 
-      <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-stone-100 flex items-center justify-between">
-          <h2 className="text-xs font-black uppercase text-stone-400">Authorized Branch Managers</h2>
-          <span className="text-xs text-stone-500 font-bold">3 Active Accounts</span>
+      <div className="bg-stone-900 rounded-2xl border border-stone-800 shadow-md overflow-hidden">
+        <div className="p-4 border-b border-stone-800 flex items-center justify-between">
+          <h2 className="text-xs font-black uppercase text-stone-500">Authorized Branch Managers</h2>
+          <span className="text-xs text-stone-400 font-bold">3 Active Accounts</span>
         </div>
 
-        <div className="divide-y divide-stone-100">
+        <div className="divide-y divide-stone-800">
           {staffList.map((member) => (
             <div key={member.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-black text-stone-900">{member.name}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+                  <span className="text-sm font-black text-white">{member.name}</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-bold">
                     {member.role}
                   </span>
                 </div>
-                <div className="text-xs text-stone-500 flex items-center gap-2">
-                  <Mail className="w-3.5 h-3.5" />
+                <div className="text-xs text-stone-400 flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5 text-stone-500" />
                   <span>{member.email}</span>
                   <span>•</span>
-                  <strong className="text-stone-700">{member.assignedStore}</strong>
+                  <strong className="text-stone-300">{member.assignedStore}</strong>
                 </div>
 
                 <div className="flex flex-wrap items-center gap-1.5 pt-1.5">
                   {member.permissions.map((p, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 rounded-lg bg-stone-100 text-stone-700 text-[10px] font-semibold border border-stone-200"
+                      className="px-2 py-0.5 rounded-lg bg-stone-950 text-stone-300 text-[10px] font-semibold border border-stone-800"
                     >
                       ✓ {p}
                     </span>
@@ -107,7 +107,7 @@ export default function OwnerStaffPage() {
                 </div>
               </div>
 
-              <button className="px-3 py-1.5 rounded-xl border border-stone-200 hover:bg-stone-50 text-stone-700 text-xs font-bold transition self-end md:self-center">
+              <button className="px-3 py-1.5 rounded-xl border border-stone-700 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold transition self-end md:self-center">
                 Configure Permissions
               </button>
             </div>

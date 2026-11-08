@@ -40,21 +40,21 @@ export default function OwnerReportsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-stone-900 tracking-tight flex items-center gap-2">
-            <FileSpreadsheet className="w-6 h-6 text-emerald-700" />
+          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            <FileSpreadsheet className="w-6 h-6 text-emerald-400" />
             <span>Financials, Escrow & VAT Ledgers</span>
           </h1>
-          <p className="text-xs text-stone-500 mt-1">
+          <p className="text-xs text-stone-400 mt-1">
             Complete reconciliation of multi-store revenue, platform commission deductions, and certified VAT/PAN tax statements.
           </p>
         </div>
 
         <button
           onClick={() => handleDownloadInvoice("Summary-2026")}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl shadow transition self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow transition self-start sm:self-auto"
         >
           <Download className="w-4 h-4" />
           <span>Export Annual Financial Report (CSV)</span>
@@ -62,46 +62,46 @@ export default function OwnerReportsPage() {
       </div>
 
       {toast && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs font-bold rounded-xl flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
           <span>{toast}</span>
         </div>
       )}
 
       {/* Monthly Statements Table */}
-      <div className="bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-stone-100 flex items-center justify-between">
-          <h2 className="text-xs font-black uppercase text-stone-400">Monthly Payout Statements</h2>
-          <span className="text-xs text-emerald-700 font-bold">Audited by Dharohar Financial Core</span>
+      <div className="bg-stone-900 rounded-2xl border border-stone-800 shadow-md overflow-hidden">
+        <div className="p-4 border-b border-stone-800 flex items-center justify-between">
+          <h2 className="text-xs font-black uppercase text-stone-500">Monthly Payout Statements</h2>
+          <span className="text-xs text-emerald-400 font-bold">Audited by Dharohar Financial Core</span>
         </div>
 
-        <div className="divide-y divide-stone-100">
+        <div className="divide-y divide-stone-800">
           {ledger.map((item) => (
             <div key={item.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-black text-stone-900">{item.period}</span>
-                  <span className="font-mono text-[10px] text-stone-500 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">
+                  <span className="text-sm font-black text-white">{item.period}</span>
+                  <span className="font-mono text-[10px] text-stone-300 bg-stone-950 px-2 py-0.5 rounded border border-stone-800">
                     {item.id}
                   </span>
                 </div>
-                <div className="text-xs text-stone-600">
-                  Gross: <strong>{item.grossSales}</strong> • Platform Fee: <span className="text-red-600">{item.platformFee}</span>
+                <div className="text-xs text-stone-400">
+                  Gross: <strong className="text-stone-200">{item.grossSales}</strong> • Platform Fee: <span className="text-red-400">{item.platformFee}</span>
                 </div>
-                <div className="text-[11px] text-emerald-700 font-bold">
+                <div className="text-[11px] text-emerald-400 font-bold">
                   {item.status} on {item.date}
                 </div>
               </div>
 
               <div className="flex items-center gap-4 self-end md:self-auto">
                 <div className="text-right">
-                  <div className="text-[10px] uppercase font-bold text-stone-400">Net Disbursed</div>
-                  <div className="text-base font-black text-emerald-800">{item.netPaid}</div>
+                  <div className="text-[10px] uppercase font-bold text-stone-500">Net Disbursed</div>
+                  <div className="text-base font-black text-emerald-400">{item.netPaid}</div>
                 </div>
 
                 <button
                   onClick={() => handleDownloadInvoice(item.id)}
-                  className="px-3.5 py-2 rounded-xl border border-stone-200 hover:bg-stone-50 text-stone-700 text-xs font-bold transition flex items-center gap-1.5"
+                  className="px-3.5 py-2 rounded-xl border border-stone-700 bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-bold transition flex items-center gap-1.5"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>VAT Receipt</span>
