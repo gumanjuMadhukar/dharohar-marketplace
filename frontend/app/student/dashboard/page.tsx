@@ -91,26 +91,26 @@ export default function StudentDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <Link
           href="/student/create"
-          className="bg-white p-6 rounded-3xl border border-slate-200/80 hover:border-emerald-500 shadow-xs hover:shadow-md transition space-y-2 block"
+          className="bg-slate-900 p-6 rounded-3xl border border-slate-800 hover:border-emerald-500/50 shadow-xs hover:shadow-md transition space-y-2 block"
         >
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
             <Plus className="w-5 h-5" />
           </div>
-          <div className="font-black text-sm text-slate-900">Publish New Idea or Artwork</div>
-          <p className="text-xs text-slate-500">
+          <div className="font-black text-sm text-white">Publish New Idea or Artwork</div>
+          <p className="text-xs text-slate-400">
             Showcase your school prototypes, Lokta paper drawings, digital mandalas, or eco innovations.
           </p>
         </Link>
 
         <Link
           href="/student/academy"
-          className="bg-white p-6 rounded-3xl border border-slate-200/80 hover:border-emerald-500 shadow-xs hover:shadow-md transition space-y-2 block"
+          className="bg-slate-900 p-6 rounded-3xl border border-slate-800 hover:border-emerald-500/50 shadow-xs hover:shadow-md transition space-y-2 block"
         >
-          <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center">
             <BookOpen className="w-5 h-5" />
           </div>
-          <div className="font-black text-sm text-slate-900">Youth Academy & Mentorship</div>
-          <p className="text-xs text-slate-500">
+          <div className="font-black text-sm text-white">Youth Academy & Mentorship</div>
+          <p className="text-xs text-slate-400">
             Learn master artisan pricing strategies, photography techniques, and zero-cost digital scaling.
           </p>
         </Link>

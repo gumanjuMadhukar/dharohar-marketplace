@@ -107,7 +107,7 @@ export default function AdminAuctionsPage() {
         loadAuctions();
       }
     } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to create live auction");
+      alert(err.response?.data?.message || "Failed to launch auction");
     }
   };
 
@@ -120,8 +120,8 @@ export default function AdminAuctionsPage() {
         starting_price: Number(editingAuction.starting_price),
         reserve_price: editingAuction.reserve_price ? Number(editingAuction.reserve_price) : null,
         bid_increment: Number(editingAuction.bid_increment),
-        ends_at: editingAuction.ends_at,
         status: editingAuction.status,
+        ends_at: editingAuction.ends_at,
       });
 
       if (res.data?.success) {
@@ -178,9 +178,9 @@ export default function AdminAuctionsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 w-full">
       {/* Top Controls */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="relative flex-1 max-w-md w-full">
           <input
             type="text"
@@ -188,14 +188,14 @@ export default function AdminAuctionsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && loadAuctions()}
-            className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 focus:outline-none"
+            className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-red-600/40 focus:border-red-600 focus:outline-none"
           />
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
         </div>
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition"
+          className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg shadow-rose-950/30 transition"
         >
           <Plus className="w-4 h-4" />
           <span>Launch Live Auction</span>
@@ -203,10 +203,10 @@ export default function AdminAuctionsPage() {
       </div>
 
       {/* Auctions Table */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs">
+      <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+            <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3.5 px-5">Auction Event</th>
                 <th className="py-3.5 px-4">Artisan Host</th>
@@ -218,87 +218,88 @@ export default function AdminAuctionsPage() {
                 <th className="py-3.5 px-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-800/80">
               {auctionsList.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400 text-xs">
-                    No auctions found. Click &quot;Launch Live Auction&quot; to initiate a timed bidding event.
+                  <td colSpan={8} className="py-12 text-center text-slate-500 text-xs">
+                    No active auctions right now. Click &quot;Launch Live Auction&quot; to begin.
                   </td>
                 </tr>
               ) : (
                 auctionsList.map((a) => (
-                  <tr key={a.id} className="hover:bg-slate-50/70 transition">
+                  <tr key={a.id} className="hover:bg-slate-800/40 transition">
                     <td className="py-3.5 px-5 flex items-center gap-3">
                       <img
-                        src={a.product?.primary_image?.url || a.product?.primary_image?.image_url || "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=100"}
+                        src={a.product?.primary_image?.url || "https://images.unsplash.com/photo-1544717305-2782549b5136?w=100"}
                         alt={a.title}
-                        className="w-10 h-10 rounded-xl object-cover ring-1 ring-slate-200"
+                        className="w-10 h-10 rounded-xl object-cover ring-1 ring-slate-800"
                       />
                       <div>
-                        <div className="font-bold text-slate-900 line-clamp-1">{a.title}</div>
-                        <div className="text-[10px] text-slate-400">Artifact: {a.product?.name || "Handcrafted Piece"}</div>
+                        <div className="font-bold text-white line-clamp-1">{a.title}</div>
+                        <div className="text-[10px] text-slate-400">Increment: NPR {Number(a.bid_increment).toLocaleString()}</div>
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-700 font-medium">{a.store?.name || "Artisan Guild"}</td>
-                    <td className="py-3.5 px-4 text-slate-600 font-bold">NPR {Number(a.starting_price).toLocaleString()}</td>
-                    <td className="py-3.5 px-4 font-black text-rose-600">
-                      NPR {Number(a.current_price || a.starting_price).toLocaleString()}
+                    <td className="py-3.5 px-4 text-slate-300 font-medium">{a.store?.name || "Official Guild"}</td>
+                    <td className="py-3.5 px-4 text-slate-400 font-mono">
+                      NPR {Number(a.starting_price).toLocaleString()}
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <span className="font-black text-amber-400 font-mono text-sm">
+                        NPR {Number(a.current_price || a.starting_price).toLocaleString()}
+                      </span>
                     </td>
                     <td className="py-3.5 px-4">
                       <button
                         onClick={() => handleOpenBids(a)}
-                        className="px-2.5 py-1 bg-purple-50 hover:bg-purple-100 text-purple-800 rounded-lg text-[11px] font-bold inline-flex items-center gap-1 transition"
+                        className="px-2.5 py-1 rounded-xl bg-purple-950/80 hover:bg-purple-900 border border-purple-800 text-purple-300 font-bold text-[11px] inline-flex items-center gap-1 transition"
                       >
-                        <Users className="w-3 h-3" />
+                        <Users className="w-3.5 h-3.5" />
                         <span>{a.bids_count || 0} bids</span>
                       </button>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-500 font-mono text-[11px]">
-                      {new Date(a.ends_at).toLocaleString([], { dateStyle: "short", timeStyle: "short" })}
+                    <td className="py-3.5 px-4 text-slate-400 font-mono text-[11px]">
+                      {new Date(a.ends_at).toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span
-                        className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                      <select
+                        value={a.status}
+                        onChange={(e) => handleUpdateStatus(a.id, e.target.value)}
+                        className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase border cursor-pointer ${
                           a.status === "active"
-                            ? "bg-rose-100 text-rose-800"
-                            : a.status === "upcoming"
-                            ? "bg-amber-100 text-amber-800"
-                            : "bg-slate-100 text-slate-700"
+                            ? "bg-red-950/80 text-red-300 border-red-800"
+                            : a.status === "ended"
+                            ? "bg-slate-950 text-slate-400 border-slate-800"
+                            : "bg-amber-950/80 text-amber-300 border-amber-800"
                         }`}
                       >
-                        {a.status}
-                      </span>
+                        <option value="active" className="bg-slate-900 text-white">Active</option>
+                        <option value="upcoming" className="bg-slate-900 text-white">Upcoming</option>
+                        <option value="ended" className="bg-slate-900 text-white">Ended</option>
+                        <option value="cancelled" className="bg-slate-900 text-white">Cancelled</option>
+                      </select>
                     </td>
-                    <td className="py-3.5 px-5 text-right space-x-1">
+                    <td className="py-3.5 px-5 text-right space-x-1 whitespace-nowrap">
                       <Link
                         href={`/auctions/${a.id}`}
                         target="_blank"
-                        className="p-1.5 text-slate-400 hover:text-purple-700 inline-block transition"
-                        title="View Public Live Room"
+                        className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg inline-block transition"
+                        title="Open Live Public Bidding Floor"
                       >
-                        <ExternalLink className="w-4 h-4" />
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </Link>
                       <button
                         onClick={() => setEditingAuction(a)}
-                        className="p-1.5 text-slate-400 hover:text-purple-700 inline-block transition"
-                        title="Edit Auction Room"
+                        className="p-1.5 text-purple-400 hover:text-purple-300 hover:bg-purple-950/80 rounded-lg inline-block transition"
+                        title="Edit Auction"
                       >
-                        <Edit className="w-4 h-4" />
+                        <Edit className="w-3.5 h-3.5" />
                       </button>
-                      {a.status === "active" && (
-                        <button
-                          onClick={() => handleUpdateStatus(a.id, "ended")}
-                          className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-[10px] font-bold transition"
-                        >
-                          End
-                        </button>
-                      )}
                       <button
                         onClick={() => handleDeleteAuction(a.id)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 inline-block transition"
+                        className="p-1.5 text-red-400 hover:text-red-300 hover:bg-red-950/80 rounded-lg inline-block transition"
                         title="Delete Auction Room"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>
@@ -311,25 +312,20 @@ export default function AdminAuctionsPage() {
 
       {/* Create Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
           <form
             onSubmit={handleCreateAuction}
-            className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-5 shadow-2xl my-8 border border-slate-100"
+            className="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-4 shadow-2xl my-8"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
-                  <Gavel className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="font-black text-sm text-slate-900">Launch Live Timed Auction Room</h3>
-                  <p className="text-[10px] text-slate-400">Initiate a real-time public bidding event on the marketplace</p>
-                </div>
+                <Gavel className="w-5 h-5 text-red-500" />
+                <h3 className="font-black text-sm text-white">Schedule New Live Heritage Auction</h3>
               </div>
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 text-sm font-bold flex items-center justify-center transition"
+                className="text-slate-400 hover:text-white text-lg font-bold"
               >
                 ✕
               </button>
@@ -337,26 +333,26 @@ export default function AdminAuctionsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Auction Room Title</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Auction Event Title</label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Master Bikash Shrestha - 100hr Teak Carved Peacock Window"
+                  placeholder="e.g. Master Sculptor Lost-Wax Shakyamuni Buddha Live Auction"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 focus:outline-none transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs font-medium focus:border-red-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Select Artifact</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Select Artifact</label>
                 <select
                   value={productId}
                   onChange={(e) => setProductId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 focus:outline-none transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-red-500 focus:outline-none"
                 >
                   {products.map((p) => (
-                    <option key={p.id} value={p.id}>
+                    <option key={p.id} value={p.id} className="bg-slate-900 text-white">
                       {p.name} (Retail: NPR {Number(p.price).toLocaleString()})
                     </option>
                   ))}
@@ -364,14 +360,14 @@ export default function AdminAuctionsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Artisan / Store Host</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Artisan / Store Host</label>
                 <select
                   value={storeId}
                   onChange={(e) => setStoreId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 focus:outline-none transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-red-500 focus:outline-none"
                 >
                   {stores.map((s) => (
-                    <option key={s.id} value={s.id}>
+                    <option key={s.id} value={s.id} className="bg-slate-900 text-white">
                       {s.name}
                     </option>
                   ))}
@@ -379,9 +375,9 @@ export default function AdminAuctionsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Starting Price (NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Starting Price (NPR)</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-xs font-bold text-slate-400">NPR</span>
+                  <span className="absolute left-3 top-2.5 text-xs font-bold text-slate-500">NPR</span>
                   <input
                     type="number"
                     required
@@ -389,73 +385,73 @@ export default function AdminAuctionsPage() {
                     placeholder="5000"
                     value={startingPrice}
                     onChange={(e) => setStartingPrice(e.target.value)}
-                    className="w-full pl-12 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 focus:outline-none transition"
+                    className="w-full pl-12 pr-3 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs font-semibold focus:border-red-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Reserve Price (Optional NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Reserve Price (Optional NPR)</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-xs font-bold text-slate-400">NPR</span>
+                  <span className="absolute left-3 top-2.5 text-xs font-bold text-slate-500">NPR</span>
                   <input
                     type="number"
                     min="0"
                     placeholder="8000"
                     value={reservePrice}
                     onChange={(e) => setReservePrice(e.target.value)}
-                    className="w-full pl-12 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 focus:outline-none transition"
+                    className="w-full pl-12 pr-3 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs font-semibold focus:border-red-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Minimum Bid Increment (NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Minimum Bid Increment (NPR)</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-2.5 text-xs font-bold text-slate-400">NPR</span>
+                  <span className="absolute left-3 top-2.5 text-xs font-bold text-slate-500">NPR</span>
                   <input
                     type="number"
                     required
                     min="10"
                     value={bidIncrement}
                     onChange={(e) => setBidIncrement(e.target.value)}
-                    className="w-full pl-12 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 focus:outline-none transition"
+                    className="w-full pl-12 pr-3 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs font-semibold focus:border-red-500 focus:outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Room Duration</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Room Duration</label>
                 <select
                   value={durationHours}
                   onChange={(e) => setDurationHours(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs bg-white font-medium focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 focus:outline-none transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-red-500 focus:outline-none"
                 >
-                  <option value="12">12 Hours (Flash Auction)</option>
-                  <option value="24">24 Hours (1 Day)</option>
-                  <option value="48">48 Hours (2 Days standard)</option>
-                  <option value="72">72 Hours (3 Days)</option>
-                  <option value="168">7 Days (Exhibition Special)</option>
+                  <option value="12" className="bg-slate-900 text-white">12 Hours (Flash Auction)</option>
+                  <option value="24" className="bg-slate-900 text-white">24 Hours (1 Day)</option>
+                  <option value="48" className="bg-slate-900 text-white">48 Hours (2 Days standard)</option>
+                  <option value="72" className="bg-slate-900 text-white">72 Hours (3 Days)</option>
+                  <option value="168" className="bg-slate-900 text-white">7 Days (Exhibition Special)</option>
                 </select>
               </div>
             </div>
 
-            <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200/80 text-[11px] text-amber-900 flex items-center justify-between">
+            <div className="p-3 bg-slate-950 rounded-2xl border border-amber-900/40 text-[11px] text-amber-300 flex items-center justify-between">
               <span>Auto-Extension Rule:</span>
               <span className="font-bold">5 minutes extension on last-second bids (anti-sniping)</span>
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+            <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl transition"
+                className="px-4 py-2.5 border border-slate-800 bg-slate-950 text-slate-400 hover:text-white text-xs font-bold rounded-xl transition"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-xs font-black rounded-xl shadow-md shadow-rose-600/20 transition"
+                className="px-6 py-2.5 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-black rounded-xl shadow-lg transition"
               >
                 Launch Auction
               </button>
@@ -466,99 +462,99 @@ export default function AdminAuctionsPage() {
 
       {/* Edit Modal */}
       {editingAuction && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
           <form
             onSubmit={handleUpdateAuction}
-            className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-4 shadow-2xl my-8"
+            className="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-4 shadow-2xl my-8"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-black text-sm text-slate-900">Edit Auction Room</h3>
-              <button type="button" onClick={() => setEditingAuction(null)} className="text-slate-400 text-lg font-bold">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="font-black text-sm text-white">Edit Auction Room</h3>
+              <button type="button" onClick={() => setEditingAuction(null)} className="text-slate-400 hover:text-white text-lg font-bold">
                 ✕
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Title</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Title</label>
                 <input
                   type="text"
                   required
                   value={editingAuction.title}
                   onChange={(e) => setEditingAuction({ ...editingAuction, title: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-red-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Starting Price (NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Starting Price (NPR)</label>
                 <input
                   type="number"
                   required
                   value={editingAuction.starting_price}
                   onChange={(e) => setEditingAuction({ ...editingAuction, starting_price: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-red-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Reserve Price (NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Reserve Price (NPR)</label>
                 <input
                   type="number"
                   value={editingAuction.reserve_price || ""}
                   onChange={(e) => setEditingAuction({ ...editingAuction, reserve_price: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-red-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Bid Increment (NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Bid Increment (NPR)</label>
                 <input
                   type="number"
                   required
                   value={editingAuction.bid_increment}
                   onChange={(e) => setEditingAuction({ ...editingAuction, bid_increment: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-red-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Room State</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Room State</label>
                 <select
                   value={editingAuction.status}
                   onChange={(e) => setEditingAuction({ ...editingAuction, status: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-red-500 focus:outline-none"
                 >
-                  <option value="active">Active Live Room</option>
-                  <option value="upcoming">Upcoming Countdown</option>
-                  <option value="ended">Ended</option>
-                  <option value="cancelled">Cancelled</option>
+                  <option value="active" className="bg-slate-900 text-white">Active Live Room</option>
+                  <option value="upcoming" className="bg-slate-900 text-white">Upcoming Countdown</option>
+                  <option value="ended" className="bg-slate-900 text-white">Ended</option>
+                  <option value="cancelled" className="bg-slate-900 text-white">Cancelled</option>
                 </select>
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Ends At (UTC/ISO)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Ends At (UTC/ISO)</label>
                 <input
                   type="text"
                   required
                   value={editingAuction.ends_at}
                   onChange={(e) => setEditingAuction({ ...editingAuction, ends_at: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs font-mono focus:border-red-500 focus:outline-none"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setEditingAuction(null)}
-                className="px-4 py-2 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl"
+                className="px-4 py-2 border border-slate-800 bg-slate-950 text-slate-400 hover:text-white text-xs font-bold rounded-xl"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold rounded-xl shadow-xs"
+                className="px-5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md transition"
               >
                 Save Changes
               </button>
@@ -569,39 +565,39 @@ export default function AdminAuctionsPage() {
 
       {/* Viewing Bids Modal */}
       {viewingBidsAuction && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-4 shadow-2xl my-8">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-4 shadow-2xl my-8">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div>
-                <h3 className="font-black text-sm text-slate-900">Live Bids Stream</h3>
+                <h3 className="font-black text-sm text-white">Live Bids Stream</h3>
                 <p className="text-[11px] text-slate-400">{viewingBidsAuction.title}</p>
               </div>
-              <button type="button" onClick={() => setViewingBidsAuction(null)} className="text-slate-400 text-lg font-bold">
+              <button type="button" onClick={() => setViewingBidsAuction(null)} className="text-slate-400 hover:text-white text-lg font-bold">
                 ✕
               </button>
             </div>
 
             {bidsLoading ? (
-              <div className="py-8 text-center text-xs text-slate-400">Loading bid history...</div>
+              <div className="py-8 text-center text-xs text-slate-500">Loading bid history...</div>
             ) : auctionBids.length === 0 ? (
-              <div className="py-8 text-center text-xs text-slate-400">No bids placed in this room yet.</div>
+              <div className="py-8 text-center text-xs text-slate-500">No bids placed in this room yet.</div>
             ) : (
-              <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+              <div className="divide-y divide-slate-800 max-h-80 overflow-y-auto">
                 {auctionBids.map((b, idx) => (
                   <div key={b.id} className="py-3 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-3">
-                      <span className="font-black text-slate-400 text-[10px]">#{idx + 1}</span>
+                      <span className="font-black text-slate-500 text-[10px]">#{idx + 1}</span>
                       <img
                         src={b.user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80"}
                         alt={b.user?.name}
-                        className="w-8 h-8 rounded-full object-cover"
+                        className="w-8 h-8 rounded-full object-cover ring-1 ring-slate-800"
                       />
                       <div>
-                        <div className="font-bold text-slate-900">{b.user?.name || "Anonymous Bidder"}</div>
-                        <div className="text-[10px] text-slate-400">{new Date(b.created_at).toLocaleTimeString()}</div>
+                        <div className="font-bold text-white">{b.user?.name || "Anonymous Bidder"}</div>
+                        <div className="text-[10px] text-slate-500">{new Date(b.created_at).toLocaleTimeString()}</div>
                       </div>
                     </div>
-                    <div className="font-black text-rose-600 text-sm">
+                    <div className="font-black text-amber-400 text-sm">
                       NPR {Number(b.amount).toLocaleString()}
                     </div>
                   </div>
@@ -609,11 +605,11 @@ export default function AdminAuctionsPage() {
               </div>
             )}
 
-            <div className="flex justify-end pt-3 border-t border-slate-100">
+            <div className="flex justify-end pt-3 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setViewingBidsAuction(null)}
-                className="px-5 py-2 bg-slate-900 text-white text-xs font-bold rounded-xl"
+                className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition"
               >
                 Close Stream
               </button>

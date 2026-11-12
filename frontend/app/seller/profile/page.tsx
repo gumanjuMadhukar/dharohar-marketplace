@@ -72,55 +72,55 @@ export default function SellerProfilePage() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <form onSubmit={handleUpdate} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
-        <h3 className="text-base font-black text-slate-900">Artisan Profile Information</h3>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full">
+      <form onSubmit={handleUpdate} className="bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-4">
+        <h3 className="text-base font-black text-white">Artisan Profile Information</h3>
 
         {profileMsg && (
-          <div className="p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold flex items-center gap-2">
-            <CheckCircle className="w-4 h-4" />
+          <div className="p-3 bg-emerald-950/80 text-emerald-300 border border-emerald-800 rounded-xl text-xs font-semibold flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-400" />
             <span>{profileMsg}</span>
           </div>
         )}
 
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">Full Legal Name</label>
+          <label className="block text-xs font-bold text-slate-300 mb-1">Full Legal Name</label>
           <input
             type="text"
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">Email</label>
+          <label className="block text-xs font-bold text-slate-300 mb-1">Email</label>
           <input
             type="email"
             disabled
             value={user?.email || ""}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-400 text-xs cursor-not-allowed"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950/60 text-slate-500 text-xs cursor-not-allowed"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">Phone</label>
+          <label className="block text-xs font-bold text-slate-300 mb-1">Phone</label>
           <input
             type="text"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">Artisan Bio / Background</label>
+          <label className="block text-xs font-bold text-slate-300 mb-1">Artisan Bio / Background</label>
           <textarea
             rows={3}
             value={bio}
             onChange={(e) => setBio(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
           />
         </div>
 
@@ -128,60 +128,60 @@ export default function SellerProfilePage() {
           <button
             type="submit"
             disabled={loading}
-            className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-nepal-crimson text-white text-xs font-bold rounded-xl shadow-xs transition"
+            className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs font-bold rounded-xl shadow-lg transition disabled:opacity-50"
           >
             {loading ? "Saving..." : "Save Artisan Profile"}
           </button>
         </div>
       </form>
 
-      <form onSubmit={handleChangePassword} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-4">
-        <h3 className="text-base font-black text-slate-900">Change Password</h3>
+      <form onSubmit={handleChangePassword} className="bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-4">
+        <h3 className="text-base font-black text-white">Change Password</h3>
 
         {passMsg && (
-          <div className="p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold flex items-center gap-2">
-            <CheckCircle className="w-4 h-4" />
+          <div className="p-3 bg-emerald-950/80 text-emerald-300 border border-emerald-800 rounded-xl text-xs font-semibold flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-400" />
             <span>{passMsg}</span>
           </div>
         )}
 
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">Current Password</label>
+          <label className="block text-xs font-bold text-slate-300 mb-1">Current Password</label>
           <input
             type="password"
             required
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">New Password</label>
+          <label className="block text-xs font-bold text-slate-300 mb-1">New Password</label>
           <input
             type="password"
             required
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">Confirm New Password</label>
+          <label className="block text-xs font-bold text-slate-300 mb-1">Confirm New Password</label>
           <input
             type="password"
             required
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+            className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
           />
         </div>
 
         <div className="flex justify-end pt-2">
           <button
             type="submit"
-            className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-xs transition"
+            className="px-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl shadow-lg transition"
           >
             Update Password
           </button>

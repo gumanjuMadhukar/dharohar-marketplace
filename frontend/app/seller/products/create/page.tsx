@@ -101,46 +101,46 @@ export default function CreateProductPage() {
     }
   };
 
-  return (
-    <div className="max-w-4xl space-y-6">
+  return (\0
+    <div className="max-w-4xl space-y-4 w-full">
       <div className="flex items-center gap-3">
         <Link
           href="/seller/products"
-          className="p-2 bg-white rounded-xl border border-slate-200 text-slate-500 hover:text-slate-800 transition"
+          className="p-2 bg-slate-900 rounded-xl border border-slate-800 text-slate-400 hover:text-white transition"
         >
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h2 className="text-base font-black text-slate-900">Publish New Artifact</h2>
-          <p className="text-xs text-slate-500">
+          <h2 className="text-base font-black text-white">Publish New Artifact</h2>
+          <p className="text-xs text-slate-400">
             Provide authentic cultural provenance, technical specifications, and distribution channels.
           </p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+      <form onSubmit={handleSubmit} className="bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="sm:col-span-2">
-            <label className="block text-xs font-bold text-slate-700 mb-1">Product Title</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Product Title</label>
             <input
               type="text"
               required
               placeholder="e.g. Masterwork Gold Leaf Vajrasattva Thangka"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none font-medium"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none font-medium"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Category</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Category</label>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             >
               {categories.map((c) => (
-                <option key={c.id} value={c.id}>
+                <option key={c.id} value={c.id} className="bg-slate-900 text-white">
                   {c.name}
                 </option>
               ))}
@@ -148,18 +148,18 @@ export default function CreateProductPage() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">SKU / Catalog Code (Optional)</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">SKU / Catalog Code (Optional)</label>
             <input
               type="text"
               placeholder="e.g. DHR-THK-001 (auto-generated if empty)"
               value={sku}
               onChange={(e) => setSku(e.target.value.toUpperCase())}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-mono focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs font-mono focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Retail Price (NPR)</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Retail Price (NPR)</label>
             <input
               type="number"
               required
@@ -167,123 +167,123 @@ export default function CreateProductPage() {
               placeholder="e.g. 18500"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-black text-amber-700 focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-amber-400 text-xs font-black focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Original / Compare Price (Optional)</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Original / Compare Price (Optional)</label>
             <input
               type="number"
               min="50"
               placeholder="e.g. 22000"
               value={comparePrice}
               onChange={(e) => setComparePrice(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Initial Stock Units</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Initial Stock Units</label>
             <input
               type="number"
               required
               min="1"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Low Stock Warning Threshold</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Low Stock Warning Threshold</label>
             <input
               type="number"
               min="1"
               value={lowStockThreshold}
               onChange={(e) => setLowStockThreshold(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Format Type</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Format Type</label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             >
-              <option value="physical">Physical Artifact / Craft</option>
-              <option value="digital">Digital Art / Vector Mandala</option>
-              <option value="idea">Innovation Prototype / Proposal</option>
+              <option value="physical" className="bg-slate-900 text-white">Physical Artifact / Craft</option>
+              <option value="digital" className="bg-slate-900 text-white">Digital Art / Vector Mandala</option>
+              <option value="idea" className="bg-slate-900 text-white">Innovation Prototype / Proposal</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">High-Res Image URL</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">High-Res Image URL</label>
             <input
               type="url"
               placeholder="https://images.unsplash.com/..."
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div className="sm:col-span-2">
-            <label className="block text-xs font-bold text-slate-700 mb-1">Detailed Description & Materials</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Detailed Description & Materials</label>
             <textarea
               rows={4}
               required
               placeholder="Describe heritage lineage, materials (teak wood, natural dyes, pure wool), dimensions..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
         </div>
 
         {/* Checkbox Attributes */}
-        <div className="flex flex-wrap gap-6 pt-2 border-t border-slate-100">
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+        <div className="flex flex-wrap gap-6 pt-2 border-t border-slate-800">
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-300">
             <input
               type="checkbox"
               checked={isHandmade}
               onChange={(e) => setIsHandmade(e.target.checked)}
-              className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+              className="rounded border-slate-800 bg-slate-950 text-amber-500 focus:ring-amber-500"
             />
             <span>100% Authentic Handmade in Nepal</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700">
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-300">
             <input
               type="checkbox"
               checked={isEco}
               onChange={(e) => setIsEco(e.target.checked)}
-              className="rounded border-slate-300 text-amber-600 focus:ring-amber-500"
+              className="rounded border-slate-800 bg-slate-950 text-amber-500 focus:ring-amber-500"
             />
             <span>Eco-friendly & Sustainably Sourced</span>
           </label>
         </div>
 
         {/* Sales Channel Strategy: Live Timed Auction Option */}
-        <div className="p-4 bg-amber-50/60 border border-amber-200/80 rounded-2xl space-y-4">
+        <div className="p-4 bg-slate-950 border border-amber-900/40 rounded-2xl space-y-4">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={launchAsAuction}
               onChange={(e) => setLaunchAsAuction(e.target.checked)}
-              className="rounded border-amber-400 text-amber-700 focus:ring-amber-500 w-4 h-4"
+              className="rounded border-amber-400 text-amber-500 focus:ring-amber-500 w-4 h-4"
             />
-            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-950">
-              <Flame className="w-4 h-4 text-amber-600" />
+            <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300">
+              <Flame className="w-4 h-4 text-amber-400" />
               <span>Immediately Schedule & Launch in Live Timed Auction</span>
             </div>
           </label>
 
           {launchAsAuction && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-amber-200/60 animate-in fade-in duration-150">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-800 animate-in fade-in duration-150">
               <div>
-                <label className="block text-[11px] font-bold text-amber-900 mb-1">
+                <label className="block text-[11px] font-bold text-slate-300 mb-1">
                   Starting Bid (NPR)
                 </label>
                 <input
@@ -291,39 +291,39 @@ export default function CreateProductPage() {
                   placeholder={price || "15000"}
                   value={auctionStartPrice}
                   onChange={(e) => setAuctionStartPrice(e.target.value)}
-                  className="w-full px-3 py-2 bg-white rounded-xl border border-amber-200 text-xs font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-slate-900 rounded-xl border border-slate-800 text-white text-xs font-bold focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-amber-900 mb-1">
+                <label className="block text-[11px] font-bold text-slate-300 mb-1">
                   Min Bid Increment (NPR)
                 </label>
                 <input
                   type="number"
                   value={auctionIncrement}
                   onChange={(e) => setAuctionIncrement(e.target.value)}
-                  className="w-full px-3 py-2 bg-white rounded-xl border border-amber-200 text-xs font-bold focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-slate-900 rounded-xl border border-slate-800 text-white text-xs font-bold focus:outline-none focus:border-amber-500"
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-amber-900 mb-1">
+                <label className="block text-[11px] font-bold text-slate-300 mb-1">
                   Auction Duration
                 </label>
                 <select
                   value={auctionHours}
                   onChange={(e) => setAuctionHours(e.target.value)}
-                  className="w-full px-3 py-2 bg-white rounded-xl border border-amber-200 text-xs focus:outline-none focus:border-amber-500"
+                  className="w-full px-3 py-2 bg-slate-900 rounded-xl border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
                 >
-                  <option value="24">24 Hours (1 Day Flash)</option>
-                  <option value="48">48 Hours (2 Days Standard)</option>
-                  <option value="72">72 Hours (3 Days Grand)</option>
-                  <option value="168">7 Days (Full Week)</option>
+                  <option value="24" className="bg-slate-900 text-white">24 Hours (1 Day Flash)</option>
+                  <option value="48" className="bg-slate-900 text-white">48 Hours (2 Days Standard)</option>
+                  <option value="72" className="bg-slate-900 text-white">72 Hours (3 Days Grand)</option>
+                  <option value="168" className="bg-slate-900 text-white">7 Days (Full Week)</option>
                 </select>
               </div>
 
-              <div className="sm:col-span-3 text-[11px] text-amber-800">
+              <div className="sm:col-span-3 text-[11px] text-amber-400">
                 ⚡ <em>Direct fixed-price purchase will be automatically locked while this item is in the live bidding hall.</em>
               </div>
             </div>
@@ -333,14 +333,14 @@ export default function CreateProductPage() {
         <div className="flex justify-end gap-3 pt-2">
           <Link
             href="/seller/products"
-            className="px-5 py-2.5 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl"
+            className="px-5 py-2.5 border border-slate-800 bg-slate-950 text-slate-400 hover:text-white text-xs font-bold rounded-xl"
           >
             Cancel
           </Link>
           <button
             type="submit"
             disabled={submitting}
-            className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-nepal-crimson text-white text-xs font-bold rounded-xl shadow-md hover:brightness-110 transition cursor-pointer"
+            className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs font-bold rounded-xl shadow-lg transition cursor-pointer disabled:opacity-50"
           >
             {submitting ? "Publishing Artifact..." : launchAsAuction ? "Publish & Launch Live Auction" : "Publish Listing"}
           </button>

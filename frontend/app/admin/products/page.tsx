@@ -89,11 +89,11 @@ export default function AdminProductsPage() {
     try {
       const res = await api.post("/admin/products", {
         name,
-        store_id: Number(storeId),
-        category_id: Number(categoryId),
-        price: Number(price),
-        compare_price: comparePrice ? Number(comparePrice) : null,
-        quantity: Number(quantity),
+        store_id: storeId,
+        category_id: categoryId,
+        price,
+        compare_price: comparePrice || null,
+        quantity,
         type,
         description,
         is_handmade: isHandmade,
@@ -109,7 +109,7 @@ export default function AdminProductsPage() {
         loadProducts();
       }
     } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to publish product");
+      alert(err.response?.data?.message || "Failed to create product");
     }
   };
 
@@ -119,11 +119,11 @@ export default function AdminProductsPage() {
     try {
       const res = await api.put(`/admin/products/${editingProduct.id}`, {
         name: editingProduct.name,
-        store_id: Number(editingProduct.store_id),
-        category_id: Number(editingProduct.category_id),
-        price: Number(editingProduct.price),
-        compare_price: editingProduct.compare_price ? Number(editingProduct.compare_price) : null,
-        quantity: Number(editingProduct.quantity),
+        store_id: editingProduct.store_id,
+        category_id: editingProduct.category_id,
+        price: editingProduct.price,
+        compare_price: editingProduct.compare_price || null,
+        quantity: editingProduct.quantity,
         type: editingProduct.type,
         description: editingProduct.description,
         is_handmade: editingProduct.is_handmade,
@@ -177,9 +177,9 @@ export default function AdminProductsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 w-full">
       {/* Top Controls: Search, Category Filter, and Add Product */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="bg-slate-900 p-3 sm:p-4 rounded-2xl border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           <div className="relative flex-1 sm:w-72">
             <input
@@ -188,19 +188,19 @@ export default function AdminProductsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && loadProducts()}
-              className="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 focus:outline-none"
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:ring-2 focus:ring-purple-600/40 focus:border-purple-600 focus:outline-none"
             />
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <Search className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
           </div>
 
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 bg-white"
+            className="px-3 py-2 rounded-xl border border-slate-800 text-xs font-bold text-slate-300 bg-slate-950 focus:outline-none"
           >
             <option value="all">All Categories</option>
             {categories.map((c) => (
-              <option key={c.id} value={c.id}>
+              <option key={c.id} value={c.id} className="bg-slate-900 text-white">
                 {c.name}
               </option>
             ))}
@@ -209,7 +209,7 @@ export default function AdminProductsPage() {
 
         <button
           onClick={() => setShowCreateModal(true)}
-          className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition"
+          className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-lg transition"
         >
           <Plus className="w-4 h-4" />
           <span>Publish Artifact</span>
@@ -217,10 +217,10 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Products Table */}
-      <div className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs">
+      <div className="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase text-[10px] tracking-wider">
+            <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 font-bold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="py-3.5 px-5">Artifact Listing</th>
                 <th className="py-3.5 px-4">Artisan Store</th>
@@ -232,45 +232,45 @@ export default function AdminProductsPage() {
                 <th className="py-3.5 px-5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-800/80">
               {productsList.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400 text-xs">
+                  <td colSpan={8} className="py-12 text-center text-slate-500 text-xs">
                     No products found matching query. Click &quot;Publish Artifact&quot; to add one.
                   </td>
                 </tr>
               ) : (
                 productsList.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50/70 transition">
+                  <tr key={p.id} className="hover:bg-slate-800/40 transition">
                     <td className="py-3.5 px-5 flex items-center gap-3">
                       <img
                         src={p.primary_image?.url || p.primary_image?.image_url || "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=100"}
                         alt={p.name}
-                        className="w-10 h-10 rounded-xl object-cover ring-1 ring-slate-200"
+                        className="w-10 h-10 rounded-xl object-cover ring-1 ring-slate-800"
                       />
                       <div>
-                        <div className="font-bold text-slate-900 line-clamp-1">{p.name}</div>
+                        <div className="font-bold text-white line-clamp-1">{p.name}</div>
                         <div className="text-[10px] text-slate-400 capitalize">{p.type || "physical artifact"}</div>
                       </div>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-700 font-medium">{p.store?.name || "Independent"}</td>
-                    <td className="py-3.5 px-4 text-slate-500">{p.category?.name || "General"}</td>
+                    <td className="py-3.5 px-4 text-slate-300 font-medium">{p.store?.name || "Independent"}</td>
+                    <td className="py-3.5 px-4 text-slate-400">{p.category?.name || "General"}</td>
                     <td className="py-3.5 px-4">
-                      <div className="font-black text-purple-700">NPR {Number(p.price).toLocaleString()}</div>
+                      <div className="font-black text-amber-400">NPR {Number(p.price).toLocaleString()}</div>
                       {p.compare_price && (
-                        <div className="text-[10px] text-slate-400 line-through">
+                        <div className="text-[10px] text-slate-500 line-through">
                           NPR {Number(p.compare_price).toLocaleString()}
                         </div>
                       )}
                     </td>
                     <td className="py-3.5 px-4">
                       <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                           p.quantity > 5
-                            ? "bg-emerald-50 text-emerald-700"
+                            ? "bg-emerald-950/80 text-emerald-300 border-emerald-800"
                             : p.quantity > 0
-                            ? "bg-amber-50 text-amber-700"
-                            : "bg-red-50 text-red-700"
+                            ? "bg-amber-950/80 text-amber-300 border-amber-800"
+                            : "bg-red-950/80 text-red-300 border-red-800"
                         }`}
                       >
                         {p.quantity > 0 ? `${p.quantity} units` : "Out of stock"}
@@ -278,12 +278,12 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="py-3.5 px-4 space-x-1">
                       {p.is_student_made && (
-                        <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[9px] font-bold uppercase">
+                        <span className="px-2 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-800 text-[9px] font-bold uppercase">
                           Student
                         </span>
                       )}
                       {p.is_handmade && (
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[9px] font-bold uppercase">
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800 text-[9px] font-bold uppercase">
                           Handmade
                         </span>
                       )}
@@ -292,40 +292,35 @@ export default function AdminProductsPage() {
                       <button
                         onClick={() => handleToggleFeature(p.id)}
                         className={`p-1.5 rounded-lg transition ${
-                          p.is_featured ? "text-amber-500 bg-amber-50" : "text-slate-300 hover:text-amber-500"
+                          p.is_featured ? "text-amber-400 bg-amber-950/80 border border-amber-800" : "text-slate-600 hover:text-amber-400"
                         }`}
                         title="Toggle Homepage Showcase"
                       >
                         <Star className="w-4 h-4 fill-current" />
                       </button>
                     </td>
-                    <td className="py-3.5 px-5 text-right space-x-1">
+                    <td className="py-3.5 px-5 text-right space-x-1 whitespace-nowrap">
                       <Link
-                        href={`/products/${p.slug}`}
+                        href={`/products/${p.slug || p.id}`}
                         target="_blank"
-                        className="p-1.5 text-slate-400 hover:text-purple-700 inline-block transition"
-                        title="View Public Storefront"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 inline-block transition"
+                        title="View Live Listing"
                       >
-                        <ExternalLink className="w-4 h-4" />
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </Link>
                       <button
-                        onClick={() =>
-                          setEditingProduct({
-                            ...p,
-                            image_url: p.primary_image?.url || p.primary_image?.image_url || "",
-                          })
-                        }
-                        className="p-1.5 text-slate-400 hover:text-purple-700 inline-block transition"
+                        onClick={() => setEditingProduct(p)}
+                        className="p-1.5 rounded-lg text-purple-400 hover:text-purple-300 hover:bg-purple-950/80 inline-block transition"
                         title="Edit Artifact"
                       >
-                        <Edit className="w-4 h-4" />
+                        <Edit className="w-3.5 h-3.5" />
                       </button>
                       <button
                         onClick={() => handleDeleteProduct(p.id)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 inline-block transition"
-                        title="Delete Artifact"
+                        className="p-1.5 rounded-lg text-red-400 hover:text-red-300 hover:bg-red-950/80 inline-block transition"
+                        title="Delete Product"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </td>
                   </tr>
@@ -336,42 +331,46 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
-      {/* Create Modal */}
+      {/* Create Product Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
           <form
             onSubmit={handleCreateProduct}
-            className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-4 shadow-2xl my-8"
+            className="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-4 shadow-2xl my-8"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-black text-sm text-slate-900">Publish New Platform Artifact</h3>
-              <button type="button" onClick={() => setShowCreateModal(false)} className="text-slate-400 text-lg font-bold">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="font-black text-sm text-white">Publish New Heritage Artifact</h3>
+              <button
+                type="button"
+                onClick={() => setShowCreateModal(false)}
+                className="text-slate-400 hover:text-white text-lg font-bold"
+              >
                 ✕
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Artifact Title</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Artifact Title</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Traditional Hand-Carved Teak Mayur Jhyal"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Artisan Store</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Artisan Store</label>
                 <select
                   value={storeId}
                   onChange={(e) => setStoreId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 >
                   {stores.map((s) => (
-                    <option key={s.id} value={s.id}>
+                    <option key={s.id} value={s.id} className="bg-slate-900 text-white">
                       {s.name}
                     </option>
                   ))}
@@ -379,14 +378,14 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Category</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Category</label>
                 <select
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 >
                   {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
+                    <option key={c.id} value={c.id} className="bg-slate-900 text-white">
                       {c.name}
                     </option>
                   ))}
@@ -394,7 +393,7 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Price (NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Price (NPR)</label>
                 <input
                   type="number"
                   required
@@ -402,73 +401,73 @@ export default function AdminProductsPage() {
                   placeholder="2500"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Compare at Price (NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Compare at Price (NPR)</label>
                 <input
                   type="number"
                   min="0"
                   placeholder="3000 (Optional)"
                   value={comparePrice}
                   onChange={(e) => setComparePrice(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Inventory Quantity</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Inventory Quantity</label>
                 <input
                   type="number"
                   required
                   min="0"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Item Type</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Item Type</label>
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 >
-                  <option value="physical">Physical Artifact</option>
-                  <option value="digital">Digital Craft</option>
-                  <option value="idea">Student Innovation Idea</option>
-                  <option value="proposal">B2B Wholesale Proposal</option>
+                  <option value="physical" className="bg-slate-900 text-white">Physical Artifact</option>
+                  <option value="digital" className="bg-slate-900 text-white">Digital Craft</option>
+                  <option value="idea" className="bg-slate-900 text-white">Student Innovation Idea</option>
+                  <option value="proposal" className="bg-slate-900 text-white">B2B Wholesale Proposal</option>
                 </select>
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Image URL</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Image URL</label>
                 <input
                   type="url"
                   placeholder="https://images.unsplash.com/..."
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Detailed Description</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Detailed Description</label>
                 <textarea
                   rows={3}
                   required
                   placeholder="Describe authentic craftsmanship, raw materials, origin city..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2 flex flex-wrap gap-4 pt-1">
-                <label className="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isHandmade}
@@ -476,7 +475,7 @@ export default function AdminProductsPage() {
                   />
                   <span>Handmade Heritage</span>
                 </label>
-                <label className="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isStudentMade}
@@ -484,7 +483,7 @@ export default function AdminProductsPage() {
                   />
                   <span>Student Created (3% fee)</span>
                 </label>
-                <label className="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isFeatured}
@@ -495,17 +494,17 @@ export default function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl"
+                className="px-4 py-2 border border-slate-800 bg-slate-950 text-slate-400 hover:text-white text-xs font-bold rounded-xl"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold rounded-xl shadow-xs"
+                className="px-5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md transition"
               >
                 Publish Artifact
               </button>
@@ -516,39 +515,39 @@ export default function AdminProductsPage() {
 
       {/* Edit Modal */}
       {editingProduct && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
           <form
             onSubmit={handleUpdateProduct}
-            className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-4 shadow-2xl my-8"
+            className="bg-slate-900 border border-slate-800 text-slate-100 rounded-3xl p-6 sm:p-8 max-w-xl w-full space-y-4 shadow-2xl my-8"
           >
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-black text-sm text-slate-900">Edit Artifact: {editingProduct.name}</h3>
-              <button type="button" onClick={() => setEditingProduct(null)} className="text-slate-400 text-lg font-bold">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h3 className="font-black text-sm text-white">Edit Artifact: {editingProduct.name}</h3>
+              <button type="button" onClick={() => setEditingProduct(null)} className="text-slate-400 hover:text-white text-lg font-bold">
                 ✕
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Title</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Title</label>
                 <input
                   type="text"
                   required
                   value={editingProduct.name}
                   onChange={(e) => setEditingProduct({ ...editingProduct, name: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Artisan Store</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Artisan Store</label>
                 <select
                   value={editingProduct.store_id}
                   onChange={(e) => setEditingProduct({ ...editingProduct, store_id: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 >
                   {stores.map((s) => (
-                    <option key={s.id} value={s.id}>
+                    <option key={s.id} value={s.id} className="bg-slate-900 text-white">
                       {s.name}
                     </option>
                   ))}
@@ -556,14 +555,14 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Category</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Category</label>
                 <select
                   value={editingProduct.category_id}
                   onChange={(e) => setEditingProduct({ ...editingProduct, category_id: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 >
                   {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
+                    <option key={c.id} value={c.id} className="bg-slate-900 text-white">
                       {c.name}
                     </option>
                   ))}
@@ -571,77 +570,77 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Price (NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Price (NPR)</label>
                 <input
                   type="number"
                   required
                   min="1"
                   value={editingProduct.price}
                   onChange={(e) => setEditingProduct({ ...editingProduct, price: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Compare Price (NPR)</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Compare Price (NPR)</label>
                 <input
                   type="number"
                   min="0"
                   value={editingProduct.compare_price || ""}
                   onChange={(e) => setEditingProduct({ ...editingProduct, compare_price: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Stock Quantity</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Stock Quantity</label>
                 <input
                   type="number"
                   required
                   min="0"
                   value={editingProduct.quantity}
                   onChange={(e) => setEditingProduct({ ...editingProduct, quantity: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Type</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Type</label>
                 <select
                   value={editingProduct.type}
                   onChange={(e) => setEditingProduct({ ...editingProduct, type: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 >
-                  <option value="physical">Physical Artifact</option>
-                  <option value="digital">Digital Craft</option>
-                  <option value="idea">Student Innovation Idea</option>
-                  <option value="proposal">B2B Wholesale Proposal</option>
+                  <option value="physical" className="bg-slate-900 text-white">Physical Artifact</option>
+                  <option value="digital" className="bg-slate-900 text-white">Digital Craft</option>
+                  <option value="idea" className="bg-slate-900 text-white">Student Innovation Idea</option>
+                  <option value="proposal" className="bg-slate-900 text-white">B2B Wholesale Proposal</option>
                 </select>
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Image URL</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Image URL</label>
                 <input
                   type="url"
                   value={editingProduct.image_url || ""}
                   onChange={(e) => setEditingProduct({ ...editingProduct, image_url: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-700 mb-1">Description</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1">Description</label>
                 <textarea
                   rows={3}
                   required
                   value={editingProduct.description}
                   onChange={(e) => setEditingProduct({ ...editingProduct, description: e.target.value })}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2 flex flex-wrap gap-4 pt-1">
-                <label className="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={editingProduct.is_handmade}
@@ -649,7 +648,7 @@ export default function AdminProductsPage() {
                   />
                   <span>Handmade Heritage</span>
                 </label>
-                <label className="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={editingProduct.is_student_made}
@@ -657,7 +656,7 @@ export default function AdminProductsPage() {
                   />
                   <span>Student Created</span>
                 </label>
-                <label className="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={editingProduct.is_featured}
@@ -665,7 +664,7 @@ export default function AdminProductsPage() {
                   />
                   <span>Featured</span>
                 </label>
-                <label className="flex items-center gap-2 text-xs font-bold cursor-pointer">
+                <label className="flex items-center gap-2 text-xs font-bold text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={editingProduct.is_active}
@@ -676,17 +675,17 @@ export default function AdminProductsPage() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+            <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
               <button
                 type="button"
                 onClick={() => setEditingProduct(null)}
-                className="px-4 py-2 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl"
+                className="px-4 py-2 border border-slate-800 bg-slate-950 text-slate-400 hover:text-white text-xs font-bold rounded-xl"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold rounded-xl shadow-xs"
+                className="px-5 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md transition"
               >
                 Save Changes
               </button>

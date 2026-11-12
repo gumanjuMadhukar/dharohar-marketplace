@@ -59,108 +59,108 @@ export default function SellerSettingsPage() {
   };
 
   return (
-    <div className="max-w-4xl space-y-6">
-      <form onSubmit={handleUpdate} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+    <div className="max-w-4xl space-y-4 w-full">
+      <form onSubmit={handleUpdate} className="bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
         <div>
-          <h2 className="text-base font-black text-slate-900">Store Profile & Branding Customizer</h2>
-          <p className="text-xs text-slate-500">
+          <h2 className="text-base font-black text-white">Store Profile & Branding Customizer</h2>
+          <p className="text-xs text-slate-400">
             Customize your public storefront, craft workshop address, and customer contact information.
           </p>
         </div>
 
         {msg && (
-          <div className="p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold flex items-center gap-2">
-            <CheckCircle className="w-4 h-4" />
+          <div className="p-3 bg-emerald-950/80 text-emerald-300 border border-emerald-800 rounded-xl text-xs font-semibold flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-400" />
             <span>{msg}</span>
           </div>
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Store / Brand Name</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Store / Brand Name</label>
             <input
               type="text"
               required
               value={storeName}
               onChange={(e) => setStoreName(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Store Contact Email</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Store Contact Email</label>
             <input
               type="email"
               required
               value={storeEmail}
               onChange={(e) => setStoreEmail(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Store Contact Phone</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Store Contact Phone</label>
             <input
               type="text"
               required
               value={storePhone}
               onChange={(e) => setStorePhone(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">City / Region</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">City / Region</label>
             <input
               type="text"
               required
               value={storeCity}
               onChange={(e) => setStoreCity(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div className="sm:col-span-2">
-            <label className="block text-xs font-bold text-slate-700 mb-1">Physical Workshop Address</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Physical Workshop Address</label>
             <input
               type="text"
               value={storeAddress}
               onChange={(e) => setStoreAddress(e.target.value)}
               placeholder="e.g. Bhaktapur Ward 4, Pottery Square"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Store Logo URL</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Store Logo URL</label>
             <input
               type="url"
               value={storeLogo}
               onChange={(e) => setStoreLogo(e.target.value)}
               placeholder="https://..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Store Banner URL</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Store Banner URL</label>
             <input
               type="url"
               value={storeBanner}
               onChange={(e) => setStoreBanner(e.target.value)}
               placeholder="https://..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
 
           <div className="sm:col-span-2">
-            <label className="block text-xs font-bold text-slate-700 mb-1">Store Story & Craft Warranties</label>
+            <label className="block text-xs font-bold text-slate-300 mb-1">Store Story & Craft Warranties</label>
             <textarea
               rows={3}
               value={storeDesc}
               onChange={(e) => setStoreDesc(e.target.value)}
               placeholder="Tell buyers about your heritage lineage, master artisans, and quality guarantees..."
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-amber-500 focus:outline-none"
             />
           </div>
         </div>
@@ -168,7 +168,7 @@ export default function SellerSettingsPage() {
         <div className="flex justify-end pt-2">
           <button
             type="submit"
-            className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-nepal-crimson text-white text-xs font-bold rounded-xl shadow-xs transition"
+            className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs font-bold rounded-xl shadow-lg transition"
           >
             Save Storefront Settings
           </button>

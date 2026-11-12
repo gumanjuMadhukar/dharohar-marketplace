@@ -41,23 +41,23 @@ export default function AdminSettingsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 w-full">
       <form
         onSubmit={handleSaveSettings}
-        className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6 max-w-xl"
+        className="bg-slate-900 rounded-2xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6 max-w-xl"
       >
-        <h3 className="text-base font-black text-slate-900">Platform Commission & Gateways</h3>
+        <h3 className="text-base font-black text-white">Platform Commission & Gateways</h3>
 
         {settingsMsg && (
-          <div className="p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-semibold flex items-center gap-2">
-            <CheckCircle className="w-4 h-4" />
+          <div className="p-3 bg-emerald-950/80 text-emerald-300 border border-emerald-800 rounded-xl text-xs font-semibold flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-emerald-400" />
             <span>{settingsMsg}</span>
           </div>
         )}
 
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-300 mb-1">
               Standard Artisan / Merchant Commission (%)
             </label>
             <input
@@ -67,13 +67,13 @@ export default function AdminSettingsPage() {
               max="50"
               value={platformCommission}
               onChange={(e) => setPlatformCommission(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
             />
-            <span className="text-[10px] text-slate-400">Default rate charged on retail marketplace sales.</span>
+            <span className="text-[10px] text-slate-500">Default rate charged on retail marketplace sales.</span>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-xs font-bold text-slate-300 mb-1">
               Subsidized Student Creator Commission (%)
             </label>
             <input
@@ -83,16 +83,16 @@ export default function AdminSettingsPage() {
               max="50"
               value={studentCommission}
               onChange={(e) => setStudentCommission(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600 focus:outline-none"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:border-purple-500 focus:outline-none"
             />
-            <span className="text-[10px] text-slate-400">Subsidized youth fee (recommended: 3.0%).</span>
+            <span className="text-[10px] text-slate-500">Subsidized youth fee (recommended: 3.0%).</span>
           </div>
         </div>
 
         <div className="flex justify-end">
           <button
             type="submit"
-            className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition"
+            className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow-md transition"
           >
             Enforce Global Settings
           </button>

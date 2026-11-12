@@ -98,31 +98,12 @@ export default function AdminAuditLogsPage() {
       new_values: { current_price: 145000.0, highest_bidder_id: 7 },
       details: "Highest bid placed: Rs. 145,000 on Lot #1 Shakyamuni Buddha Bronze.",
       hmac_hash: "fcde2b2edba56bf408601fb721fe9b5c338d10ee429ea04fae5511b68fbf8fb9",
-      created_at: new Date(Date.now() - 2 * 60000).toISOString(),
+      created_at: new Date(Date.now() - 75 * 60000).toISOString(),
       user: {
         id: 7,
         name: "Pradeep Thapa",
-        email: "buyer@dharohar.com",
+        email: "pradeep.buyer@gmail.com",
         account_type: "customer",
-      },
-    },
-    {
-      id: 5,
-      user_id: 1,
-      role: "admin",
-      action: "SETTINGS_UPDATED",
-      entity_type: "PlatformSetting",
-      entity_id: 1,
-      old_values: { student_commission: "5" },
-      new_values: { student_commission: "3" },
-      details: "Reduced platform commission for Student Creators to 3% to empower youth innovators.",
-      hmac_hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      created_at: new Date(Date.now() - 120 * 60000).toISOString(),
-      user: {
-        id: 1,
-        name: "Platform Administrator",
-        email: "admin@dharohar.com",
-        account_type: "admin",
       },
     },
   ];
@@ -164,22 +145,22 @@ export default function AdminAuditLogsPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 w-full">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <Shield className="w-6 h-6 text-purple-600" />
+          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
+            <Shield className="w-5 h-5 text-purple-400" />
             <span>Immutable Audit & Security Ledger</span>
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             HMAC-SHA256 cryptographically verified activity log across all 7 platform roles and transactions.
           </p>
         </div>
 
         <button
           onClick={fetchLogs}
-          className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition self-start sm:self-auto"
         >
           <RefreshCw className="w-3.5 h-3.5" />
           <span>Refresh Ledger</span>
@@ -188,60 +169,60 @@ export default function AdminAuditLogsPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-1">
-          <div className="text-[10px] uppercase font-bold text-slate-400">Total Recorded Events</div>
-          <div className="text-2xl font-black text-slate-900">{stats?.total_logs || 128}</div>
-          <div className="text-[11px] text-emerald-600 font-semibold">100% Integrity Checked</div>
+        <div className="p-4 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl space-y-1">
+          <div className="text-[10px] uppercase font-bold text-slate-500">Total Recorded Events</div>
+          <div className="text-2xl font-black text-white">{stats?.total_logs || 128}</div>
+          <div className="text-[11px] text-emerald-400 font-semibold">100% Integrity Checked</div>
         </div>
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-1">
-          <div className="text-[10px] uppercase font-bold text-slate-400">Events Today</div>
-          <div className="text-2xl font-black text-purple-600">{stats?.today_events || 19}</div>
-          <div className="text-[11px] text-slate-500">Real-time system activity</div>
+        <div className="p-4 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl space-y-1">
+          <div className="text-[10px] uppercase font-bold text-slate-500">Events Today</div>
+          <div className="text-2xl font-black text-purple-400">{stats?.today_events || 19}</div>
+          <div className="text-[11px] text-slate-400">Real-time system activity</div>
         </div>
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-1">
-          <div className="text-[10px] uppercase font-bold text-slate-400">Stream & Bid Events</div>
-          <div className="text-2xl font-black text-red-600">{stats?.stream_actions || 34}</div>
-          <div className="text-[11px] text-red-600 font-semibold">Live Room Operations</div>
+        <div className="p-4 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl space-y-1">
+          <div className="text-[10px] uppercase font-bold text-slate-500">Stream & Bid Events</div>
+          <div className="text-2xl font-black text-red-400">{stats?.stream_actions || 34}</div>
+          <div className="text-[11px] text-red-400 font-semibold">Live Room Operations</div>
         </div>
-        <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm space-y-1">
-          <div className="text-[10px] uppercase font-bold text-slate-400">Security & RBAC Changes</div>
-          <div className="text-2xl font-black text-amber-600">{stats?.security_actions || 8}</div>
-          <div className="text-[11px] text-amber-600 font-semibold">Privileged Elevations</div>
+        <div className="p-4 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl space-y-1">
+          <div className="text-[10px] uppercase font-bold text-slate-500">Security & RBAC Changes</div>
+          <div className="text-2xl font-black text-amber-400">{stats?.security_actions || 8}</div>
+          <div className="text-[11px] text-amber-400 font-semibold">Privileged Elevations</div>
         </div>
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="p-4 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div className="p-3 sm:p-4 bg-slate-900 rounded-2xl border border-slate-800 shadow-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           {/* Role Filter */}
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            className="px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-purple-500"
+            className="px-3 py-2 text-xs font-semibold bg-slate-950 border border-slate-800 text-slate-300 rounded-xl focus:outline-none"
           >
-            <option value="all">All User Roles</option>
-            <option value="admin">Super Admin</option>
-            <option value="staff">Staff & Moderator</option>
-            <option value="owner">Gallery Owner</option>
-            <option value="seller">Master Artisan / Seller</option>
-            <option value="creator">Heritage Creator</option>
-            <option value="student">Student Creator</option>
-            <option value="customer">Customer / Bidder</option>
+            <option value="all" className="bg-slate-900 text-white">All User Roles</option>
+            <option value="admin" className="bg-slate-900 text-white">Super Admin</option>
+            <option value="staff" className="bg-slate-900 text-white">Staff & Moderator</option>
+            <option value="owner" className="bg-slate-900 text-white">Gallery Owner</option>
+            <option value="seller" className="bg-slate-900 text-white">Master Artisan / Seller</option>
+            <option value="creator" className="bg-slate-900 text-white">Heritage Creator</option>
+            <option value="student" className="bg-slate-900 text-white">Student Creator</option>
+            <option value="customer" className="bg-slate-900 text-white">Customer / Bidder</option>
           </select>
 
           {/* Action Filter */}
           <select
             value={actionFilter}
             onChange={(e) => setActionFilter(e.target.value)}
-            className="px-3 py-2 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-purple-500"
+            className="px-3 py-2 text-xs font-semibold bg-slate-950 border border-slate-800 text-slate-300 rounded-xl focus:outline-none"
           >
-            <option value="all">All Actions</option>
-            <option value="AUTH_ELEVATION">Role Elevation</option>
-            <option value="KYC_APPROVED">KYC Approvals</option>
-            <option value="STREAM_STARTED">Stream Broadcasts</option>
-            <option value="LIVE_BID_ACCEPTED">Live Bids</option>
-            <option value="SETTINGS_UPDATED">Settings Changes</option>
-            <option value="LOT_HAMMERED_SOLD">Lot Hammered</option>
+            <option value="all" className="bg-slate-900 text-white">All Actions</option>
+            <option value="AUTH_ELEVATION" className="bg-slate-900 text-white">Role Elevation</option>
+            <option value="KYC_APPROVED" className="bg-slate-900 text-white">KYC Approvals</option>
+            <option value="STREAM_STARTED" className="bg-slate-900 text-white">Stream Broadcasts</option>
+            <option value="LIVE_BID_ACCEPTED" className="bg-slate-900 text-white">Live Bids</option>
+            <option value="SETTINGS_UPDATED" className="bg-slate-900 text-white">Settings Changes</option>
+            <option value="LOT_HAMMERED_SOLD" className="bg-slate-900 text-white">Lot Hammered</option>
           </select>
         </div>
 
@@ -253,17 +234,17 @@ export default function AdminAuditLogsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && fetchLogs()}
-            className="pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-purple-500 w-full sm:w-64"
+            className="pl-9 pr-3 py-2 text-xs bg-slate-950 border border-slate-800 text-white placeholder-slate-500 rounded-xl focus:outline-none focus:ring-1 focus:ring-purple-500 w-full sm:w-64"
           />
-          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+          <Search className="w-3.5 h-3.5 text-slate-500 absolute left-3 top-2.5" />
         </div>
       </div>
 
       {/* Logs Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-slate-900 rounded-2xl border border-slate-800 shadow-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-500 border-b border-slate-200 font-bold uppercase text-[10px] tracking-wider">
+            <thead className="bg-slate-950 text-slate-400 border-b border-slate-800 font-bold uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="px-4 py-3">Timestamp</th>
                 <th className="px-4 py-3">Actor / Role</th>
@@ -274,14 +255,14 @@ export default function AdminAuditLogsPage() {
                 <th className="px-4 py-3 text-right">Integrity</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
+            <tbody className="divide-y divide-slate-800/80 font-medium text-slate-300">
               {logs.map((log) => (
                 <tr
                   key={log.id}
                   onClick={() => setSelectedLog(log)}
-                  className="hover:bg-slate-50/80 transition cursor-pointer"
+                  className="hover:bg-slate-800/40 transition cursor-pointer"
                 >
-                  <td className="px-4 py-3 text-slate-500 whitespace-nowrap">
+                  <td className="px-4 py-3 text-slate-400 whitespace-nowrap">
                     {new Date(log.created_at).toLocaleString([], {
                       month: "short",
                       day: "numeric",
@@ -290,42 +271,42 @@ export default function AdminAuditLogsPage() {
                     })}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <div className="font-bold text-slate-900">{log.user?.name || "System"}</div>
+                    <div className="font-bold text-white">{log.user?.name || "System"}</div>
                     <span
-                      className={`text-[9px] px-1.5 py-0.2 rounded-full font-extrabold uppercase ${
+                      className={`text-[9px] px-1.5 py-0.2 rounded-full font-extrabold uppercase border ${
                         log.role === "admin"
-                          ? "bg-purple-100 text-purple-800"
+                          ? "bg-purple-950/80 text-purple-300 border-purple-800"
                           : log.role === "staff"
-                          ? "bg-indigo-100 text-indigo-800"
+                          ? "bg-indigo-950/80 text-indigo-300 border-indigo-800"
                           : log.role === "owner"
-                          ? "bg-emerald-100 text-emerald-800"
+                          ? "bg-emerald-950/80 text-emerald-300 border-emerald-800"
                           : log.role === "creator"
-                          ? "bg-amber-100 text-amber-800"
+                          ? "bg-amber-950/80 text-amber-300 border-amber-800"
                           : log.role === "student"
-                          ? "bg-pink-100 text-pink-800"
-                          : "bg-blue-100 text-blue-800"
+                          ? "bg-pink-950/80 text-pink-300 border-pink-800"
+                          : "bg-blue-950/80 text-blue-300 border-blue-800"
                       }`}
                     >
                       {log.role}
                     </span>
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap">
-                    <span className="font-mono font-bold text-slate-800 text-[11px] bg-slate-100 px-2 py-0.5 rounded-lg border border-slate-200">
+                    <span className="font-mono font-bold text-purple-300 text-[11px] bg-slate-950 px-2 py-0.5 rounded-lg border border-slate-800">
                       {log.action}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
+                  <td className="px-4 py-3 text-slate-400 whitespace-nowrap">
                     {log.entity_type ? `${log.entity_type} #${log.entity_id}` : "Global"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-[11px] text-slate-500 whitespace-nowrap">
+                  <td className="px-4 py-3 font-mono text-[11px] text-slate-400 whitespace-nowrap">
                     {log.ip_address || "127.0.0.1"}
                   </td>
-                  <td className="px-4 py-3 text-slate-800 max-w-xs truncate">
+                  <td className="px-4 py-3 text-slate-200 max-w-xs truncate">
                     {log.details}
                   </td>
                   <td className="px-4 py-3 text-right whitespace-nowrap">
-                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-800">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
                       HMAC Valid
                     </span>
                   </td>
@@ -338,60 +319,60 @@ export default function AdminAuditLogsPage() {
 
       {/* Detail Modal */}
       {selectedLog && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl text-slate-100 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2">
-                <FileCode className="w-5 h-5 text-purple-600" />
-                <h3 className="text-base font-black text-slate-900">Audit Log Details #{selectedLog.id}</h3>
+                <FileCode className="w-5 h-5 text-purple-400" />
+                <h3 className="text-base font-black text-white">Audit Log Details #{selectedLog.id}</h3>
               </div>
               <button
                 onClick={() => setSelectedLog(null)}
-                className="text-slate-400 hover:text-slate-600 text-sm font-bold"
+                className="text-slate-400 hover:text-white text-sm font-bold"
               >
                 ✕
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+              <div className="grid grid-cols-2 gap-2 bg-slate-950 p-3 rounded-2xl border border-slate-800">
                 <div>
-                  <div className="text-[10px] text-slate-400 uppercase font-bold">Action</div>
-                  <div className="font-mono font-bold text-slate-900">{selectedLog.action}</div>
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Action</div>
+                  <div className="font-mono font-bold text-purple-400">{selectedLog.action}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 uppercase font-bold">Actor</div>
-                  <div className="font-bold text-slate-900">{selectedLog.user?.name} ({selectedLog.role})</div>
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Actor</div>
+                  <div className="font-bold text-white">{selectedLog.user?.name} ({selectedLog.role})</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 uppercase font-bold">IP Address</div>
-                  <div className="font-mono text-slate-700">{selectedLog.ip_address}</div>
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">IP Address</div>
+                  <div className="font-mono text-slate-300">{selectedLog.ip_address}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-400 uppercase font-bold">Timestamp</div>
-                  <div className="text-slate-700">{new Date(selectedLog.created_at).toLocaleString()}</div>
+                  <div className="text-[10px] text-slate-500 uppercase font-bold">Timestamp</div>
+                  <div className="text-slate-300">{new Date(selectedLog.created_at).toLocaleString()}</div>
                 </div>
               </div>
 
               <div>
-                <div className="text-[10px] text-slate-400 uppercase font-bold mb-1">Details Summary</div>
-                <div className="p-3 bg-slate-100 rounded-xl text-slate-800 leading-relaxed font-medium">
+                <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">Details Summary</div>
+                <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-200 leading-relaxed font-medium">
                   {selectedLog.details}
                 </div>
               </div>
 
               {selectedLog.new_values && (
                 <div>
-                  <div className="text-[10px] text-slate-400 uppercase font-bold mb-1">State Payload Diff</div>
-                  <pre className="p-3 bg-slate-900 text-emerald-400 rounded-xl overflow-x-auto text-[11px] font-mono">
+                  <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">State Payload Diff</div>
+                  <pre className="p-3 bg-slate-950 border border-slate-800 text-emerald-400 rounded-xl overflow-x-auto text-[11px] font-mono">
                     {JSON.stringify(selectedLog.new_values, null, 2)}
                   </pre>
                 </div>
               )}
 
               <div>
-                <div className="text-[10px] text-slate-400 uppercase font-bold mb-1">HMAC-SHA256 Signature</div>
-                <div className="p-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-[10px] text-slate-500 break-all">
+                <div className="text-[10px] text-slate-500 uppercase font-bold mb-1">HMAC-SHA256 Signature</div>
+                <div className="p-2 bg-slate-950 border border-slate-800 rounded-xl font-mono text-[10px] text-slate-400 break-all">
                   {selectedLog.hmac_hash || "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
                 </div>
               </div>

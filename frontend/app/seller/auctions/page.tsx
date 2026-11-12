@@ -133,15 +133,15 @@ export default function SellerAuctionsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xs">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 bg-amber-50 text-amber-700 rounded-lg">
+            <span className="p-2 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20">
               <Gavel className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-bold text-slate-900">Live Timed Auctions Management</h1>
+            <h1 className="text-xl font-bold text-white">Live Timed Auctions Management</h1>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Host live timed bidding events for your rarest heritage artifacts with real-time bidding and anti-sniping protection.
           </p>
         </div>
@@ -149,7 +149,7 @@ export default function SellerAuctionsPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/auctions"
-            className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:text-nepal-crimson text-xs font-bold transition flex items-center gap-1.5"
+            className="px-4 py-2.5 rounded-xl border border-slate-700 bg-slate-800 text-slate-200 hover:text-nepal-crimson hover:border-slate-600 text-xs font-bold transition flex items-center gap-1.5"
           >
             <span>Public Auction Hall</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -167,57 +167,57 @@ export default function SellerAuctionsPage() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-slate-200/80 rounded-xl p-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
             Active Bidding Rooms
           </span>
-          <div className="text-2xl font-black text-slate-900 mt-1 flex items-center gap-2">
+          <div className="text-2xl font-black text-white mt-1 flex items-center gap-2">
             <span>{activeAuctions.length}</span>
             {activeAuctions.length > 0 && (
-              <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md flex items-center gap-1">
-                <Flame className="w-3 h-3 text-emerald-500" /> Live Now
+              <span className="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2 py-0.5 rounded-md flex items-center gap-1">
+                <Flame className="w-3 h-3 text-emerald-400" /> Live Now
               </span>
             )}
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">Accepting collector bids</p>
+          <p className="text-[11px] text-slate-400 mt-1">Accepting collector bids</p>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-xl p-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
             Total Bids Received
           </span>
-          <div className="text-2xl font-black text-amber-700 mt-1">{totalBidsReceived}</div>
-          <p className="text-[11px] text-slate-500 mt-1">Across all your timed events</p>
+          <div className="text-2xl font-black text-amber-400 mt-1">{totalBidsReceived}</div>
+          <p className="text-[11px] text-slate-400 mt-1">Across all your timed events</p>
         </div>
 
-        <div className="bg-white border border-slate-200/80 rounded-xl p-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
             Peak Bidding Valuation
           </span>
-          <div className="text-2xl font-black text-slate-900 mt-1">
+          <div className="text-2xl font-black text-white mt-1">
             NPR {highestCurrentBid.toLocaleString()}
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">Highest live price achieved</p>
+          <p className="text-[11px] text-slate-400 mt-1">Highest live price achieved</p>
         </div>
       </div>
 
       {/* Important Business Rule Notice */}
-      <div className="p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl flex items-start gap-3 text-xs text-amber-950">
-        <Flame className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+      <div className="p-4 bg-amber-950/40 border border-amber-800/60 rounded-2xl flex items-start gap-3 text-xs text-amber-200">
+        <Flame className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
         <div>
-          <div className="font-bold">Artifact Allocation Rule:</div>
-          <p className="mt-0.5 text-amber-900">
+          <div className="font-bold text-amber-300">Artifact Allocation Rule:</div>
+          <p className="mt-0.5 text-amber-200/90">
             When you assign a catalog artifact to an active timed auction, standard fixed-price "Add to Cart" is automatically locked on the public storefront. Collectors are seamlessly directed to place competitive bids inside the Auction Hall.
           </p>
         </div>
       </div>
 
       {/* Auctions Table */}
-      <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
-        <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xs">
+        <div className="p-4 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-slate-500" />
-            <h3 className="font-bold text-sm text-slate-900">Your Store Auction Listings</h3>
+            <Layers className="w-4 h-4 text-slate-400" />
+            <h3 className="font-bold text-sm text-white">Your Store Auction Listings</h3>
           </div>
           <span className="text-xs text-slate-400 font-medium">
             {auctions.length} total events
@@ -228,9 +228,9 @@ export default function SellerAuctionsPage() {
           <div className="p-12 text-center text-xs text-slate-400">Loading your auctions...</div>
         ) : auctions.length === 0 ? (
           <div className="p-12 text-center flex flex-col items-center">
-            <Gavel className="w-10 h-10 text-slate-300 mb-3" />
-            <h3 className="text-sm font-bold text-slate-800">No auctions listed yet</h3>
-            <p className="text-xs text-slate-500 mt-1 max-w-sm">
+            <Gavel className="w-10 h-10 text-slate-600 mb-3" />
+            <h3 className="text-sm font-bold text-slate-200">No auctions listed yet</h3>
+            <p className="text-xs text-slate-400 mt-1 max-w-sm">
               Select one of your rare masterpiece artifacts and launch a live timed auction event.
             </p>
             <button
@@ -242,8 +242,8 @@ export default function SellerAuctionsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-600">
-              <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
+            <table className="w-full text-left text-xs text-slate-300">
+              <thead className="bg-slate-950 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-800">
                 <tr>
                   <th className="py-3 px-4">Artifact / Title</th>
                   <th className="py-3 px-4">Starting Price</th>
@@ -254,11 +254,11 @@ export default function SellerAuctionsPage() {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
+              <tbody className="divide-y divide-slate-800 font-medium">
                 {auctions.map((auc) => {
                   const isLive = auc.status === "active";
                   return (
-                    <tr key={auc.id} className="hover:bg-slate-50/60 transition-colors">
+                    <tr key={auc.id} className="hover:bg-slate-800/50 transition-colors">
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
                           <img
@@ -267,17 +267,17 @@ export default function SellerAuctionsPage() {
                               "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=200"
                             }
                             alt=""
-                            className="w-10 h-10 rounded-lg object-cover border border-slate-200 shrink-0"
+                            className="w-10 h-10 rounded-lg object-cover border border-slate-700 shrink-0"
                           />
                           <div>
-                            <div className="font-bold text-slate-900">{auc.title}</div>
+                            <div className="font-bold text-white">{auc.title}</div>
                             <div className="text-[11px] text-slate-400">
                               Catalog: {auc.product?.name || "Artifact"}
                             </div>
                           </div>
                         </div>
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-slate-700">
+                      <td className="py-3.5 px-4 font-mono text-slate-300">
                         NPR {Number(auc.starting_price).toLocaleString()}
                       </td>
                       <td className="py-3.5 px-4 font-mono font-bold text-nepal-crimson">
@@ -286,28 +286,28 @@ export default function SellerAuctionsPage() {
                       <td className="py-3.5 px-4">
                         <button
                           onClick={() => setInspectAuction(auc)}
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-100 hover:bg-amber-100 text-slate-800 hover:text-amber-900 transition cursor-pointer font-bold"
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-800 hover:bg-amber-900/40 text-slate-200 hover:text-amber-300 border border-slate-700 transition cursor-pointer font-bold"
                           title="Inspect live bids"
                         >
-                          <Users className="w-3 h-3" />
+                          <Users className="w-3 h-3 text-amber-400" />
                           <span>{auc.bids_count || 0} bids</span>
                         </button>
                       </td>
                       <td className="py-3.5 px-4">
                         {isLive ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2 py-0.5 rounded-full">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                             Live Active
                           </span>
                         ) : (
-                          <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full capitalize">
+                          <span className="text-[11px] font-bold text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full capitalize">
                             {auc.status}
                           </span>
                         )}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-500">
+                      <td className="py-3.5 px-4 text-slate-400">
                         <div className="flex items-center gap-1.5">
-                          <Clock className="w-3.5 h-3.5 text-slate-400" />
+                          <Clock className="w-3.5 h-3.5 text-slate-500" />
                           <span>{new Date(auc.ends_at).toLocaleString()}</span>
                         </div>
                       </td>
@@ -315,7 +315,7 @@ export default function SellerAuctionsPage() {
                         <div className="inline-flex items-center gap-2">
                           <Link
                             href={`/auctions/${auc.id}`}
-                            className="p-1.5 text-slate-600 hover:text-nepal-crimson hover:bg-slate-100 rounded-lg transition"
+                            className="p-1.5 text-slate-400 hover:text-nepal-crimson hover:bg-slate-800 rounded-lg transition"
                             title="Open Live Bidding Room"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -324,7 +324,7 @@ export default function SellerAuctionsPage() {
                           {isLive && (auc.bids_count === 0 || !auc.bids_count) && (
                             <button
                               onClick={() => handleCancelAuction(auc.id)}
-                              className="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                              className="p-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-950/60 rounded-lg transition cursor-pointer"
                               title="Cancel Auction"
                             >
                               <XCircle className="w-4 h-4" />
@@ -343,23 +343,23 @@ export default function SellerAuctionsPage() {
 
       {/* Host New Timed Auction Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-3xl w-full max-w-xl p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="bg-slate-900 rounded-3xl w-full max-w-xl p-6 sm:p-8 shadow-2xl border border-slate-800 space-y-6 text-slate-100">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800">
               <div className="flex items-center gap-2">
-                <Gavel className="w-5 h-5 text-amber-600" />
-                <h3 className="text-base font-bold text-slate-900">Launch New Timed Auction</h3>
+                <Gavel className="w-5 h-5 text-amber-400" />
+                <h3 className="text-base font-bold text-white">Launch New Timed Auction</h3>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-800 text-lg font-bold cursor-pointer"
+                className="text-slate-400 hover:text-white text-lg font-bold cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             {errorMsg && (
-              <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-xl flex items-center gap-2">
+              <div className="p-3 bg-rose-950/60 border border-rose-800 text-rose-300 text-xs rounded-xl flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -367,7 +367,7 @@ export default function SellerAuctionsPage() {
 
             <form onSubmit={handleCreateAuction} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-300 mb-1">
                   Auction Event Title
                 </label>
                 <input
@@ -376,18 +376,18 @@ export default function SellerAuctionsPage() {
                   placeholder="e.g. 18th-Century Gilded Bhairava Mask"
                   value={auctionTitle}
                   onChange={(e) => setAuctionTitle(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none font-medium"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 focus:outline-none font-medium"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-300 mb-1">
                   Catalog Artifact to Auction
                 </label>
                 <select
                   value={auctionProdId}
                   onChange={(e) => setAuctionProdId(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 focus:outline-none"
                 >
                   {products.map((p) => (
                     <option key={p.id} value={p.id}>
@@ -395,14 +395,14 @@ export default function SellerAuctionsPage() {
                     </option>
                   ))}
                 </select>
-                <p className="text-[11px] text-slate-400 mt-1">
+                <p className="text-[11px] text-slate-500 mt-1">
                   Note: Direct instant buy-now for this artifact will be paused while live bidding is active.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
                     Starting Bid Price (NPR)
                   </label>
                   <input
@@ -412,12 +412,12 @@ export default function SellerAuctionsPage() {
                     placeholder="e.g. 25000"
                     value={auctionStartPrice}
                     onChange={(e) => setAuctionStartPrice(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none font-bold"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 focus:outline-none font-bold"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
                     Minimum Bid Increment (NPR)
                   </label>
                   <input
@@ -426,19 +426,19 @@ export default function SellerAuctionsPage() {
                     min="100"
                     value={auctionIncrement}
                     onChange={(e) => setAuctionIncrement(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none font-medium"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 focus:outline-none font-medium"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-300 mb-1">
                   Auction Duration
                 </label>
                 <select
                   value={auctionHours}
                   onChange={(e) => setAuctionHours(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-800 bg-slate-950 text-white text-xs focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 focus:outline-none"
                 >
                   <option value="24">24 Hours (1 Day Flash)</option>
                   <option value="48">48 Hours (2 Days Standard)</option>
@@ -447,11 +447,11 @@ export default function SellerAuctionsPage() {
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer"
+                  className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -470,18 +470,18 @@ export default function SellerAuctionsPage() {
 
       {/* Inspect Bids Modal */}
       {inspectAuction && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-150">
-          <div className="bg-white rounded-3xl w-full max-w-lg p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-150">
+          <div className="bg-slate-900 rounded-3xl w-full max-w-lg p-6 shadow-2xl border border-slate-800 space-y-4 text-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-amber-600" />
-                <h3 className="font-bold text-sm text-slate-900">
+                <Users className="w-5 h-5 text-amber-400" />
+                <h3 className="font-bold text-sm text-white">
                   Live Bids Stream: {inspectAuction.title}
                 </h3>
               </div>
               <button
                 onClick={() => setInspectAuction(null)}
-                className="text-slate-400 hover:text-slate-800 text-lg font-bold cursor-pointer"
+                className="text-slate-400 hover:text-white text-lg font-bold cursor-pointer"
               >
                 ✕
               </button>
@@ -492,20 +492,20 @@ export default function SellerAuctionsPage() {
                 inspectAuction.bids.map((b: any, idx: number) => (
                   <div
                     key={b.id || idx}
-                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs"
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs"
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-amber-200 text-amber-800 font-bold flex items-center justify-center text-[11px]">
+                      <div className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-300 font-bold flex items-center justify-center text-[11px] border border-amber-500/30">
                         {b.user?.name ? b.user.name.charAt(0) : "B"}
                       </div>
                       <div>
-                        <div className="font-bold text-slate-900">{b.user?.name || "Collector"}</div>
+                        <div className="font-bold text-white">{b.user?.name || "Collector"}</div>
                         <div className="text-[10px] text-slate-400">
                           {b.created_at ? new Date(b.created_at).toLocaleTimeString() : "Recent"}
                         </div>
                       </div>
                     </div>
-                    <div className="font-mono font-black text-nepal-crimson text-sm">
+                    <div className="font-mono font-black text-amber-400 text-sm">
                       NPR {Number(b.amount).toLocaleString()}
                     </div>
                   </div>
@@ -520,7 +520,7 @@ export default function SellerAuctionsPage() {
             <div className="flex justify-end pt-2">
               <button
                 onClick={() => setInspectAuction(null)}
-                className="px-4 py-2 bg-slate-100 text-slate-700 text-xs font-bold rounded-xl hover:bg-slate-200 cursor-pointer"
+                className="px-4 py-2 bg-slate-800 text-slate-300 text-xs font-bold rounded-xl hover:bg-slate-700 hover:text-white border border-slate-700 cursor-pointer"
               >
                 Close
               </button>
